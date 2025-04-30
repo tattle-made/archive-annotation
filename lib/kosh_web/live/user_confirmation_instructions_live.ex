@@ -34,7 +34,7 @@ defmodule KoshWeb.UserConfirmationInstructionsLive do
 
   def mount(params, _session, socket) do
     reason = Map.get(params, "reason")
-    # IO.inspect(reason, label: "REASON")
+
     {:ok, assign(socket, form: to_form(%{}, as: "user"), reason: reason)}
   end
 

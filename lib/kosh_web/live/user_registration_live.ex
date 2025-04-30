@@ -62,7 +62,7 @@ defmodule KoshWeb.UserRegistrationLive do
             &url(~p"/users/confirm/#{&1}")
           )
 
-        changeset = Accounts.change_user_registration(user)
+        # changeset = Accounts.change_user_registration(user)
         # {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
         {:noreply, socket |> redirect(to: ~p"/users/confirm/landing")}
 
@@ -78,8 +78,6 @@ defmodule KoshWeb.UserRegistrationLive do
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     form = to_form(changeset, as: "user")
-
-    IO.inspect(form, label: "NEW FORM:")
 
     if changeset.valid? do
       assign(socket, form: form, check_errors: false)
