@@ -114,6 +114,7 @@ defmodule KoshWeb.Router do
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
+      live "/users/confirm/landing", UserConfirmationLandingLive, :index
     end
 
     post "/users/log_in", UserSessionLiveController, :create
@@ -129,8 +130,8 @@ defmodule KoshWeb.Router do
       ] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
-      live "/testadmin", TestAdminRoleLive, :index
-      live "/gentoken", TokenGeneratorLive, :index
+      # live "/testadmin", TestAdminRoleLive, :index
+      # live "/gentoken", TokenGeneratorLive, :index
     end
   end
 

@@ -6,7 +6,10 @@ defmodule KoshWeb.UserConfirmationLive do
   def render(%{live_action: :edit} = assigns) do
     ~H"""
     <div class="mx-auto max-w-sm">
-      <.header class="text-center">Confirm Account</.header>
+      <.header class="text-center">
+        Confirm Account
+        <:subtitle>After confirmation, please login by entering your credentials</:subtitle>
+      </.header>
 
       <.simple_form for={@form} id="confirmation_form" phx-submit="confirm_account">
         <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
@@ -36,7 +39,7 @@ defmodule KoshWeb.UserConfirmationLive do
         {:noreply,
          socket
          |> put_flash(:info, "User confirmed successfully.")
-         |> redirect(to: ~p"/")}
+         |> redirect(to: ~p"/users/log_in")}
 
       :error ->
         # If there is a current user and the account was already confirmed,
@@ -51,7 +54,7 @@ defmodule KoshWeb.UserConfirmationLive do
             {:noreply,
              socket
              |> put_flash(:error, "User confirmation link is invalid or it has expired.")
-             |> redirect(to: ~p"/")}
+             |> redirect(to: ~p"/users/confirm?reason=expired")}
         end
     end
   end

@@ -5,9 +5,13 @@ defmodule KoshWeb.UserConfirmationInstructionsLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
+    <div class="mx-auto max-w-fit">
       <.header class="text-center">
-        No confirmation instructions received?
+        <%= if @reason == "expired" do %>
+          Your confirmation link is either invalid or expired
+        <% else %>
+          No confirmation instructions received?
+        <% end %>
         <:subtitle>We'll send a new confirmation link to your inbox</:subtitle>
       </.header>
 
@@ -28,8 +32,10 @@ defmodule KoshWeb.UserConfirmationInstructionsLive do
     """
   end
 
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, form: to_form(%{}, as: "user"))}
+  def mount(params, _session, socket) do
+    reason = Map.get(params, "reason")
+    # IO.inspect(reason, label: "REASON")
+    {:ok, assign(socket, form: to_form(%{}, as: "user"), reason: reason)}
   end
 
   def handle_event("send_instructions", %{"user" => %{"email" => email}}, socket) do
@@ -46,6 +52,6 @@ defmodule KoshWeb.UserConfirmationInstructionsLive do
     {:noreply,
      socket
      |> put_flash(:info, info)
-     |> redirect(to: ~p"/")}
+     |> redirect(to: ~p"/users/confirm/landing?reason=resend")}
   end
 end
