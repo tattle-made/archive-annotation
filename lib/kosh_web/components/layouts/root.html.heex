@@ -1,58 +1,132 @@
-<!DOCTYPE html>
-<html lang="en" class="[scrollbar-gutter:stable]">
+<!DOCTYPE html> <%!-- <html lang="en" class="[scrollbar-gutter:stable]"> --%>
+<html lang="en" class="[scrollbar-gutter:auto]">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title suffix=" · Phoenix Framework">
-      <%= assigns[:page_title] || "Kosh" %>
+    <%!-- <.live_title 
+    suffix=" · Milli Archives Foundation"
+    > --%>
+    <.live_title>
+      <%= assigns[:page_title] || "Milli Archives Foundation" %>
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <%!-- Add Noto Sans Font --%>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
   </head>
-  <body class="bg-white">
-    <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
-      <%= if @current_user do %>
-        <li class="text-[0.8125rem] leading-6 text-zinc-900">
-          <%= @current_user.email %>
-        </li>
-        <li>
-          <.link
-            href={~p"/users/settings"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Settings
-          </.link>
-        </li>
-        <li>
-          <.link
-            href={~p"/users/log_out"}
-            method="delete"
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Log out
-          </.link>
-        </li>
-      <% else %>
-        <li>
-          <.link
-            href={~p"/users/register"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Register
-          </.link>
-        </li>
-        <li>
-          <.link
-            href={~p"/users/log_in"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Log in
-          </.link>
-        </li>
-      <% end %>
-    </ul>
-    <%= @inner_content %>
+  <body class="bg-white flex flex-col min-h-screen">
+    <% nav_items = [
+      {"About", ~p"/#"},
+      {"Ethics-Law", ~p"/#"},
+      {"Milli Sessions", ~p"/#"},
+      {"Annotation Tool", ~p"/#"},
+      {"Support", ~p"/#"},
+      {"Contact", ~p"/#"},
+      {"Join Us", ~p"/#"}
+    ] %>
+    <% nav_items_account_loggedin = [
+      {"MY ACCOUNT", ~p"/users/settings"},
+      {"MY ANNOTATIONS", ~p"/#"}
+    ] %>
+    <% nav_items_account_loggedout = [
+      {"LOGIN", ~p"/users/log_in"},
+      {"REGISTER", ~p"/users/register"}
+    ] %>
+
+    <header>
+      <nav class="relative z-10 flex items-center gap-4 px-4 py-4 sm:px-6 xl:px-32 xl:py-12 justify-end bg-[#E6E9F5] ">
+        <div class="mr-auto">
+          <img src={~p"/images/logo.svg"} alt="App Logo" />
+        </div>
+        <div class="flex flex-col gap-6">
+          <ul class="flex gap-3 justify-end">
+            <%= if @current_user do %>
+              <%!-- <li class="text-[0.8125rem] leading-6 text-zinc-900">
+                <%= @current_user.email %>
+              </li> --%>
+  
+              <%= for {{label, path}, idx} <- nav_items_account_loggedin |> Enum.with_index()  do %>
+                <%= if idx > 0 do %>
+                  <span class="px-3 text-primary-purple font-bold">|</span>
+                <% end %>
+                <li>
+                  <.link href={path} class="text-primary-purple font-bold text-body-sm-16">
+                    <%= label %>
+                  </.link>
+                </li>
+              <% end %>
+  
+              <span class="px-3 text-primary-purple font-bold">|</span>
+              <li>
+                <.link
+                  href={~p"/users/log_out"}
+                  method="delete"
+                  class="text-primary-purple font-bold text-body-sm-16"
+                >
+                  LOGOUT
+                </.link>
+              </li>
+            <% else %>
+              <%= for {{label, path}, idx} <- nav_items_account_loggedout |> Enum.with_index()  do %>
+                <%= if idx > 0 do %>
+                  <span class="px-3 text-primary-purple font-bold">|</span>
+                <% end %>
+                <li>
+                  <.link
+                    href={path}
+                    class={"text-primary-purple text-body-sm-16" <>" "<> 
+                  if @conn.request_path==path do
+                  " font-regular"
+                  else 
+                  "font-bold"
+                  end
+                  }
+                  >
+                    <%= label %>
+                  </.link>
+                </li>
+              <% end %>
+            <% end %>
+          </ul>
+  
+          <ul class="flex space-x-6">
+            <%= for {label, path} <- nav_items do %>
+              <li>
+                <.link href={path} class="text-primary-purple font-semibold text-body-sm-16 p-3">
+                  <%= label %>
+                </.link>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <div class="grow"><%= @inner_content %></div>
+    <footer class="px-4 py-4 sm:px-6 xl:px-32 xl:py-12 flex justify-between items-center">
+      <div class="">
+        <img src={~p"/images/logo.svg"} alt="App Logo" />
+      </div>
+      <p class="text-secondary-purple">
+        Milli Archives Foundation, WS No.9, Golden Square, No. 403 Eden Park
+        20 Vittal Mallya Road,<br /> Bangalore 560 001, Karnataka, India.
+      </p>
+      <div class="flex flex-col font-semibold text-secondary-purple px-1 w-fit">
+        <p>About Milli</p>
+        <p>Search Repository</p>
+      </div>
+
+      <div class="flex gap-3">
+        <div class="w-7 h-7 border border-primary-purple"></div>
+        <div class="w-7 h-7 border border-primary-purple"></div>
+        <div class="w-7 h-7 border border-primary-purple"></div>
+      </div>
+    </footer>
   </body>
 </html>

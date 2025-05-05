@@ -4,6 +4,7 @@
 const plugin = require("tailwindcss/plugin")
 const fs = require("fs")
 const path = require("path")
+const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
   content: [
@@ -11,12 +12,76 @@ module.exports = {
     "../lib/kosh_web.ex",
     "../lib/kosh_web/**/*.*ex"
   ],
+  // theme: {
+  //   extend: {
+  //     colors: {
+  //       brand: "#FD4F00",
+  //     }
+  //   },
+  // },
   theme: {
     extend: {
       colors: {
-        brand: "#FD4F00",
+        /* Primary */
+        "primary-purple": "#8c4673",
+        "primary-black":  "#090420",
+        "primary-grey":   "#7b7882",
+        "primary-white":  "#ffffff",
+
+        /* Secondary */
+        "secondary-purple":    "#592d49",
+        "secondary-pale-grey": "#dcd9db",
+        "secondary-lilac":     "#e6e9f5",
+        "secondary-lime":      "#f7ffe2",
+        "secondary-blue":      "#d7e7ff",
+        "secondary-grey":      "#4c464f",
+
+        /* Backgrounds */
+        "bg-lilac": "#eeeff5",
+        "bg-grey":  "#e4e5eb"
+      },
+
+      boxShadow: {
+        /* Milli Shadow 1 */
+        "milli-1": "0px 4px 4px 0px #00000040"
+      },
+
+      fontFamily: {
+        // make Noto Sans the primary sans, but fall back
+        // through all the usual defaults too
+        sans: ["Noto Sans", ...defaultTheme.fontFamily.sans],
+        /* Noto Sans */
+        noto: ["Noto Sans", "sans-serif"]
+      },
+
+      fontWeight: {
+        /* from fontWeights tokens */
+        regular: 400,
+        semibold: 600,
+        bold:    700
+      },
+
+      fontSize: {
+        /* px → rem (16px base), with line-height objects */
+        "display-40":  ["2.5rem", { lineHeight: "3.25rem" }], // 40px + LH 52px
+        "body-lg-24":  ["1.5rem", { lineHeight: "2.125rem" }], // 24px + LH 34px
+        "body-md-18":  ["1.125rem", { lineHeight: "1.6875rem" }], // 18px + LH 27px
+        "body-sm-16":  ["1rem", { lineHeight: "1.5rem" }], // 16px + LH 24px
+        "caption-14":  ["0.875rem", { lineHeight: "1.3125rem" }], // 14px + LH 21px
+        "meta-12":     ["0.75rem", { lineHeight: "1.125rem" }] // 12px + LH 18px
+      },
+
+      lineHeight: {
+        /* Extra named LHs if you need them standalone */
+        "lh-52": "3.25rem",
+        "lh-40": "2.5rem",
+        "lh-34": "2.125rem",
+        "lh-27": "1.6875rem",
+        "lh-24": "1.5rem",
+        "lh-21": "1.3125rem",
+        "lh-18": "1.125rem"
       }
-    },
+    }
   },
   plugins: [
     require("@tailwindcss/forms"),
