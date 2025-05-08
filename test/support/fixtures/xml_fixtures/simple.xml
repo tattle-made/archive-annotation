@@ -1,0 +1,13 @@
+<ead>
+    <eadheader>
+        <eadid countrycode="IN">
+        </eadid>
+    </eadheader>
+    <archdesc>
+        <did>
+            <repository>
+                <corpname>Archives at NCBS</corpname>
+            </repository>
+        </did>
+    </archdesc>
+</ead>
