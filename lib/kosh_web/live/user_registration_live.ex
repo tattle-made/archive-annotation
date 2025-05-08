@@ -6,17 +6,13 @@ defmodule KoshWeb.UserRegistrationLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        Register for an account
-        <:subtitle>
-          Already registered?
-          <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-            Log in
-          </.link>
-          to your account now.
-        </:subtitle>
-      </.header>
+    <div class="mt-10">
+    <h1 class="!text-primary-purple font-bold">
+        REGISTER
+    </h1>
+
+    <p class="text-secondary-purple text-body-lg-24 !w-full lg:!w-[75%] xl:!w-[60%]">Sign up for an account to track, add, and review your annotations. Simply provide a username, email, and strong password. After registering, you'll receive a confirmation email. We’ll use this email to notify you about account activity, updates, and occasionally request feedback.
+    <br> <br>Learn more about registration in the FAQ.</p>
 
       <%!-- action={~p"/users/log_in?_action=registered"} --%>
       <%!-- method="post" --%>
@@ -31,13 +27,21 @@ defmodule KoshWeb.UserRegistrationLive do
           Oops, something went wrong! Please check the errors below.
         </.error>
 
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+        <div class="flex justify-between !w-full lg:!w-[75%] xl:!w-[60%]">
+          <div class="flex w-auto">
+            <.input field={@form[:email]} type="email" label="Email" required
+            class="!mr-5 !w-80 h-12 focus:!border-primary-purple" label_class="!text-primary-purple !font-bold !text-body-md-18" />
+            <.input field={@form[:password]} type="password" label="Password" required label_class="!text-primary-purple !font-bold !text-body-md-18 " class=" !w-80 h-12 focus:!border-primary-purple" />
+          </div>
+          <%!-- <:actions> --%>
+            <button type="submit" phx-disable-with="Logging in..." class="btn-secondary-purple  font-bold text-white h-12 px-12 py-3 mt-8">
+              Register
+            </button>
+          <%!-- </:actions> --%>
+        </div>
 
-        <:actions>
-          <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
-        </:actions>
       </.simple_form>
+      <p class="text-secondary-purple font-semibold text-body-lg-24 mt-10">Already a user? <.link navigate= {~p"/users/log_in"} class="underline">Login.</.link></p>
     </div>
     """
   end

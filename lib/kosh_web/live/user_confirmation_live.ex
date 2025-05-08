@@ -7,18 +7,18 @@ defmodule KoshWeb.UserConfirmationLive do
     ~H"""
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        Confirm Account
-        <:subtitle>After confirmation, please login by entering your credentials</:subtitle>
+        <p class="text-secondary-purple">Confirm Account</p>
+        <:subtitle><p class="text-primary-purple">After confirmation, please login by entering your credentials</p></:subtitle>
       </.header>
 
       <.simple_form for={@form} id="confirmation_form" phx-submit="confirm_account">
         <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
         <:actions>
-          <.button phx-disable-with="Confirming..." class="w-full">Confirm my account</.button>
+          <button phx-disable-with="Confirming..." class="w-full !btn-primary-purple">Confirm my account</button>
         </:actions>
       </.simple_form>
 
-      <p class="text-center mt-4">
+      <p class="text-center mt-4 text-secondary-purple">
         <.link href={~p"/users/register"}>Register</.link>
         | <.link href={~p"/users/log_in"}>Log in</.link>
       </p>

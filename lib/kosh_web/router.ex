@@ -1,4 +1,5 @@
 defmodule KoshWeb.Router do
+  alias KoshWeb.HomeLive
   use KoshWeb, :router
 
   import KoshWeb.UserAuth
@@ -25,11 +26,7 @@ defmodule KoshWeb.Router do
     plug KoshWeb.Plugs.AuthenticateAccessToken
   end
 
-  scope "/", KoshWeb do
-    pipe_through :browser
 
-    get "/", PageController, :home
-  end
 
   # Other scopes may use custom stacks.
   # scope "/api", KoshWeb do
@@ -103,15 +100,23 @@ defmodule KoshWeb.Router do
   #   get "/hi", AccessTokenController, :say_hi
   # end
 
-  ## Authentication routes
+  scope "/", KoshWeb do
+    pipe_through :browser
+
+    # get "/", PageController, :home
+    live "/", HomeLive1, :index
+
+  end
 
   scope "/", KoshWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{KoshWeb.UserAuth, :redirect_if_user_is_authenticated}] do
-      live "/users/register", UserRegistrationLive, :new
-      live "/users/log_in", UserLoginLive, :new
+      # live "/users/register", UserRegistrationLive, :new
+      # live "/users/log_in", UserLoginLive, :new
+      live "/users/register", HomeLive1, :register
+      live "/users/log_in", HomeLive1, :login
       live "/users/reset_password", UserForgotPasswordLive, :new
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
       live "/users/confirm/landing", UserConfirmationLandingLive, :index

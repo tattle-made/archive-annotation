@@ -1,5 +1,5 @@
 <!DOCTYPE html> <%!-- <html lang="en" class="[scrollbar-gutter:stable]"> --%>
-<html lang="en" class="[scrollbar-gutter:auto]">
+<html lang="en" class="">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -57,7 +57,7 @@
                   <span class="px-3 text-primary-purple font-bold">|</span>
                 <% end %>
                 <li>
-                  <.link href={path} class="text-primary-purple font-bold text-body-sm-16">
+                  <.link navigate={path} class="text-primary-purple font-bold text-body-sm-16">
                     <%= label %>
                   </.link>
                 </li>
@@ -80,7 +80,7 @@
                 <% end %>
                 <li>
                   <.link
-                    href={path}
+                    navigate={path}
                     class={"text-primary-purple text-body-sm-16" <>" "<> 
                   if @conn.request_path==path do
                   " font-regular"
@@ -99,7 +99,7 @@
           <ul class="flex space-x-6">
             <%= for {label, path} <- nav_items do %>
               <li>
-                <.link href={path} class="text-primary-purple font-semibold text-body-sm-16 p-3">
+                <.link navigate={path} class="text-primary-purple font-semibold text-body-sm-16 p-3">
                   <%= label %>
                 </.link>
               </li>

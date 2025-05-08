@@ -8,23 +8,23 @@ defmodule KoshWeb.UserConfirmationInstructionsLive do
     <div class="mx-auto max-w-fit">
       <.header class="text-center">
         <%= if @reason == "expired" do %>
-          Your confirmation link is either invalid or expired
+          <p class="text-secondary-purple">Your confirmation link is either invalid or expired</p>
         <% else %>
-          No confirmation instructions received?
+          <p class="text-secondary-purple">No confirmation instructions received?</p>
         <% end %>
-        <:subtitle>We'll send a new confirmation link to your inbox</:subtitle>
+        <:subtitle><p class="text-primary-purple">We'll send a new confirmation link to your inbox</p></:subtitle>
       </.header>
 
-      <.simple_form for={@form} id="resend_confirmation_form" phx-submit="send_instructions">
-        <.input field={@form[:email]} type="email" placeholder="Email" required />
+      <.simple_form for={@form} id="resend_confirmation_form" phx-submit="send_instructions" class="">
+        <.input field={@form[:email]} type="email" placeholder="Email" required class="w-full"/>
         <:actions>
-          <.button phx-disable-with="Sending..." class="w-full">
+          <button phx-disable-with="Sending..." class="w-full btn-primary-purple">
             Resend confirmation instructions
-          </.button>
+          </button>
         </:actions>
       </.simple_form>
 
-      <p class="text-center mt-4">
+      <p class="text-center mt-4 text-secondary-purple">
         <.link href={~p"/users/register"}>Register</.link>
         | <.link href={~p"/users/log_in"}>Log in</.link>
       </p>

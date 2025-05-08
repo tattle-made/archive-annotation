@@ -1,5 +1,27 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
-@import "tailwindcss/utilities";
 
-/* This file is for your main application CSS */
+/* must come _before_ utilities so px-4, sm:px-6, etc. are defined */
+/* @layer components {
+  .section-gutter > * {
+    @apply px-4;
+    @apply sm:px-6;
+    @apply lg:px-8;
+  }
+} */
+@layer components {
+  .btn-base {
+    @apply text-center rounded inline-flex items-center justify-center;
+    @apply min-w-[120px] px-4 py-2 transition-colors duration-200;
+  }
+
+  .btn-primary-purple {
+    @apply btn-base bg-primary-purple text-primary-white hover:bg-secondary-purple;
+  }
+
+  .btn-secondary-purple {
+    @apply btn-base bg-secondary-purple text-primary-white hover:bg-primary-purple;
+  }
+}
+
+@import "tailwindcss/utilities";
