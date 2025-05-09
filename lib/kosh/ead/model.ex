@@ -4,21 +4,22 @@ defmodule Kosh.EAD.Model do
 
   embedded_schema do
     embeds_one :ead, EAD, primary_key: false do
-      embeds_one :content, Content, primary_key: :false do
+      embeds_one :content, Content, primary_key: false do
         embeds_one :eadheader, EADHeader, primary_key: false do
           embeds_one :content, Content, primary_key: false do
-            embeds_one :eadid, EADID, primary_key: :false do
-              field :country_code, :string
+            embeds_one :eadid, EADID, primary_key: false do
+              field :countrycode, :string
             end
           end
         end
-        embeds_one :archdesc, ArchDesc, primary_key: :false do
-          embeds_one :content, Content, primary_key: :false do
-            embeds_one :did, DID, primary_key: :false do
-              embeds_one :content, Content, primary_key: :false do
-                embeds_one :repository, Repository, primary_key: :false do
-                  embeds_one :content, Content, primary_key: :false do
-                    embeds_one :corpname, Corpname, primary_key: :false do
+
+        embeds_one :archdesc, ArchDesc, primary_key: false do
+          embeds_one :content, Content, primary_key: false do
+            embeds_one :did, DID, primary_key: false do
+              embeds_one :content, Content, primary_key: false do
+                embeds_one :repository, Repository, primary_key: false do
+                  embeds_one :content, Content, primary_key: false do
+                    embeds_one :corpname, Corpname, primary_key: false do
                       field :content, :string
                     end
                   end
@@ -31,35 +32,80 @@ defmodule Kosh.EAD.Model do
     end
   end
 
-  def changeset(data, attrs \\ %{}) do
-    data
-    |> cast_embed(:ead, with: &ead_changeset/2 )
+  def changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, [])
+    |> cast_embed(:ead, with: &ead_changeset/2, required: false)
   end
-
 
   def ead_changeset(ead, attrs) do
     ead
-    # |> cast_embed(:content, with: &ead_content_changeset/2 )
+    |> cast(attrs, [])
+    |> cast_embed(:content, with: &ead_content_changeset/2, required: false)
   end
 
   def ead_content_changeset(ead_content, attrs) do
     ead_content
-    |> cast_embed(:eadheader, with: &eadheader_changeset/2)
-    # |> cast_embed(:archdesc, with: &archdesc_changeset/2)
+    |> cast(attrs, [])
+    |> cast_embed(:eadheader, with: &eadheader_changeset/2, required: false)
+    |> cast_embed(:archdesc, with: &archdesc_changeset/2, required: false)
   end
 
   def eadheader_changeset(eadheader, attrs) do
     eadheader
-    |> cast_embed(:content, with: &eadheader_content_changeset/2)
+    |> cast(attrs, [])
+    |> cast_embed(:content, with: &eadheader_content_changeset/2, required: false)
   end
 
   def eadheader_content_changeset(data, attrs) do
     data
-    |> cast_embed(:eadid, with: &eadid_changeset/2)
+    |> cast(attrs, [])
+    |> cast_embed(:eadid, with: &eadid_changeset/2, required: false)
   end
 
   def eadid_changeset(data, attrs) do
     data
-    |> cast(attrs, [:country_code])
+    |> cast(attrs, [:countrycode])
+  end
+
+  def archdesc_changeset(archdesc, attrs) do
+    archdesc
+    |> cast(attrs, [])
+    |> cast_embed(:content, with: &archdesc_content_changeset/2, required: false)
+  end
+
+  def archdesc_content_changeset(data, attrs) do
+    data
+    |> cast(attrs, [])
+    |> cast_embed(:did, with: &did_changeset/2, required: false)
+  end
+
+  def did_changeset(did, attrs) do
+    did
+    |> cast(attrs, [])
+    |> cast_embed(:content, with: &did_content_changeset/2, required: false)
+  end
+
+  def did_content_changeset(data, attrs) do
+    data
+    |> cast(attrs, [])
+    |> cast_embed(:repository, with: &repository_changeset/2, required: false)
+  end
+
+  def repository_changeset(data, attrs) do
+    data
+    |> cast(attrs, [])
+    |> cast_embed(:content, with: &repository_content_changeset/2, required: false)
+  end
+
+  def repository_content_changeset(data, attrs) do
+    data
+    |> cast(attrs, [])
+    |> cast_embed(:corpname, with: &corpname_changeset/2, required: false)
+  end
+
+  def corpname_changeset(data, attrs) do
+    data
+    |> cast(attrs, [:content])
   end
 end
