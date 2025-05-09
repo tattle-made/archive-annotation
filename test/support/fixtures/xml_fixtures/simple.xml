@@ -1,0 +1,20 @@
+<ead>
+    <eadheader>
+        <eadid countrycode="IN">
+        </eadid>
+        <address>
+            <addressline>National Centre for Biological Sciences - Tata Institute of Fundamental Research</addressline>
+            <addressline>Bangalore, Karnataka 560065</addressline>
+            <addressline>Business Number: +9180 6717 6010</addressline>
+            <addressline>Business Number: +9180 6717 6011</addressline>
+            <addressline>archives@ncbs.res.in</addressline>
+        </address>
+    </eadheader>
+    <archdesc>
+        <did>
+            <repository>
+                <corpname>Archives at NCBS</corpname>
+            </repository>
+        </did>
+    </archdesc>
+</ead>
