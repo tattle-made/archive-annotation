@@ -7,13 +7,14 @@ defmodule KoshWeb.UserRegistrationLive do
   def render(assigns) do
     ~H"""
     <div class="mt-10">
-    <h1 class="!text-primary-purple font-bold">
+      <h1 class="!text-primary-purple font-bold">
         REGISTER
-    </h1>
+      </h1>
 
-    <p class="text-secondary-purple text-body-lg-24 !w-full lg:!w-[75%] xl:!w-[60%]">Sign up for an account to track, add, and review your annotations. Simply provide a username, email, and strong password. After registering, you'll receive a confirmation email. We’ll use this email to notify you about account activity, updates, and occasionally request feedback.
-    <br> <br>Learn more about registration in the FAQ.</p>
-
+      <p class="text-secondary-purple text-body-md-18 xl:text-body-lg-24 !w-full lg:!w-[75%] xl:!w-[60%]">
+        Sign up for an account to track, add, and review your annotations. Simply provide a username, email, and strong password. After registering, you'll receive a confirmation email. We’ll use this email to notify you about account activity, updates, and occasionally request feedback.<br /><br />Learn more about registration in the FAQ.
+      </p>
+      <%!-- Followinf attributes removed because we are not directly logging in the user --%>
       <%!-- action={~p"/users/log_in?_action=registered"} --%>
       <%!-- method="post" --%>
       <.simple_form
@@ -27,21 +28,39 @@ defmodule KoshWeb.UserRegistrationLive do
           Oops, something went wrong! Please check the errors below.
         </.error>
 
-        <div class="flex justify-between !w-full lg:!w-[75%] xl:!w-[60%]">
-          <div class="flex w-auto">
-            <.input field={@form[:email]} type="email" label="Email" required
-            class="!mr-5 !w-80 h-12 focus:!border-primary-purple" label_class="!text-primary-purple !font-bold !text-body-md-18" />
-            <.input field={@form[:password]} type="password" label="Password" required label_class="!text-primary-purple !font-bold !text-body-md-18 " class=" !w-80 h-12 focus:!border-primary-purple" />
+        <div class="flex flex-col  md:flex-row space-y-4 md:space-y-0 md:justify-between w-full lg:w-[75%] xl:w-[60%]">
+          <div class="flex flex-col  md:flex-row space-y-2 md:space-y-0 w-full">
+            <.input
+              container_class="w-full md:!w-[40%] lg:!w-80 md:!mr-5"
+              field={@form[:email]}
+              type="email"
+              label="Email"
+              required
+              class=" !w-full h-12  focus:!border-primary-purple"
+              label_class="!text-primary-purple !font-bold !text-body-md-18"
+            />
+            <.input
+              container_class="w-full md:!w-[40%] lg:!w-80  lg:!mr-5"
+              field={@form[:password]}
+              type="password"
+              label="Password"
+              required
+              label_class="!text-primary-purple !font-bold !text-body-md-18 "
+              class="!w-full h-12 focus:!border-primary-purple"
+            />
           </div>
-          <%!-- <:actions> --%>
-            <button type="submit" phx-disable-with="Logging in..." class="btn-secondary-purple  font-bold text-white h-12 px-12 py-3 mt-8">
-              Register
-            </button>
-          <%!-- </:actions> --%>
+          <button
+            type="submit"
+            phx-disable-with="Creating Account..."
+            class="btn-secondary-purple  font-bold text-white h-12 px-12 py-3 md:!mt-9"
+          >
+            Register
+          </button>
         </div>
-
       </.simple_form>
-      <p class="text-secondary-purple font-semibold text-body-lg-24 mt-10">Already a user? <.link navigate= {~p"/users/log_in"} class="underline">Login.</.link></p>
+      <p class="text-secondary-purple font-semibold text-body-md-18 lg:text-body-lg-24 mt-10">
+        Already a user? <.link navigate={~p"/users/log_in"} class="underline">Login.</.link>
+      </p>
     </div>
     """
   end

@@ -288,8 +288,9 @@ defmodule KoshWeb.CoreComponents do
   attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
-  attr :class, :string, default: nil
+  attr :class, :string, default: nil, doc: "Class of the input element"
   attr :label_class, :string, default: nil
+  attr :container_class, :string, default: nil, doc: "CLass of the container div that contains input and label"
 
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
@@ -313,7 +314,7 @@ defmodule KoshWeb.CoreComponents do
       end)
 
     ~H"""
-    <div>
+    <div class={@container_class}>
       <label class={["flex items-center gap-4 text-sm leading-6 text-zinc-600 ", @label_class]}>
         <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
         <input
@@ -334,7 +335,7 @@ defmodule KoshWeb.CoreComponents do
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <div>
+    <div class={@container_class}>
       <.label for={@id} class={@label_class}><%= @label %></.label>
       <select
         id={@id}
@@ -353,7 +354,7 @@ defmodule KoshWeb.CoreComponents do
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <div>
+    <div class={@container_class}>
       <.label for={@id} class={@label_class} ><%= @label %></.label>
       <textarea
         id={@id}
@@ -374,7 +375,7 @@ defmodule KoshWeb.CoreComponents do
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
-    <div class="">
+    <div class={@container_class}>
       <.label for={@id} class={@label_class}><%= @label %></.label>
       <input
         type={@type}
