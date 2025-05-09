@@ -1,4 +1,4 @@
-defmodule Kosh.Xml.EADParser do
+defmodule Kosh.XML.SaxmapTest do
   alias Kosh.EAD.Model
   alias Kosh.EAD.XML.Saxmap
   alias Kosh.XML.EADSaxyHandler

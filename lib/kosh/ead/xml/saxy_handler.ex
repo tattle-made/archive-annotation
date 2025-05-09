@@ -1,4 +1,4 @@
-defmodule Kosh.XML.EADSaxyHandler do
+defmodule Kosh.EAD.XML.SaxyHandler do
   @behaviour Saxy.Handler
 
   defstruct [:eadheader, :archdesc]

@@ -1,7 +1,6 @@
-defmodule Kosh.Xml.EADParser do
-  alias Kosh.EAD.XML.Saxmap
+defmodule Kosh.XML.SaxyTest do
   alias Kosh.EAD.XML.Saxy
-  alias Kosh.XML.EADSaxyHandler
+  alias Kosh.EAD.XML.SaxyHandler
   alias Kosh.XML.Parser
   use ExUnit.Case
 

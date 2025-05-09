@@ -4,6 +4,6 @@ defmodule Kosh.EAD.XML.Saxy do
   """
 
   def parse(doc) do
-    Saxy.parse_string(doc, EADSaxyHandler, {nil, %{}})
+    Saxy.parse_string(doc, SaxyHandler, {nil, %{}})
   end
 end
