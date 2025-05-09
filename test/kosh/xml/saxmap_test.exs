@@ -10,6 +10,7 @@ defmodule Kosh.XML.SaxmapTest do
     {:ok, map} = Path.join( [File.cwd!(),  "test", "support", "fixtures", "xml_fixtures", "simple.xml"])
     |> File.read!()
     |> Saxmap.parse()
+    |> IO.inspec
 
     assert map["ead"]["content"]["archdesc"] != nil
     assert map["ead"]["content"]["eadheader"] != nil

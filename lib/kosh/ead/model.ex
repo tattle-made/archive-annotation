@@ -12,21 +12,21 @@ defmodule Kosh.EAD.Model do
             end
           end
         end
-        # embeds_one :archdesc, ArchDesc, primary_key: :false do
-        #   embeds_one :content, Content, primary_key: :false do
-        #     embeds_one :did, DID, primary_key: :false do
-        #       embeds_one :content, Content, primary_key: :false do
-        #         embeds_one :repository, Repository, primary_key: :false do
-        #           embeds_one :content, Content, primary_key: :false do
-        #             embeds_one :corpname, Corpname, primary_key: :false do
-        #               field :content, :string
-        #             end
-        #           end
-        #         end
-        #       end
-        #     end
-        #   end
-        # end
+        embeds_one :archdesc, ArchDesc, primary_key: :false do
+          embeds_one :content, Content, primary_key: :false do
+            embeds_one :did, DID, primary_key: :false do
+              embeds_one :content, Content, primary_key: :false do
+                embeds_one :repository, Repository, primary_key: :false do
+                  embeds_one :content, Content, primary_key: :false do
+                    embeds_one :corpname, Corpname, primary_key: :false do
+                      field :content, :string
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
       end
     end
   end
