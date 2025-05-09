@@ -196,13 +196,15 @@ defmodule KoshWeb.CoreComponents do
     include: ~w(autocomplete name rel action enctype method novalidate target multipart),
     doc: "the arbitrary HTML attributes to apply to the form tag"
 
+  attr :class, :string, default: nil
+
   slot :inner_block, required: true
   slot :actions, doc: "the slot for form actions, such as a submit button"
 
   def simple_form(assigns) do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class="mt-10 space-y-8 bg-white">
+      <div class={["mt-10 space-y-8 bg-white", @class]}>
         <%= render_slot(@inner_block, f) %>
         <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
           <%= render_slot(action, f) %>
@@ -286,6 +288,9 @@ defmodule KoshWeb.CoreComponents do
   attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
+  attr :class, :string, default: nil, doc: "Class of the input element"
+  attr :label_class, :string, default: nil
+  attr :container_class, :string, default: nil, doc: "CLass of the container div that contains input and label"
 
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
@@ -309,8 +314,8 @@ defmodule KoshWeb.CoreComponents do
       end)
 
     ~H"""
-    <div>
-      <label class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
+    <div class={@container_class}>
+      <label class={["flex items-center gap-4 text-sm leading-6 text-zinc-600 ", @label_class]}>
         <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
         <input
           type="checkbox"
@@ -318,7 +323,7 @@ defmodule KoshWeb.CoreComponents do
           name={@name}
           value="true"
           checked={@checked}
-          class="rounded border-zinc-300 text-zinc-900 focus:ring-0"
+          class={["rounded border-zinc-300 text-zinc-900 focus:ring-0 ", @class]}
           {@rest}
         />
         <%= @label %>
@@ -330,12 +335,12 @@ defmodule KoshWeb.CoreComponents do
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <div>
-      <.label for={@id}><%= @label %></.label>
+    <div class={@container_class}>
+      <.label for={@id} class={@label_class}><%= @label %></.label>
       <select
         id={@id}
         name={@name}
-        class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
+        class={["mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm ", @class]}
         multiple={@multiple}
         {@rest}
       >
@@ -349,15 +354,16 @@ defmodule KoshWeb.CoreComponents do
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <div>
-      <.label for={@id}><%= @label %></.label>
+    <div class={@container_class}>
+      <.label for={@id} class={@label_class} ><%= @label %></.label>
       <textarea
         id={@id}
         name={@name}
         class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem]",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
+          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem] ",
+          @errors == [] && "border-zinc-300 focus:border-zinc-400 ",
+          @errors != [] && "border-rose-400 focus:border-rose-400 ",
+          @class
         ]}
         {@rest}
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
@@ -369,17 +375,18 @@ defmodule KoshWeb.CoreComponents do
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
-    <div>
-      <.label for={@id}><%= @label %></.label>
+    <div class={@container_class}>
+      <.label for={@id} class={@label_class}><%= @label %></.label>
       <input
         type={@type}
         name={@name}
         id={@id}
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
         class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
+          "mt-2 block rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 ",
+          @errors == [] && "border-zinc-300 focus:border-zinc-400 ",
+          @errors != [] && "border-rose-400 focus:border-rose-400 ", @class
+
         ]}
         {@rest}
       />
@@ -393,10 +400,11 @@ defmodule KoshWeb.CoreComponents do
   """
   attr :for, :string, default: nil
   slot :inner_block, required: true
+  attr :class, :string, default: nil
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
+    <label for={@for} class={["block text-sm font-semibold leading-6 text-zinc-800 ", @class]}>
       <%= render_slot(@inner_block) %>
     </label>
     """
