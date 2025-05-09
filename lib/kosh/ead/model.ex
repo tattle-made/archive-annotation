@@ -2,6 +2,7 @@ defmodule Kosh.EAD.Model do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key false
   embedded_schema do
     embeds_one :ead, EAD, primary_key: false do
       embeds_one :content, Content, primary_key: false do
@@ -9,6 +10,13 @@ defmodule Kosh.EAD.Model do
           embeds_one :content, Content, primary_key: false do
             embeds_one :eadid, EADID, primary_key: false do
               field :countrycode, :string
+            end
+            embeds_one :address, Address, primary_key: false do
+              embeds_one :content, Content, primary_key: false do
+                embeds_many :addressline, AddressLine do
+                  field :content, :string
+                end
+              end
             end
           end
         end
@@ -61,6 +69,24 @@ defmodule Kosh.EAD.Model do
     data
     |> cast(attrs, [])
     |> cast_embed(:eadid, with: &eadid_changeset/2, required: false)
+    |> cast_embed(:address, with: &address_changeset/2, required: false)
+  end
+
+  def address_changeset(data, attrs) do
+    data
+    |> cast(attrs, [])
+    |> cast_embed(:content, with: &address_content_changeset/2, required: false)
+  end
+
+  def address_content_changeset(data, attrs) do
+    data
+    |> cast(attrs, [])
+    |> cast_embed(:addressline, with: &addressline_changeset/2, required: false)
+  end
+
+  def addressline_changeset(data, attrs) do
+    data
+    |> cast(attrs, [:content])
   end
 
   def eadid_changeset(data, attrs) do
