@@ -60,7 +60,8 @@ defmodule Kosh.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:sax_map, "~> 1.4"}
+      {:sax_map, "~> 1.4"},
+      {:saxy, "~> 1.6"}
     ]
   end
 
