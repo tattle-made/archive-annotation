@@ -26,8 +26,6 @@ defmodule KoshWeb.Router do
     plug KoshWeb.Plugs.AuthenticateAccessToken
   end
 
-
-
   # Other scopes may use custom stacks.
   # scope "/api", KoshWeb do
   #   pipe_through :api
@@ -105,7 +103,6 @@ defmodule KoshWeb.Router do
 
     # get "/", PageController, :home
     live "/", HomeLive1, :index
-
   end
 
   scope "/", KoshWeb do
@@ -137,6 +134,7 @@ defmodule KoshWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       # live "/testadmin", TestAdminRoleLive, :index
       # live "/gentoken", TokenGeneratorLive, :index
+      live "/upload", UploadLive, :index
     end
   end
 
