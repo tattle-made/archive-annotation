@@ -135,6 +135,8 @@ defmodule KoshWeb.Router do
       # live "/testadmin", TestAdminRoleLive, :index
       # live "/gentoken", TokenGeneratorLive, :index
       live "/upload", UploadLive, :index
+      live "/display", DisplayIndexLive, :index
+      live "/display/:id", DisplayLive, :show
     end
   end
 

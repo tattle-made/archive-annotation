@@ -4,8 +4,8 @@ defmodule Kosh.EAD.EAD do
   import Ecto.Changeset
 
   schema "eads" do
-    field :corpname,     :string
-    field :address,      {:array, :string}, default: []
+    field :corpname, :string
+    field :address, {:array, :string}, default: []
     field :country_code, :string
 
     has_many :subjects, Kosh.EAD.Subject, on_delete: :delete_all
@@ -16,11 +16,9 @@ defmodule Kosh.EAD.EAD do
   def changeset(ead, attrs) do
     ead
     |> cast(attrs, [:corpname, :address, :country_code])
-    # |> validate_required()
+    |> validate_required([:corpname, :country_code])
     |> cast_assoc(:subjects, with: &Kosh.EAD.Subject.changeset/2)
   end
-
-
 
   @doc """
   Example Map= %{
@@ -52,5 +50,4 @@ defmodule Kosh.EAD.EAD do
   }
   }
   """
-
 end
