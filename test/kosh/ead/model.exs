@@ -4,14 +4,18 @@ defmodule Kosh.EAD.ModelTest  do
   alias Kosh.EADFixtures
   use ExUnit.Case
 
+  # test to check if a given map fits with the defined struct
+
   test "changeset/2" do
     map = EADFixtures.simple_xml_map()
     changeset = Model.changeset(%Model{}, map)
+    IO.inspect(changeset, label: "CHANGESET")
     struct = Changeset.apply_changes(changeset)
 
-    assert struct.ead.content.eadheader.content.eadid.countrycode == "IN"
-    assert struct.ead.content.archdesc.content.did.content.repository.content.corpname.content ==
-             "Archives at NCBS"
-    assert Enum.at(struct.ead.content.eadheader.content.address.content.addressline, 1).content == "Bangalore, Karnataka 560065"
+    IO.inspect(struct)
+
+    assert struct.ead.eadheader.eadid.countrycode == "IN"
+    assert struct.ead.archdesc.did.repository.corpname == "Archives at NCBS"
+    assert Enum.at(struct.ead.eadheader.address.addressline, 1) == "Bangalore, Karnataka 560065"
   end
 end

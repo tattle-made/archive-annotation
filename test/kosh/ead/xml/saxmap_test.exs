@@ -3,7 +3,7 @@ defmodule Kosh.EAD.XML.SaxmapTest do
   alias Kosh.EAD.XML.Saxmap
   use ExUnit.Case
   alias Ecto.Changeset
-
+# Test for xml to map
 
   test "parse/1" do
     xml_content =
@@ -11,6 +11,8 @@ defmodule Kosh.EAD.XML.SaxmapTest do
       |> File.read!()
 
     {:ok, parsed_map} = Saxmap.parse(xml_content)
+
+    IO.inspect(parsed_map)
 
     ead = get_in(parsed_map, ["ead", "content"])
     eadid = get_in(ead, ["eadheader", "content", "eadid"])
