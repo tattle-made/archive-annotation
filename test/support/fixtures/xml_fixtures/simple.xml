@@ -16,5 +16,16 @@
                 <corpname>Archives at NCBS</corpname>
             </repository>
         </did>
+        <controlaccess>
+            <subject source="local">Agriculture</subject>
+            <subject source="local">Betel nut</subject>
+            <subject source="local">Coffee berry borer</subject>
+            <subject source="local">Coffee plantations</subject>
+            <subject source="local">Colonial portraits</subject>
+            <subject source="local">Colonial administrators</subject>
+            <subject source="local">Colonies</subject>
+            <subject source="local">Farm supplies</subject>
+            <subject source="local">Field experiments</subject>
+        </controlaccess>
     </archdesc>
 </ead>

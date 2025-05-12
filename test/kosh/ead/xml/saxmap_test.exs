@@ -4,7 +4,7 @@ defmodule Kosh.EAD.XML.SaxmapTest do
   use ExUnit.Case
   alias Ecto.Changeset
 
-
+  # Test for xml to map
   test "parse/1" do
     xml_content =
       Path.join([File.cwd!(), "test", "support", "fixtures", "xml_fixtures", "simple.xml"])
@@ -12,13 +12,22 @@ defmodule Kosh.EAD.XML.SaxmapTest do
 
     {:ok, parsed_map} = Saxmap.parse(xml_content)
 
-    ead = get_in(parsed_map, ["ead", "content"])
-    eadid = get_in(ead, ["eadheader", "content", "eadid"])
+    processed_map = Saxmap.process_ead_map(parsed_map)
 
-    corpname =
-      get_in(ead, ["archdesc", "content", "did", "content", "repository", "content", "corpname"])
+    ead = get_in(processed_map, ["ead"])
+
+    eadid = get_in(ead, ["eadheader", "eadid"])
+
+    corpname = get_in(ead, ["archdesc", "did", "repository", "corpname"])
+
+    subjects = get_in(ead, ["archdesc", "controlaccess", "subject"])
+
+    test_subject = Enum.at(subjects,0)
+
 
     assert eadid["countrycode"] == "IN"
-    assert corpname["content"] == "Archives at NCBS"
+    assert corpname == "Archives at NCBS"
+    assert test_subject["content"] == "Agriculture"
+    assert test_subject["source"] == "local"
   end
 end
