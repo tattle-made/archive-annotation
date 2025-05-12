@@ -17,5 +17,7 @@ defmodule Kosh.EAD.ModelTest  do
     assert struct.ead.eadheader.eadid.countrycode == "IN"
     assert struct.ead.archdesc.did.repository.corpname == "Archives at NCBS"
     assert Enum.at(struct.ead.eadheader.address.addressline, 1) == "Bangalore, Karnataka 560065"
+    assert Enum.at(struct.ead.archdesc.controlaccess.subject,0).content == "Agriculture"
+    assert Enum.at(struct.ead.archdesc.controlaccess.subject,0).source == "local"
   end
 end
