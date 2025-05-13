@@ -1,11 +1,13 @@
 defmodule KoshWeb.UploadLive do
   use KoshWeb, :live_view
+  alias Kosh.EAD
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     {:ok,
      socket
      |> assign(:uploaded_files, [])
+     |> assign(:processing_status, nil)
      |> allow_upload(:xml_file,
        accept: ~w(.xml),
        max_entries: 1,
@@ -30,14 +32,39 @@ defmodule KoshWeb.UploadLive do
   @impl Phoenix.LiveView
   def handle_event("save", _params, socket) do
     uploaded_files =
-      consume_uploaded_entries(socket, :xml_file, fn %{path: path}, _entry ->
+      consume_uploaded_entries(socket, :xml_file, fn %{path: path}, entry ->
         dest = Path.join([:code.priv_dir(:kosh), "static", "uploads", Path.basename(path)])
         File.cp!(path, dest)
         destination_path = "/uploads/#{Path.basename(dest)}"
-        {:ok, destination_path}
+
+        # Process the XML file and save to the database
+        case EAD.process_xml_file(dest) do
+          {:ok, ead} ->
+            {:ok, %{path: destination_path, processed: true, ead_id: ead.id}}
+
+          {:error, reason} ->
+            {:ok, %{path: destination_path, processed: false, error: reason}}
+        end
       end)
 
-    {:noreply, update(socket, :uploaded_files, &(&1 ++ uploaded_files))}
+    processing_status =
+      case uploaded_files do
+        [%{processed: true, ead_id: ead_id}] ->
+          {:success, "File processed successfully.", ead_id}
+
+        [%{processed: false, error: reason}] ->
+          {:error, "Failed to process file: #{inspect(reason)}"}
+
+        _ ->
+          nil
+      end
+
+    {:noreply,
+     socket
+     |> update(:uploaded_files, fn existing ->
+       existing ++ Enum.map(uploaded_files, fn f -> f.path end)
+     end)
+     |> assign(:processing_status, processing_status)}
   end
 
   defp handle_progress(:xml_file, entry, socket) do
@@ -109,6 +136,25 @@ defmodule KoshWeb.UploadLive do
               Upload XML
             </button>
           </form>
+
+          <%= if @processing_status do %>
+            <%= case @processing_status do %>
+              <% {:success, message, ead_id} -> %>
+                <div class="mt-8 p-4 border border-green-200 bg-green-50 rounded">
+                  <h3 class="text-lg font-medium text-green-800 mb-2"><%= message %></h3>
+                  <p class="text-green-700">
+                    <.link navigate={~p"/display/#{ead_id}"} class="underline font-medium">
+                      View latest processed data
+                    </.link>
+                  </p>
+                </div>
+              <% {:error, message} -> %>
+                <div class="mt-8 p-4 border border-red-200 bg-red-50 rounded">
+                  <h3 class="text-lg font-medium text-red-800 mb-2">Error Processing File</h3>
+                  <p class="text-red-700"><%= message %></p>
+                </div>
+            <% end %>
+          <% end %>
 
           <%= if length(@uploaded_files) > 0 do %>
             <div class="mt-8 p-4 border border-green-200 bg-green-50 rounded">
