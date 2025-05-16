@@ -8,7 +8,6 @@ defmodule Kosh.EAD.XML.Saxmap do
     SAXMap.from_string(doc, ignore_attribute: false)
   end
 
-
   def process_ead_map(nil), do: nil
 
   def process_ead_map(str) when is_binary(str), do: str
@@ -19,8 +18,26 @@ defmodule Kosh.EAD.XML.Saxmap do
     value
   end
 
+  # def process_ead_map(list) when is_list(list) do
+  #   Enum.map(list, &process_ead_map/1)
+  # end
   def process_ead_map(list) when is_list(list) do
-    Enum.map(list, &process_ead_map/1)
+    list
+    |> Enum.map(&process_ead_map/1)
+    |> Enum.map(fn
+      str when is_binary(str) -> String.trim(str)
+      other -> other
+    end)
+    |> Enum.reject(fn
+      nil -> true
+      "" -> true
+      [] -> true
+      _ -> false
+    end)
+    |> case do
+      [single] -> single
+      other -> other
+    end
   end
 
   def process_ead_map(map) when is_map(map) do
@@ -30,7 +47,7 @@ defmodule Kosh.EAD.XML.Saxmap do
         processed = process_ead_map(v)
 
         cond do
-          processed == nil ->
+          processed in [nil, [], %{}] ->
             acc
 
           is_map(processed) ->
@@ -44,107 +61,5 @@ defmodule Kosh.EAD.XML.Saxmap do
       {k, v}, acc ->
         Map.put(acc, k, process_ead_map(v))
     end)
-  end
-
-  def runTest do
-    test_map = %{
-      "ead" => %{
-        "content" => %{
-          "archdesc" => %{
-            "content" => %{
-              "did" => %{
-                "content" => %{
-                  "repository" => %{
-                    "content" => %{"corpname" => %{"content" => "Archives at NCBS"}}
-                  }
-                }
-              }
-            },
-
-          },
-          "eadheader" => %{
-            "content" => %{
-              "address" => %{
-                "content" => %{
-                  "addressline" => [
-                    %{
-                      "content" =>
-                        "National Centre for Biological Sciences - Tata Institute of Fundamental Research"
-                    },
-                    %{"content" => "Bangalore, Karnataka 560065"},
-                    %{"content" => "Business Number: +9180 6717 6010"},
-                    %{"content" => "Business Number: +9180 6717 6011"},
-                    %{"content" => "archives@ncbs.res.in"}
-                  ]
-                }
-              },
-              "eadid" => %{"_countrycode" => "IN", "content" => nil}
-            }
-          }
-        }
-      }
-    }
-
-    test_map4 = %{
-  "ead" => %{
-    "content" => %{
-      "archdesc" => %{
-        "content" => %{
-          "controlaccess" => %{
-            "content" => %{
-              "subject" => [
-                %{"content" => "Agriculture", "source" => "local"},
-                %{"content" => "Betel nut", "source" => "local"},
-                %{"content" => "Coffee berry borer", "source" => "local"},
-                %{"content" => "Coffee plantations", "source" => "local"},
-                %{"content" => "Colonial portraits", "source" => "local"},
-                %{"content" => "Colonial administrators", "source" => "local"},
-                %{"content" => "Colonies", "source" => "local"},
-                %{"content" => "Farm supplies", "source" => "local"},
-                %{"content" => "Field experiments", "source" => "local"}
-              ]
-            }
-          },
-          "did" => %{
-            "content" => %{
-              "repository" => %{
-                "content" => %{"corpname" => %{"content" => "Archives at NCBS"}}
-              }
-            }
-          }
-        }
-      },
-      "eadheader" => %{
-        "content" => %{
-          "address" => %{
-            "content" => %{
-              "addressline" => [
-                %{
-                  "content" => "National Centre for Biological Sciences - Tata Institute of Fundamental Research"
-                },
-                %{"content" => "Bangalore, Karnataka 560065"},
-                %{"content" => "Business Number: +9180 6717 6010"},
-                %{"content" => "Business Number: +9180 6717 6011"},
-                %{"content" => "archives@ncbs.res.in"}
-              ]
-            }
-          },
-          "eadid" => %{"content" => nil, "countrycode" => "IN"}
-        }
-      }
-    }
-  }
-}
-
-    test_map2 = %{
-      "a" => %{
-        "content" => "hello",
-        "b" => "bb"
-      }
-    }
-
-    ans = process_ead_map(test_map4)
-    # ans = processEadMap(test_map)
-    IO.inspect(ans)
   end
 end

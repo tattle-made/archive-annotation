@@ -1,0 +1,1793 @@
+<!-- One Series Tag from MS-012-Leslie XML EAD -->
+<c id="aspace_MS-012-1" level="series">
+        <did>
+          <unittitle>Series 1: Correspondence</unittitle>
+          <unitid>MS-012-1</unitid>
+          <unitid type="aspace_uri">/repositories/2/archival_objects/9726</unitid>
+          <container id="aspace_c4d214723cd18b91f1bd6389a47bb823" label="Mixed Materials" type="box">MS-012 Box 1</container>
+          <container id="aspace_70bcf7a446f116e2989162348f8d02c1" label="Mixed Materials" type="box">MS-012 Box 2</container>
+        </did>
+        <c id="aspace_MS-012-1-1" level="subseries">
+          <did>
+            <unittitle>Sub-Series 1: Letters to Leslie Coleman</unittitle>
+            <unitid>MS-012-1-1</unitid>
+            <unitid type="aspace_uri">/repositories/2/archival_objects/9727</unitid>
+            <container id="aspace_e8053f55dcfbdbe5d53b4e7c28e8dff5" label="Mixed Materials" type="box">MS-012 Box 1</container>
+          </did>
+          <c id="aspace_MS-012-1-1-1-1" level="file">
+            <did>
+              <unittitle>Students of agriculture, Mysore Director of Agriculture</unittitle>
+              <unitid>MS-012-1-1-1-1</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9728</unitid>
+              <unitdate datechar="creation">17 April 1915</unitdate>
+              <container id="aspace_d845d81d014394355b5a3d734db07dce" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_0b08a31fc73d1f8a1017d3cdc66bab8c" parent="aspace_d845d81d014394355b5a3d734db07dce" type="folder">1</container>
+              <daogrp xlink:title="Students of agriculture, Mysore Director of Agriculture" xlink:type="extended">
+                <daodesc>
+                  <p>Students of agriculture, Mysore Director of Agriculture</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/3" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/ae424607-b422-4674-aea8-ac4091dd7bfd/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_b49fc4841d06feb5b5430dd952914a0d">
+              <head>Scope and Contents</head>
+              <p>From Students of Agriculture to Leslie Coleman, Director of Agriculture in Mysore, dated 17th April, 1915. The letter is printed on a silk cloth. Students express their gratitude to Coleman for his guidance.</p>
+            </scopecontent>
+            <bioghist id="aspace_2297577d46a3325e8f15ee6b0e84e13d">
+              <head>Biographical / Historical</head>
+            </bioghist>
+          </c>
+          <c id="aspace_MS-012-1-1-1-2" level="file">
+            <did>
+              <unittitle>Dr. h c .W Ruhland</unittitle>
+              <unitid>MS-012-1-1-1-2</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9729</unitid>
+              <origination label="Creator">
+                <persname role="aut">Ruhland, Eugen Otto Wilhelm, 1878-1960</persname>
+              </origination>
+              <unitdate datechar="creation">3 July 1951</unitdate>
+              <container id="aspace_4d208c4a7d50452ba2e1dd602896dc0f" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_50e5851698bf8ca6cd1baf7a657eb944" parent="aspace_4d208c4a7d50452ba2e1dd602896dc0f" type="folder">2</container>
+              <daogrp xlink:title="Dr. h c .W Ruhland" xlink:type="extended">
+                <daodesc>
+                  <p>Dr. h c .W Ruhland</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/4" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/f172686c-f2f4-4cba-9062-3942805cd497/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_9078cb274f954ebc455913b4a3e24973">
+              <head>Scope and Contents</head>
+              <p>From Wilhelm Ruhland, Botanist, to Leslie Coleman, dated 3rd July, 1951. Concerning shipment of fava beans that Coleman had requested.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-3" level="file">
+            <did>
+              <unittitle>Rau, K.Venkatagiri</unittitle>
+              <unitid>MS-012-1-1-1-3</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9730</unitid>
+              <unitdate datechar="creation">10 December 1951</unitdate>
+              <container id="aspace_164229a69585865256a5728b1a5b5b53" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_dd137bfc7b748943720f7c20a1ebb98a" parent="aspace_164229a69585865256a5728b1a5b5b53" type="folder">3</container>
+              <daogrp xlink:title="Rau, K.Venkatagiri, 10 December 1951" xlink:type="extended">
+                <daodesc>
+                  <p>Rau, K.Venkatagiri, 10 December 1951</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/5" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/2c5b72cf-0077-4fcd-9d0e-f2e1b4c8c6da/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_f304a56f3ce3f55a747550adb68f485a">
+              <head>Scope and Contents</head>
+              <p>From K. Venkatagiri Rau to Leslie Coleman, dated 10th December, 1951. Rau reports on his duties as an Agricultural Inspector at Tiptur.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-4" level="file">
+            <did>
+              <unittitle>Srinivasan, K H</unittitle>
+              <unitid>MS-012-1-1-1-4</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9731</unitid>
+              <unitdate datechar="creation">25 February 1952</unitdate>
+              <container id="aspace_b503653d91c8e24b82bce2f6a1743ec0" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_17f9d69aa5ca79f99f389264b7868eea" parent="aspace_b503653d91c8e24b82bce2f6a1743ec0" type="folder">4</container>
+              <daogrp xlink:title="Srinivasan, K H" xlink:type="extended">
+                <daodesc>
+                  <p>Srinivasan, K H</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/6" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/08051176-204f-4526-bf08-37382a19c4cf/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_e43c9716d288c893e6b503dfe0e8ea31">
+              <head>Scope and Contents</head>
+              <p>Copy of a letter from K. H. Srinivasan to Leslie Coleman, dated 25th February, 1952. Discussing whereabouts of mutual acquaintances from Mysore Agricultural Department.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-5" level="file">
+            <did>
+              <unittitle>Krishnayya, H V</unittitle>
+              <unitid>MS-012-1-1-1-5</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9732</unitid>
+              <unitdate datechar="creation">3 March 1952</unitdate>
+              <container id="aspace_f70cff3a9da9c98112f6b9492d0842c9" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_0d2f952e29534744d2c57e35bffcbf5b" parent="aspace_f70cff3a9da9c98112f6b9492d0842c9" type="folder">5</container>
+              <daogrp xlink:title="Krishnayya, H V" xlink:type="extended">
+                <daodesc>
+                  <p>Krishnayya, H V</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/7" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/a97deeb9-3ffa-4ef9-b9c5-735dfd1f1b45/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_67554cc691d4cd731162dee01e467204">
+              <head>Scope and Contents</head>
+              <p>From H. V. Krishnayya to Leslie Coleman, dated 3rd March, 1952. Pleasantries and reminiscences of time spent together in India.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-6" level="file">
+            <did>
+              <unittitle>Bennur, S H</unittitle>
+              <unitid>MS-012-1-1-1-6</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9733</unitid>
+              <unitdate datechar="creation">18 March 1952</unitdate>
+              <container id="aspace_e8f4288cba2175d3f678da18046d26a7" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_06f61d876808a856e251a0fa7f3f576d" parent="aspace_e8f4288cba2175d3f678da18046d26a7" type="folder">6</container>
+              <daogrp xlink:title="Bennur, S H" xlink:type="extended">
+                <daodesc>
+                  <p>Bennur, S H</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/8" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/f0e5dd66-e3f0-45aa-b2fb-fa89deedb00c/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_41f08acf39094c2a70b7435cef0bb89f">
+              <head>Scope and Contents</head>
+              <p>Letter from S H Bennur to Leslie Coleman, dated 18th March, 1952. Pleasantries and update on the status of Mysore sugar company at Mandya, Mysore.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-7" level="file">
+            <did>
+              <unittitle>Krishna Rao, M.B.</unittitle>
+              <unitid>MS-012-1-1-1-7</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9734</unitid>
+              <unitdate datechar="creation">4 April 1952</unitdate>
+              <container id="aspace_991351cb7e4e2f9d4b1e00b6ea2b3dc5" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_67647551137e439c50f205f93aeb1bb3" parent="aspace_991351cb7e4e2f9d4b1e00b6ea2b3dc5" type="folder">7</container>
+              <daogrp xlink:title="Krishna Rao, M.B." xlink:type="extended">
+                <daodesc>
+                  <p>Krishna Rao, M.B.</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/9" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/c38f361b-cabc-4e92-be2d-a8e31833f4a4/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_68855eb7592ebcba72e5abde20f98d52">
+              <head>Scope and Contents</head>
+              <p>From M. B. Krishna Rao to Leslie Coleman, dated 4th April, 1952. Pleasantries and reminiscences about the time spent together in India.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-8" level="file">
+            <did>
+              <unittitle>Krishnayya, H V</unittitle>
+              <unitid>MS-012-1-1-1-8</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9735</unitid>
+              <unitdate datechar="creation">7 April 1952</unitdate>
+              <container id="aspace_5b9eec7aba1bdacfcc17c240ba596b70" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_c0676e5c8e5c00da94058a7258d44460" parent="aspace_5b9eec7aba1bdacfcc17c240ba596b70" type="folder">8</container>
+              <daogrp xlink:title="Krishnayya, H V" xlink:type="extended">
+                <daodesc>
+                  <p>Krishnayya, H V</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/10" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/613ebd47-e465-4efe-b168-fa35de0967da/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_c083080dec85180767b1f6c0fc0978d7">
+              <head>Scope and Contents</head>
+              <p>Letter from H. V. Krishnayya to Leslie Coleman, dated 7th April, 1952. Pleasantries and reports on whereabouts of mutual acquaintances like M Visvesvaraya and Sakamma.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-9" level="file">
+            <did>
+              <unittitle>Bennur, S H</unittitle>
+              <unitid>MS-012-1-1-1-9</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9736</unitid>
+              <unitdate datechar="creation">25 April 1952</unitdate>
+              <container id="aspace_b16fefa114cb74c59c337cd919d8a3c9" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_95d802cd5cd9014a44a4c0a2ac73bd5a" parent="aspace_b16fefa114cb74c59c337cd919d8a3c9" type="folder">9</container>
+              <daogrp xlink:title="Bennur, S H" xlink:type="extended">
+                <daodesc>
+                  <p>Bennur, S H</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/11" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/81021266-2946-46ab-9d69-66f49cb31211/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_efb308e0b33f0307d940e5bfb8614fab">
+              <head>Scope and Contents</head>
+              <p>From S H Bennur to Leslie Coleman, dated 25th April, 1952. Pleasantries and references to Mysore Sugar Factory.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-10" level="file">
+            <did>
+              <unittitle>Krishnayya, H V</unittitle>
+              <unitid>MS-012-1-1-1-10</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9737</unitid>
+              <unitdate datechar="creation">20 May 1952</unitdate>
+              <container id="aspace_c732734cbf73d403165efde2653f3a2a" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_fe815a8d779abe81ebcab227976e519d" parent="aspace_c732734cbf73d403165efde2653f3a2a" type="folder">10</container>
+              <daogrp xlink:title="Krishnayya, H V" xlink:type="extended">
+                <daodesc>
+                  <p>Krishnayya, H V</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/12" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/bbfb8935-2205-4f93-8ca0-cd60a27d4f49/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_0218465c0e7d9242913ded8230ccc72b">
+              <head>Scope and Contents</head>
+              <p>From H. V. Krishnayya to Leslie Coleman, dated 20th May, 1952. Pleasantries and reports on the whereabouts of mutual acquaintances including P. M. N. Naidu.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-11" level="file">
+            <did>
+              <unittitle>Krishnayya, H V</unittitle>
+              <unitid>MS-012-1-1-1-11</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9738</unitid>
+              <unitdate datechar="creation">8 October 1952</unitdate>
+              <container id="aspace_020da79d60c1361101d560d11d54d5ed" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_cd579753807ba7fafbcc41e5a05e2577" parent="aspace_020da79d60c1361101d560d11d54d5ed" type="folder">11</container>
+              <daogrp xlink:title="Krishnayya, H V" xlink:type="extended">
+                <daodesc>
+                  <p>Krishnayya, H V</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/13" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/34d947a9-1294-4b79-9a7f-ce9a013ce794/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_99a9a20c7302e8bf78238bac5f7d2c88">
+              <head>Scope and Contents</head>
+              <p>From H. V. Krishnayya to Leslie Coleman, dated 8th October, 1952. Pleasantries and discussion on P. M. N. Naidu's research into cattle and poultry.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-12" level="file">
+            <did>
+              <unittitle>Krishnayya, H V</unittitle>
+              <unitid>MS-012-1-1-1-12</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9739</unitid>
+              <unitdate datechar="creation">10 November 1952</unitdate>
+              <container id="aspace_367a8b83c75f20ccf295c541325f3cda" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_e4996bdef579e04a6b213e59e5a87fd6" parent="aspace_367a8b83c75f20ccf295c541325f3cda" type="folder">12</container>
+              <daogrp xlink:title="Krishnayya, H V" xlink:type="extended">
+                <daodesc>
+                  <p>Krishnayya, H V</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/14" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/1a4432c9-58de-407e-9fad-1075e215a586/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_168d2e1b08f632739c6a4dd9c9fc2eee">
+              <head>Scope and Contents</head>
+              <p>From H. V. Krishnayya to Leslie Coleman, dated 10th November, 1952. Pleasantries plus a reference to Coleman's articles about Indian agriculture on 'Canadian Forum'.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-13" level="file">
+            <did>
+              <unittitle>Penning, C J H</unittitle>
+              <unitid>MS-012-1-1-1-13</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9740</unitid>
+              <unitdate datechar="creation">3 January 1953</unitdate>
+              <container id="aspace_ed50006c85affdafe63a52d779d101f3" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_ccc2044f0076b5be7901fd4782be9343" parent="aspace_ed50006c85affdafe63a52d779d101f3" type="folder">13</container>
+              <daogrp xlink:title="Penning, C J H" xlink:type="extended">
+                <daodesc>
+                  <p>Penning, C J H</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/15" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/0f4df288-4331-43e2-8a05-f01c6215c700/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_4f74fc8ba61670be400dc5ea4c961238">
+              <head>Scope and Contents</head>
+              <p>From C. J. H. Penning, Ex General Manager of Mysore Sugar Company to Leslie Coleman, dated 3rd January, 1953. Refers to his travels to several sugar plantations across the colonies. Also includes references to Col W. L.Crawford, V. P. Madhav Rao and Arcot Ramaswamy Mudaliar.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-14" level="file">
+            <did>
+              <unittitle>Krishnayya, H V</unittitle>
+              <unitid>MS-012-1-1-1-14</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9741</unitid>
+              <unitdate datechar="creation">29 January 1953</unitdate>
+              <container id="aspace_2ad99c0c96e2c3d1db753266f5ca8561" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_1216dd53ec9a46eb6d0ef73aaa23de1a" parent="aspace_2ad99c0c96e2c3d1db753266f5ca8561" type="folder">14</container>
+              <daogrp xlink:title="Krishnayya, H V" xlink:type="extended">
+                <daodesc>
+                  <p>Krishnayya, H V</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/16" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/acf8b0b4-cf54-4e2c-9352-838b0709987b/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_d6b33b84c6b8c25b2672289853a0e414">
+              <head>Scope and Contents</head>
+              <p>From H. V. Krishnayya to Leslie Coleman, dated 29th January, 1953. Discusses Coleman's articles about Indian agriculture on 'Canadian Forum'.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-15" level="file">
+            <did>
+              <unittitle>Bonarjee, D I</unittitle>
+              <unitid>MS-012-1-1-1-15</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9742</unitid>
+              <unitdate datechar="creation">10 February 1953</unitdate>
+              <container id="aspace_354eeaaf436edd16923b0941d589d70d" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_3bf156b846624f8ffdd73928c71e6402" parent="aspace_354eeaaf436edd16923b0941d589d70d" type="folder">15</container>
+              <daogrp xlink:title="Bonarjee, D I" xlink:type="extended">
+                <daodesc>
+                  <p>Bonarjee, D I</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/17" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/2b12ef8c-b51b-414e-b180-bb4725c7dcde/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_7fc239124885d989553588291fc6de47">
+              <head>Scope and Contents</head>
+              <p>From D. I. Bonarjee to Leslie Coleman, dated 10th February, 1953. Concerning Payment Forms.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-16" level="file">
+            <did>
+              <unittitle>Untitled</unittitle>
+              <unitid>MS-012-1-1-1-16</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9743</unitid>
+              <unitdate datechar="creation">15 February 1953</unitdate>
+              <container id="aspace_cfb693d32c27d387b0689467573d894f" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_d808a3dfd8e8445e62973abefbf55287" parent="aspace_cfb693d32c27d387b0689467573d894f" type="folder">16</container>
+              <daogrp xlink:title="Untitled" xlink:type="extended">
+                <daodesc>
+                  <p>Untitled</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/18" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/3f45c706-4aaa-4d69-b92f-dc1ceffab9a2/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_47469ed8293350da80cf1ec6de44c926">
+              <head>Scope and Contents</head>
+              <p>To Leslie Coleman, dated 15th February, 1953. From a practising doctor who was the Director of Public Health in Mandya. Including references to an anti-malaria programme that is being carried out in Mysore state.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-17" level="file">
+            <did>
+              <unittitle>Morris, Ralph</unittitle>
+              <unitid>MS-012-1-1-1-17</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9744</unitid>
+              <unitdate datechar="creation">29 April 1953</unitdate>
+              <container id="aspace_6200543b7811e26f2573c633b98c9a2b" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_c2170e83a9ee7752a5ced29f50f0366f" parent="aspace_6200543b7811e26f2573c633b98c9a2b" type="folder">17</container>
+              <daogrp xlink:title="Morris, Ralph" xlink:type="extended">
+                <daodesc>
+                  <p>Morris, Ralph</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/19" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/9299c586-9e5e-4e0f-9ea3-389705f1c0c6/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_b98ac97284edf0bfaab9f96a6a942173">
+              <head>Scope and Contents</head>
+              <p>Pleasantries and whereabouts of mutual acquaintances. Includes a reference to coffee berry borer treatment with 'agrocide'.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-18" level="file">
+            <did>
+              <unittitle>Krishnayya, H V</unittitle>
+              <unitid>MS-012-1-1-1-18</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9745</unitid>
+              <unitdate datechar="creation">31 May 1953</unitdate>
+              <container id="aspace_79c90a69c3df8589ce1aba8d444728d5" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_7ab4fca586459deb2a4f48d4c289838d" parent="aspace_79c90a69c3df8589ce1aba8d444728d5" type="folder">18</container>
+              <daogrp xlink:title="Krishnayya, H V" xlink:type="extended">
+                <daodesc>
+                  <p>Krishnayya, H V</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/20" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/ecaace89-507e-4673-8bdc-655872bc1a3e/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_6af8067e3323078637057e150032cfed">
+              <head>Scope and Contents</head>
+              <p>Discusses Coleman's article on village life in India. Includes references to issues such as temple-entry, conversion and mistreatment of lower caste groups.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-19" level="file">
+            <did>
+              <unittitle>Srinivasan, K H</unittitle>
+              <unitid>MS-012-1-1-1-19</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9746</unitid>
+              <unitdate datechar="creation">2 July 1953</unitdate>
+              <container id="aspace_052a802e52340f9dc581646438dc1949" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_c54502e34b1f82b64a590a46a3dcd008" parent="aspace_052a802e52340f9dc581646438dc1949" type="folder">19</container>
+              <daogrp xlink:title="Srinivasan, K H" xlink:type="extended">
+                <daodesc>
+                  <p>Srinivasan, K H</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/21" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/d02f760e-e51b-461e-bbef-1aea5018dcf5/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_17e658b8c070058acd594bdad9034d10">
+              <head>Scope and Contents</head>
+              <p>Concerning Coleman's planned visit to India to advise on 'Coffee matters'.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-20" level="file">
+            <did>
+              <unittitle>Hanumanthaiya, K</unittitle>
+              <unitid>MS-012-1-1-1-20</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9747</unitid>
+              <unitdate datechar="creation">9 July 1954</unitdate>
+              <container id="aspace_f2e6c6f5bcb66cafa0887fa6b2381fa7" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_b28ca0169fb437c266b1a9bcaedf037f" parent="aspace_f2e6c6f5bcb66cafa0887fa6b2381fa7" type="folder">20</container>
+              <daogrp xlink:title="Hanumanthaiya, K" xlink:type="extended">
+                <daodesc>
+                  <p>Hanumanthaiya, K</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/22" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/7141f665-29f8-493e-adc0-9e455efbfbc6/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_4f12de675acf80848cec6cbeb47cdc78">
+              <head>Scope and Contents</head>
+              <p>From K Hanumanthaiya, Chief Minister, Mysore state, to Leslie Coleman dated 9th July, 1954. Concerning Coleman's visit to the state and his recommendations regarding the Agricultural Department in Mysore State.</p>
+            </scopecontent>
+            <controlaccess>
+              <persname>Hanumanthaiah, K (Kengal), 1908-1980</persname>
+            </controlaccess>
+          </c>
+          <c id="aspace_MS-012-1-1-1-21" level="file">
+            <did>
+              <unittitle>Rao, B.Ganapath</unittitle>
+              <unitid>MS-012-1-1-1-21</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9748</unitid>
+              <unitdate datechar="creation">18 August 1954</unitdate>
+              <container id="aspace_f867ea398cfd93bfb51d8a9436f2f78f" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_7526500549f25b346cf04716b14bfd82" parent="aspace_f867ea398cfd93bfb51d8a9436f2f78f" type="folder">21</container>
+              <daogrp xlink:title="Rao, B.Ganapath" xlink:type="extended">
+                <daodesc>
+                  <p>Rao, B.Ganapath</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/23" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/3ae2336f-090f-4c66-b367-19afac702c63/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_d4d78afabc36891c03aa2d1c27e04253">
+              <head>Scope and Contents</head>
+              <p>Pleasantries and reports on the whereabouts of B Ganapath Rao's family.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-22" level="file">
+            <did>
+              <unittitle>Rau, M.N.Krishna</unittitle>
+              <unitid>MS-012-1-1-1-22</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9749</unitid>
+              <unitdate datechar="creation">27 August 1954</unitdate>
+              <container id="aspace_cc24c9d0b87bdd50afbfb966cc04e089" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_5db8df7a2cfd7b8de72b427f1c498d00" parent="aspace_cc24c9d0b87bdd50afbfb966cc04e089" type="folder">22</container>
+              <daogrp xlink:title="Rau, M.N.Krishna" xlink:type="extended">
+                <daodesc>
+                  <p>Rau, M.N.Krishna</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/24" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/770b3e47-fc46-42bb-9b98-813dd4ca8ba9/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_eb0c181f4a0448e5b1e3b0cedf12f1cf">
+              <head>Scope and Contents</head>
+              <p>Pleasantries and reports on events in Mysore state.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-1-1-23" level="file">
+            <did>
+              <unittitle>Srinivasan, K H</unittitle>
+              <unitid>MS-012-1-1-1-23</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9750</unitid>
+              <unitdate datechar="creation">27 August 1954</unitdate>
+              <container id="aspace_7e4b105f69fa4d259316b088b125b0d1" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_38a12b1a0216d7300d62798bf972787a" parent="aspace_7e4b105f69fa4d259316b088b125b0d1" type="folder">23</container>
+              <daogrp xlink:title="Srinivasan, K H" xlink:type="extended">
+                <daodesc>
+                  <p>Srinivasan, K H</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/25" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/5f71306f-9e7c-4f5b-b8b1-b42c9b9bee5d/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_a8fe3173f09c4e400ffa999b6dcc58d5">
+              <head>Scope and Contents</head>
+              <p>Discusses Coleman's visit to Mysore State. Includes Coleman's recommendations regarding the Agricultural Department in Mysore State.</p>
+            </scopecontent>
+          </c>
+        </c>
+        <c id="aspace_MS-012-1-2" level="subseries">
+          <did>
+            <unittitle>Sub-Series 2: Letters from Leslie Coleman - Visit to India</unittitle>
+            <unitid>MS-012-1-2</unitid>
+            <unitid type="aspace_uri">/repositories/2/archival_objects/9751</unitid>
+            <origination label="Creator">
+              <persname role="aut">Coleman, L C (Leslie Charles) (1878-1954)</persname>
+            </origination>
+            <unitdate calendar="gregorian" certainty="inferred" datechar="creation" era="ce" normal="1953/1954" type="inclusive">1953-1954</unitdate>
+            <container id="aspace_37283605ed4ccc4ea57bd1aeb36d31f4" label="Mixed Materials" type="box">MS-012 Box 1</container>
+          </did>
+          <c id="aspace_MS-012-1-2-1-24" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-24</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9752</unitid>
+              <unitdate datechar="creation">16 November 1953</unitdate>
+              <container id="aspace_b9971d1bb4a010c00f7f72e1cac0b47f" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_b881bc41ac111a5a2e372bc855e074ab" parent="aspace_b9971d1bb4a010c00f7f72e1cac0b47f" type="folder">24</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/26" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/1dbe855d-f027-447c-9fc1-4b96b8598bec/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_e26a0265fb579347920daf0f53cbbef1">
+              <head>Scope and Contents</head>
+              <p>Discusses his journey from Gander to London.</p>
+            </scopecontent>
+            <controlaccess>
+              <famname>Coleman</famname>
+            </controlaccess>
+          </c>
+          <c id="aspace_MS-012-1-2-1-25" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-25</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9753</unitid>
+              <unitdate datechar="creation">18 November 1953</unitdate>
+              <container id="aspace_c138803b9e4e2ac8edd82dd745a7c06b" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_d2d2859c4f3bc8c715414e342331146c" parent="aspace_c138803b9e4e2ac8edd82dd745a7c06b" type="folder">25</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/27" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/25a8f7a8-550c-4317-940b-e6713ec45c05/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_c623735dbf5b766a5f6de2f1e98ca1ca">
+              <head>Scope and Contents</head>
+              <p>Discusses his journey to Karachi.</p>
+            </scopecontent>
+            <controlaccess>
+              <famname>Coleman</famname>
+            </controlaccess>
+          </c>
+          <c id="aspace_MS-012-1-2-1-26" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-26</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9754</unitid>
+              <unitdate datechar="creation">18 November 1953</unitdate>
+              <container id="aspace_ae6682433d4f927898f9ffaa5945e32a" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_89ee03748d5f267657e0a3b397dd8dbd" parent="aspace_ae6682433d4f927898f9ffaa5945e32a" type="folder">26</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/28" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/483478b8-2384-45a3-8e33-f2dfb3ce2259/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_197ace127751a232c0a4fff0c90ae28c">
+              <head>Scope and Contents</head>
+              <p>Discusses his journey to Bombay.</p>
+            </scopecontent>
+            <controlaccess>
+              <famname>Coleman</famname>
+            </controlaccess>
+          </c>
+          <c id="aspace_MS-012-1-2-1-27" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-27</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9755</unitid>
+              <unitdate datechar="creation">19 November 1953</unitdate>
+              <container id="aspace_6a12b15a7165a1b836f273e457897f9f" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_50d472bc01a825787c6eeb86a55ecda7" parent="aspace_6a12b15a7165a1b836f273e457897f9f" type="folder">27</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/29" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/f61a9080-321f-4cea-b099-829dd98c18de/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_933fb7d05c1e9ca0b1a2d956dcbf1f60">
+              <head>Scope and Contents</head>
+              <p>Discusses his welcome and stay at Bangalore.</p>
+            </scopecontent>
+            <controlaccess>
+              <famname>Coleman</famname>
+            </controlaccess>
+          </c>
+          <c id="aspace_MS-012-1-2-1-28" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-28</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9756</unitid>
+              <unitdate datechar="creation">20 November 1953</unitdate>
+              <container id="aspace_ea8cab9c73caf81a95dc6b42c6ead27b" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_6e642d3b2ebde87a5c1ff60af634f546" parent="aspace_ea8cab9c73caf81a95dc6b42c6ead27b" type="folder">28</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/30" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/eb7eee36-76f3-4a23-830b-e41de171d6a5/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_2719ade1efe8a9664a382826d343ac69">
+              <head>Scope and Contents</head>
+              <p>Concerning his stay in Mysore State.</p>
+            </scopecontent>
+            <controlaccess>
+              <famname>Coleman</famname>
+            </controlaccess>
+          </c>
+          <c id="aspace_MS-012-1-2-1-29" level="file">
+            <did>
+              <unittitle>Coleman, Louisa</unittitle>
+              <unitid>MS-012-1-2-1-29</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9757</unitid>
+              <unitdate datechar="creation">23 November 1953</unitdate>
+              <container id="aspace_46f0ba1cd63cf56c30e214fa90d04e5e" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_06bbf30ea921ca0c97513252b0f0711b" parent="aspace_46f0ba1cd63cf56c30e214fa90d04e5e" type="folder">29</container>
+              <daogrp xlink:title="Coleman, Louisa" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman, Louisa</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/31" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/67796ebb-53e0-4861-a67c-ab79ef2be130/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_74c8102a656835984e6f17a4b7033198">
+              <head>Scope and Contents</head>
+              <p>Detailing events and anecdotes about his stay in Mysore state.</p>
+            </scopecontent>
+            <controlaccess>
+              <persname>Coleman, Louisa</persname>
+            </controlaccess>
+          </c>
+          <c id="aspace_MS-012-1-2-1-30" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-30</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9758</unitid>
+              <unitdate datechar="creation">24 November 1953</unitdate>
+              <container id="aspace_e28124f4fd46458d22e25c721efbec22" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_9ee033c2a59864a6845761a956ef820c" parent="aspace_e28124f4fd46458d22e25c721efbec22" type="folder">30</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/32" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/142c4457-3c7a-41f1-8a42-5496889ae997/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_5587de86045294e8725f41ce4951d71d">
+              <head>Scope and Contents</head>
+              <p>Anecdotes about his stay as 'State Guest'. Mentions meeting with the Chief Minister and Robert Lake, Chairman of the Mysore Planters Association.</p>
+            </scopecontent>
+            <controlaccess>
+              <famname>Coleman</famname>
+            </controlaccess>
+          </c>
+          <c id="aspace_MS-012-1-2-1-31" level="file">
+            <did>
+              <unittitle>Coleman, Louisa</unittitle>
+              <unitid>MS-012-1-2-1-31</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9759</unitid>
+              <unitdate datechar="creation">26 November 1953</unitdate>
+              <container id="aspace_aa53b49a13b63d9c557967292ee2cacf" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_c3bf4a1e766ee1c4d4e5ce6a95c1a031" parent="aspace_aa53b49a13b63d9c557967292ee2cacf" type="folder">31</container>
+              <daogrp xlink:title="Coleman, Louisa" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman, Louisa</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/33" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/ec5ab0a3-e953-4c4c-a364-3aee1364150e/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_a28e4e0d9a6b9d52b7e2cb286810f5dc">
+              <head>Scope and Contents</head>
+              <p>Detailing events and anecdotes about his stay in Mysore state. Mentions Vice President Nixon's visit to India.</p>
+            </scopecontent>
+            <controlaccess>
+              <persname>Coleman, Louisa</persname>
+            </controlaccess>
+          </c>
+          <c id="aspace_MS-012-1-2-1-32" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-32</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9760</unitid>
+              <unitdate datechar="creation">26 November 1953</unitdate>
+              <container id="aspace_6de1f63accafb33677c0fda97d6ffedd" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_25e2e87f6f2efe8f94906d16cc5de767" parent="aspace_6de1f63accafb33677c0fda97d6ffedd" type="folder">32</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/34" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/63f94f3f-bcfa-4dda-a386-e7849ebff10c/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_06d0c4500250d5cce6ac80d79b60924c">
+              <head>Scope and Contents</head>
+              <p>Anecdotes about his stay in Mysore state.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-33" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-33</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9761</unitid>
+              <unitdate datechar="creation">30 November 1953</unitdate>
+              <container id="aspace_945f9f6a9f056076337736be3d15be5c" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_b55e7394ea2f2339855ffa6a54508d23" parent="aspace_945f9f6a9f056076337736be3d15be5c" type="folder">33</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/35" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/7c8094da-b5d7-4595-a73b-2b0df74bee5c/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_3983c928e292431604eeabcc75792a89">
+              <head>Scope and Contents</head>
+              <p>Detailing events and anecdotes about his stay in Mysore state. Mentions a meeting with Chairman of Mysore Sugar Company and the Bangalore Literary Union.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-34" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-34</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9762</unitid>
+              <unitdate datechar="creation">2 December 1953</unitdate>
+              <container id="aspace_0c70231dce9bb0edf3a5257d82299d45" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_b2c4d3157e6d657c880c8c19910619e7" parent="aspace_0c70231dce9bb0edf3a5257d82299d45" type="folder">34</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/36" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/08cf4a5a-cb49-4023-b976-85664e744dae/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_f8778d5b1562392b6e17dc01735e1d90">
+              <head>Scope and Contents</head>
+              <p>Detailing events and anecdotes about his stay in Mysore state. Mentions a meeting with Ralph Morris.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-35" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-35</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9763</unitid>
+              <unitdate datechar="creation">3 December 1953</unitdate>
+              <container id="aspace_be8c4a5ad3480f4926c1f8e8a09c12c4" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_1d47c76fa77920b54008c6d68b0fab8d" parent="aspace_be8c4a5ad3480f4926c1f8e8a09c12c4" type="folder">35</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/37" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/af7ddbc5-7ede-4c14-bc3c-c35083705a45/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_dca681d0decf978b8c15463470631a0d">
+              <head>Scope and Contents</head>
+              <p>Detailing events and anecdotes about his stay in Bangalore, including a shopping trip to Commercial Street in Bangalore.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-36" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-36</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9764</unitid>
+              <unitdate datechar="creation">5 December 1953</unitdate>
+              <container id="aspace_dadb594e964ec19decdb7b13eaef1b23" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_24fa1ab3d7ccf266af39ce219dd8d8b8" parent="aspace_dadb594e964ec19decdb7b13eaef1b23" type="folder">36</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/38" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/b56c703b-6aa8-4308-aaa2-8f67e9a249ac/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_cd75dc3dc0b70490b6384906a3c6641a">
+              <head>Scope and Contents</head>
+              <p>Detailing events and anecdotes about his stay in Mysore state. Mentions inauguration of a new glass house at Lal Bagh in Bangalore.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-37" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-37</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9765</unitid>
+              <unitdate datechar="creation">10 December 1953</unitdate>
+              <container id="aspace_14d931f0a21ffbd2ad5271c52a087345" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_291a598f30b32d7261aab9bc000545c4" parent="aspace_14d931f0a21ffbd2ad5271c52a087345" type="folder">37</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/39" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/0251e0a5-8a51-4f32-b549-1d49094aae41/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_340083008bd53893011b7234b8afdf5e">
+              <head>Scope and Contents</head>
+              <p>Detailing events during his tour of villages in the Mysore state in India to evaluate agricultural practices and departments.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-38" level="file">
+            <did>
+              <unittitle>Coleman, Louisa</unittitle>
+              <unitid>MS-012-1-2-1-38</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9766</unitid>
+              <unitdate datechar="creation">11 December 1953</unitdate>
+              <container id="aspace_16799d4a76d7757a33bc232dc2f27471" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_ff8fb1d60aa9a72b6d42107de526e9f2" parent="aspace_16799d4a76d7757a33bc232dc2f27471" type="folder">38</container>
+              <daogrp xlink:title="Coleman, Louisa" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman, Louisa</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/40" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/f3115171-0998-4c33-bf8c-fe13eb77f995/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_fcf6c77b6d3534ced4c78bafa3ee3d4a">
+              <head>Scope and Contents</head>
+              <p>Detailing sights and events during his tour of villages in the Mysore state in India to evaluate agricultural practices and departments.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-39" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-39</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9767</unitid>
+              <unitdate datechar="creation">14 December 1953</unitdate>
+              <container id="aspace_39b836b2baa756afdfe0364cf2aae4fc" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_1c6d9749a1bbe9c143f1017ff498482f" parent="aspace_39b836b2baa756afdfe0364cf2aae4fc" type="folder">39</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/41" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/7e7c6304-471b-4d78-90e8-a8ccc7cd4e30/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_ce6d27ccff0f5a1cab9717c8393b397d">
+              <head>Scope and Contents</head>
+              <p>Detailing events during his tour of Marathahalli in the Mysore state in India to evaluate agricultural practices and departments. Refers to an anti-malaria drive in Mysore state.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-40" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-40</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9768</unitid>
+              <unitdate datechar="creation">17 December 1953</unitdate>
+              <container id="aspace_08a79754811aa62ef98b88407827a212" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_4a2a451faad2b8dd774f3ac44cc0d6c7" parent="aspace_08a79754811aa62ef98b88407827a212" type="folder">40</container>
+              <daogrp xlink:title=" Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/42" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/bc899852-b5c9-4bd7-b4be-b2916db742ca/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_a7f2b9bafd6644ee57f82ee992f3e9dd">
+              <head>Scope and Contents</head>
+              <p>Detailing events during his stay at Coffee Research Station, Balehonnur in the Mysore state in India to evaluate agricultural practices.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-41" level="file">
+            <did>
+              <unittitle>Coleman, Ann</unittitle>
+              <unitid>MS-012-1-2-1-41</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9769</unitid>
+              <unitdate datechar="creation">18 December 1953</unitdate>
+              <container id="aspace_fd54f17392400d94bc3795936d4b002a" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_065811651fb18486188e3c08b0191aae" parent="aspace_fd54f17392400d94bc3795936d4b002a" type="folder">41</container>
+              <daogrp xlink:title="Coleman, Ann" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman, Ann</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/43" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/52ffb94e-39a5-48fe-ae63-3edb70903c7c/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_3afcaf2ec9ba966d48b94402c2280d71">
+              <head>Scope and Contents</head>
+              <p>Detailing events during his stay at Coffee Research Station, Balehonnur in the Mysore state in India to evaluate agricultural practices.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-42" level="file">
+            <did>
+              <unittitle>Coleman, Louisa</unittitle>
+              <unitid>MS-012-1-2-1-42</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9770</unitid>
+              <unitdate datechar="creation">18 December 1953</unitdate>
+              <container id="aspace_da6f15d23d3ee7627c826dd945f7eb1b" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_378697e8bce0deebbee13ccf2ea291d2" parent="aspace_da6f15d23d3ee7627c826dd945f7eb1b" type="folder">42</container>
+              <daogrp xlink:title="Coleman, Louisa" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman, Louisa</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/44" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/08a2e875-28a9-49ce-9ab5-71e26e6856e9/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_53145b8612a65549871db63c878c0ad0">
+              <head>Scope and Contents</head>
+              <p>Detailing events during his stay at Coffee Research Station, Balehonnur in the Mysore state in India to evaluate agricultural practices.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-43" level="file">
+            <did>
+              <unittitle>Coleman, Louisa</unittitle>
+              <unitid>MS-012-1-2-1-43</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9771</unitid>
+              <unitdate datechar="creation">25 December 1953</unitdate>
+              <container id="aspace_d2ee4906cf2d1dde221a49a1c5488283" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_ec15d115d6e6506bae8a8a0243048b56" parent="aspace_d2ee4906cf2d1dde221a49a1c5488283" type="folder">43</container>
+              <daogrp xlink:title="Coleman, Louisa" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman, Louisa</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/45" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/629ba1a4-1b7e-4d39-8c54-15cae5d0db32/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_c84b0bd84a6536d3a9a3f093f36926e0">
+              <head>Scope and Contents</head>
+              <p>Detailing events during his stay at Honnametti with the Morris' in the Mysore state in India to evaluate agricultural practices.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-44" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-44</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9772</unitid>
+              <unitdate datechar="creation">29 December 1953</unitdate>
+              <container id="aspace_31417da7545469146ed6d01335162bb0" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_646c42bdceda3ccd20b6bdcdf385b8e4" parent="aspace_31417da7545469146ed6d01335162bb0" type="folder">44</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/46" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/1ca343a2-6845-4a43-8d14-c3ca1fc5a306/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_eb853f8de5e8b129419f776371039dad">
+              <head>Scope and Contents</head>
+              <p>Detailing events during his stay at Mysore. Includes references to Mrs Irvine and Mrs McGann, attached as companions to Dowager Maharani of Mysore.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-45" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-45</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9773</unitid>
+              <unitdate datechar="creation">31 December 1953</unitdate>
+              <container id="aspace_e7c7305ed027ec7a827a9d55075523b3" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_96d3855c75488bd5c9fa19aa5b23b8df" parent="aspace_e7c7305ed027ec7a827a9d55075523b3" type="folder">45</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/47" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/dee93cd3-22d7-4c7f-8caa-512971310ed0/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_d854fe9462d977f8d65da8f65cf61e1c">
+              <head>Scope and Contents</head>
+              <p>Detailing events during his stay at Mandya. Mentions a commemoration ceremony for Coleman held at Mysore Sugar Company, also refers to the Krishnarajasagara dam.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-46" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-46</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9774</unitid>
+              <unitdate datechar="creation">6 January 1954</unitdate>
+              <container id="aspace_7c43d803045918144d85a5a320dbdc57" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_471cda4dce059c01778668e909bf0b09" parent="aspace_7c43d803045918144d85a5a320dbdc57" type="folder">46</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/48" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/ce20a7f0-9a5f-427b-8d28-eb583f969b84/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_7d922951fef30852b7b7339e57ba0269">
+              <head>Scope and Contents</head>
+              <p>A summary of events during his stay in Mysore state. Attached is a typewritten copy of the letter.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-47" level="file">
+            <did>
+              <unittitle>Coleman, Louisa</unittitle>
+              <unitid>MS-012-1-2-1-47</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9775</unitid>
+              <unitdate datechar="creation">8 January 1954</unitdate>
+              <container id="aspace_707fe2b7d7298bd1189a1b3af9fe489b" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_2a770b133826c1de72d04bdc372c1a8c" parent="aspace_707fe2b7d7298bd1189a1b3af9fe489b" type="folder">47</container>
+              <daogrp xlink:title="Coleman, Louisa" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman, Louisa</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/49" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/466618f2-64e4-4b59-97ee-8c3741cefebd/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_0a30a03c8f2ed399148ab8a6adceafab">
+              <head>Scope and Contents</head>
+              <p>Mentions W W Mayne, former coffee scientific officer at United Planters Association of South India.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-48" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-48</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9776</unitid>
+              <unitdate datechar="creation">10 January 1954</unitdate>
+              <container id="aspace_b2158d6570ab34b7789ec96b8fcb52af" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_8dce5aafa421a666ff2b462eb60dac3b" parent="aspace_b2158d6570ab34b7789ec96b8fcb52af" type="folder">48</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/50" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/0524430f-bbb4-4733-909a-89d242307f83/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_e76d4967948b3d03a62eb8eeede2a1c9">
+              <head>Scope and Contents</head>
+              <p>Mentions W W Mayne, Hebbal farm and Agricultural College. Attached is a typewritten version of the letter.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-49" level="file">
+            <did>
+              <unittitle>Coleman, Ann</unittitle>
+              <unitid>MS-012-1-2-1-49</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9777</unitid>
+              <unitdate datechar="creation">12 January 1954</unitdate>
+              <container id="aspace_29a6f7a3c650b2c689dc1abddf31a59b" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_225f85881dd6d15f6b32d93fd74d8342" parent="aspace_29a6f7a3c650b2c689dc1abddf31a59b" type="folder">49</container>
+              <daogrp xlink:title="Coleman, Ann" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman, Ann</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/51" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/a9c20bb3-69a0-436e-acfb-d88be19e0231/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_1a2fd167ac51b873907b5a9802ad318c">
+              <head>Scope and Contents</head>
+              <p>From Leslie Coleman to Ann Coleman, dated 12th January, 1954. Detailing events during his stay in the Mysore state in India. Mentions Robert J. Flaherty, Van Ingen taxidermists.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-50" level="file">
+            <did>
+              <unittitle>Coleman, Louisa</unittitle>
+              <unitid>MS-012-1-2-1-50</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9778</unitid>
+              <unitdate datechar="creation">13 January 1954</unitdate>
+              <container id="aspace_b91c63a9bd29a42673b18574eeb88579" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_f1b3dbffc4e688dbf7a6dbf470be1e8e" parent="aspace_b91c63a9bd29a42673b18574eeb88579" type="folder">50</container>
+              <daogrp xlink:title="Coleman, Louisa" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman, Louisa</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/52" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/48e3f780-29e0-4322-bb48-e2f3be336d9f/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_f1c37b3855ea553c8b95a7bdf33d0bbe">
+              <head>Scope and Contents</head>
+              <p>Detailing events during his stay in Mysore state. Mentions the Srinivasans.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-51" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-51</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9779</unitid>
+              <unitdate datechar="creation">14 January 1954</unitdate>
+              <container id="aspace_630589d90c414c17352a08c5376d1f6d" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_ae501fbc66559de270c27078954a9fda" parent="aspace_630589d90c414c17352a08c5376d1f6d" type="folder">51</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/53" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/491f91af-9e97-43cb-aa1f-24141f3522c4/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_8b4ad3f9aa2288287a3a8ecd13150ca3">
+              <head>Scope and Contents</head>
+              <p>Detailing events during his stay in Mysore state. Mentions the M N Krishna Rao, Botanical Society of Central College.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-52" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-52</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9780</unitid>
+              <unitdate datechar="creation">25 January 1954</unitdate>
+              <container id="aspace_e102d75ae38c1d020ef02ef4b6976785" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_0a72c699ed97db444dbb9a6bbaa84865" parent="aspace_e102d75ae38c1d020ef02ef4b6976785" type="folder">52</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/54" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/aeb8d803-63f6-4901-81d2-c6a231c8d6d4/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_a8e0519ea2fb3674954296f928cc03d8">
+              <head>Scope and Contents</head>
+              <p>Detailing visit to Bellary during his tour of the Mysore state</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-53" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-53</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9781</unitid>
+              <unitdate datechar="creation">31 January 1954</unitdate>
+              <container id="aspace_131cee12a557d78a8af53596e4e67d87" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_a0c77bdc37ba29a18c5f40a666761107" parent="aspace_131cee12a557d78a8af53596e4e67d87" type="folder">53</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/55" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/2bc0290b-8eab-4cf7-93ce-ec9c89e6db28/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_1431ce18d7ae5a46097a44a9fa421003">
+              <head>Scope and Contents</head>
+              <p>Mentions Coffee Research Station, Balehonnur. Details the itinerary of the rest of Coleman's stay in Mysore state.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-54" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-54</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9782</unitid>
+              <unitdate datechar="creation">3 February 1954</unitdate>
+              <container id="aspace_65488146a1042bb137732ae6d4c3491b" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_856a0261aad9f571646b908332fcc5d2" parent="aspace_65488146a1042bb137732ae6d4c3491b" type="folder">54</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/56" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/60f429e5-eab5-49e6-8257-5151b07c10a8/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_22e5a82bff90c1dc41df7cf41d5befda">
+              <head>Scope and Contents</head>
+              <p>Includes itinerary for the last half of Coleman's stay in Mysore state. Mentions difficulties of getting any business done in India.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-55" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-55</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9783</unitid>
+              <unitdate datechar="creation">9 February 1954</unitdate>
+              <container id="aspace_d684e08ce73d8117dde1bc3fac3fe323" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_026696a96b6129ac45422c805bf3af50" parent="aspace_d684e08ce73d8117dde1bc3fac3fe323" type="folder">55</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/57" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/03398a6b-e00d-48b5-bbd0-3fed6d6d732d/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_29cf6dd7a5d647c0beeafb7448921263">
+              <head>Scope and Contents</head>
+              <p>Mentions coffee planters of Coorg and Canadian Prime Minister Louis St. Laurent.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-56" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-56</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9784</unitid>
+              <unitdate datechar="creation">12 February 1954</unitdate>
+              <container id="aspace_6a547e3d4a22874750e0b19f142d87c5" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_c2299f882d69a58c6b56fdedbbed3d42" parent="aspace_6a547e3d4a22874750e0b19f142d87c5" type="folder">56</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/58" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/c0d50721-4864-4937-b4dd-a73c4c492da6/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_844918b21795101257f79db1534b7ac2">
+              <head>Scope and Contents</head>
+              <p>Detailing his visit to Spun Silk Mills at Channapatna. Mentions the Maharaja of Mysore state.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-57" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-57</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9785</unitid>
+              <unitdate datechar="creation">13 February 1954</unitdate>
+              <container id="aspace_f35e04253c0c7dea58a5e425bfe275c9" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_8558caa4a4c2c951c45327f615383d2e" parent="aspace_f35e04253c0c7dea58a5e425bfe275c9" type="folder">57</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/59" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/adb06138-deb6-40b5-9839-55fb1dc25921/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_48e184ef544edc92298261f9d65c2854">
+              <head>Scope and Contents</head>
+              <p>Mentions last leg of Coleman's tour in Bangalore.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-58" level="file">
+            <did>
+              <unittitle>Coleman, Ann</unittitle>
+              <unitid>MS-012-1-2-1-58</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9786</unitid>
+              <unitdate datechar="creation">14 February 1954</unitdate>
+              <container id="aspace_3deb683cc0c362b77a928bfb9f00273b" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_cd76a1a48e949d20167bc367e53975df" parent="aspace_3deb683cc0c362b77a928bfb9f00273b" type="folder">58</container>
+              <daogrp xlink:title="Coleman, Ann" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman, Ann</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/60" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/ec1adb74-17e6-4393-abc9-d75c0ad6d6ff/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_b3db7fd22fe5b07ef7f08763a9291c2e">
+              <head>Scope and Contents</head>
+              <p>Observations about villages that Coleman had visited during his tour of Mysore state.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-59" level="file">
+            <did>
+              <unittitle>Coleman, Louisa</unittitle>
+              <unitid>MS-012-1-2-1-59</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9787</unitid>
+              <unitdate datechar="creation">14 February 1954</unitdate>
+              <container id="aspace_d5bbf31109450ad8fd17ac2d99f6c1d5" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_6b8ccb2b1a0f76ae67ca80528f272adf" parent="aspace_d5bbf31109450ad8fd17ac2d99f6c1d5" type="folder">59</container>
+              <daogrp xlink:title="Coleman, Louisa" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman, Louisa</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/61" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/4d83f316-012a-48d2-a876-1275a9b2e792/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_f703a68be7b0d581a51f6d6461667edd">
+              <head>Scope and Contents</head>
+              <p>Mentions Principal of Institute of Technology, Kharagpur and Rama Reddy, a friend of Coleman's.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-60" level="file">
+            <did>
+              <unittitle>Palmer, Luella C</unittitle>
+              <unitid>MS-012-1-2-1-60</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9788</unitid>
+              <unitdate datechar="creation">17 February 1954</unitdate>
+              <container id="aspace_7ab0b453870f6052a14d12f604d7423d" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_a9192951f7a48cee083b187d25894fcb" parent="aspace_7ab0b453870f6052a14d12f604d7423d" type="folder">60</container>
+              <daogrp xlink:title="Palmer, Luella C" xlink:type="extended">
+                <daodesc>
+                  <p>Palmer, Luella C</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/62" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/643eca61-a0f7-49f0-963b-f3b0b5aa25db/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_d69e72d13e4b7598cb4a337d87e7495f">
+              <head>Scope and Contents</head>
+              <p>Mentions a report on agricultural practices that Coleman was commissioned to write by the government.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-61" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-61</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9789</unitid>
+              <unitdate datechar="creation">19 February 1954</unitdate>
+              <container id="aspace_d12677563605a16923b8d0502b07d1f0" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_375c35983081193c4e716e013fb7fefa" parent="aspace_d12677563605a16923b8d0502b07d1f0" type="folder">61</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/63" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/0467fd58-6bff-47dd-919f-1d5a4428636d/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_5febb90711023f4415a63e7955bd1d7e">
+              <head>Scope and Contents</head>
+              <p>Details his tour of Hoskote and Kolar.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-62" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-62</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9790</unitid>
+              <unitdate datechar="creation">3 March 1954</unitdate>
+              <container id="aspace_27cb95c3aeefea7f9aa819979cb6fd4c" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_b7d829bb119623df5221620aea371f5a" parent="aspace_27cb95c3aeefea7f9aa819979cb6fd4c" type="folder">62</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/64" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/1dc61364-9512-4e3b-a911-13d34813b797/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_c68c0a8ba470b9afa7538421c8a94fc9">
+              <head>Scope and Contents</head>
+              <p>Mentions a report on agricultural practices that Coleman was writing for the government. Also includes mention of 17 framed addresses given to Coleman in India.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-63" level="file">
+            <did>
+              <unittitle>Coleman, Louisa</unittitle>
+              <unitid>MS-012-1-2-1-63</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9791</unitid>
+              <unitdate datechar="creation">6 March 1954</unitdate>
+              <container id="aspace_e5e387ff959ec1f99846a6158d17cb56" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_839d3b97d6af4d21fdfba57f110e6150" parent="aspace_e5e387ff959ec1f99846a6158d17cb56" type="folder">63</container>
+              <daogrp xlink:title="Coleman, Louisa" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman, Louisa</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/65" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/6c6031a2-6a6e-40bb-9184-b466c64dea81/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_8edca4b9406dc2e548208f7a1b5a721f">
+              <head>Scope and Contents</head>
+              <p>Regarding journey back to Canada. Mentions Morris' and Davisons of Oakville.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-64" level="file">
+            <did>
+              <unittitle>Coleman Family</unittitle>
+              <unitid>MS-012-1-2-1-64</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9792</unitid>
+              <unitdate datechar="creation">21 March 1954</unitdate>
+              <container id="aspace_383dadc335d8d8839c87f48a82da9897" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_86b601bec8e48cd6211ebc2017f5a6ef" parent="aspace_383dadc335d8d8839c87f48a82da9897" type="folder">64</container>
+              <daogrp xlink:title="Coleman Family" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman Family</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/66" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/c0ed4942-6f34-43b4-abac-08253bb15cc7/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_b99086f1d72efd31a7c6d4bb5188f021">
+              <head>Scope and Contents</head>
+              <p>Mentions A R Gopala Ayengar, K Hanumanthaiya, Chief Minister, Mysore state and R Nagan Gowda, Minister of Agriculture. Includes references to M J Narasimhan, and H V Krishnayya.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-2-1-65" level="file">
+            <did>
+              <unittitle>Coleman, Louisa</unittitle>
+              <unitid>MS-012-1-2-1-65</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9793</unitid>
+              <unitdate datechar="creation">22 March 1954</unitdate>
+              <container id="aspace_6663a7aa09fe7f2b2ca3844be46e416f" label="Mixed Materials" type="box">MS-012 Box 1</container>
+              <container id="aspace_5129a921ecd1658c9f9432fd14daab72" parent="aspace_6663a7aa09fe7f2b2ca3844be46e416f" type="folder">65</container>
+              <daogrp xlink:title="Coleman, Louisa" xlink:type="extended">
+                <daodesc>
+                  <p>Coleman, Louisa</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/67" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/02d43e52-4397-4fae-8b7e-13f5233c0a2a/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_98e72b2ff57abe3346f7ac45f013ac36">
+              <head>Scope and Contents</head>
+              <p>Regarding plans for London during journey back to Canada</p>
+            </scopecontent>
+          </c>
+        </c>
+        <c id="aspace_MS-012-1-3" level="subseries">
+          <did>
+            <unittitle>Sub-Series 3: Tributes</unittitle>
+            <unitid>MS-012-1-3</unitid>
+            <unitid type="aspace_uri">/repositories/2/archival_objects/9794</unitid>
+            <container id="aspace_b1a51b31ee472a7bd14960955e76e817" label="Mixed Materials" type="box">MS-012 Box 2</container>
+          </did>
+          <c id="aspace_MS-012-1-3-OS-6-2" level="file">
+            <did>
+              <unittitle>Bangalore District Sericulture Conference</unittitle>
+              <unitid>MS-012-1-3-OS-6-2</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9795</unitid>
+              <unitdate datechar="creation">21 December 1924</unitdate>
+              <container id="aspace_99b974242c418fa2881c188e481c403e" label="Mixed Materials" type="box">Oversized 6</container>
+              <container id="aspace_7b1f7b480516bba50f276ba814b40139" parent="aspace_99b974242c418fa2881c188e481c403e" type="folder">2</container>
+              <daogrp xlink:title="Bangalore District Sericulture Conference" xlink:type="extended">
+                <daodesc>
+                  <p>Bangalore District Sericulture Conference</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/68" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/39f22dd3-7344-4ac4-9e1a-fd6868251217/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_b64131f7bf9e6737c3f9d2cb0521d33a">
+              <head>Scope and Contents</head>
+              <p>A commemorative address printed on silk given to Coleman at the Bangalore District Sericulture Conference in Channapatna. Includes a song about silk and sericulture in Kannada.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-1" level="file">
+            <did>
+              <unittitle>Tai Nadu</unittitle>
+              <unitid>MS-012-1-3-2-1</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9796</unitid>
+              <unitdate datechar="creation">18 November 1953</unitdate>
+              <container id="aspace_79f6ec6a51d4bc114cb0379f4913ea66" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_9796c23f1f8d8ab78401e052449d6e55" parent="aspace_79f6ec6a51d4bc114cb0379f4913ea66" type="folder">1</container>
+              <daogrp xlink:title="Tai Nadu" xlink:type="extended">
+                <daodesc>
+                  <p>Tai Nadu</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/69" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/28e51a8e-13a9-48e7-94e9-eef099449118/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_3ae5765c44a2f46efc978ffef5cfa208">
+              <head>Scope and Contents</head>
+              <p>Titled 'Tai Nadu' (Motherland). Welcomes Coleman back to Mysore state and details his achievements during his service in India.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-2" level="file">
+            <did>
+              <unittitle>Taluk Agricultural and Experimental Union, Thirthahalli</unittitle>
+              <unitid>MS-012-1-3-2-2</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9797</unitid>
+              <unitdate datechar="creation">16 December 1953</unitdate>
+              <container id="aspace_5335158da7f9f16e088189498e930188" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_1cad0dcada65468d6c4aea261189fbed" parent="aspace_5335158da7f9f16e088189498e930188" type="folder">2</container>
+              <daogrp xlink:title="Taluk Agricultural and Experimental Union, Thirthahalli" xlink:type="extended">
+                <daodesc>
+                  <p>Taluk Agricultural and Experimental Union, Thirthahalli</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/70" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/bc3791f4-3eb9-4c47-a183-fba159039afe/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_eacbf6e959d69c16916882cd23b0f458">
+              <head>Scope and Contents</head>
+              <p>Mentions Coleman's role in protecting areca crop from the ravages of 'Koleroga' disease using Bordeaux mixture.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-3" level="file">
+            <did>
+              <unittitle>Chikmagalur District Agricultural and Experimental Union</unittitle>
+              <unitid>MS-012-1-3-2-3</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9798</unitid>
+              <unitdate datechar="creation">21 December 1953</unitdate>
+              <container id="aspace_774856aa4a27b4a50168597752f95db3" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_4c4f4af13c52207daee730a3279fa28d" parent="aspace_774856aa4a27b4a50168597752f95db3" type="folder">3</container>
+              <daogrp xlink:title="Chikmagalur District Agricultural and Experimental Union" xlink:type="extended">
+                <daodesc>
+                  <p>Chikmagalur District Agricultural and Experimental Union</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/71" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/695f75e1-7a48-4be8-98df-9b442ce56ee0/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_03c8c9ae947572e55ecfdea465bb864e">
+              <head>Scope and Contents</head>
+              <p>Mentions Coleman's contributions in setting up Coffee Research Station at Balehonnur, a cattle breeding station at Ajjampur, an Agricultural and Experimental Union and an Agricultural School in Chikamagalur</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-4" level="file">
+            <did>
+              <unittitle>Mysore Sugar Company Limited, Mandya</unittitle>
+              <unitid>MS-012-1-3-2-4</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9799</unitid>
+              <unitdate datechar="creation">5 January 1954</unitdate>
+              <container id="aspace_d1aecf7288be429c5d2492e003b4ee2b" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_398d8caf5e8515c5aa0b93f425c9108a" parent="aspace_d1aecf7288be429c5d2492e003b4ee2b" type="folder">4</container>
+              <daogrp xlink:title="Mysore Sugar Company Limited, Mandya" xlink:type="extended">
+                <daodesc>
+                  <p>Mysore Sugar Company Limited, Mandya</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/72" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/cb18eca8-e4d0-4822-a01f-dde751b9ef96/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_0e2cef9c8ccc77e2e15996b230d6015a">
+              <head>Scope and Contents</head>
+              <p>Mentions Coleman's role in setting up the Mysore Sugar Company at Mandya in 1933, and the groundwork he laid for a molasses distillery which was set up in 1935. Includes details about production rates at the factory.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-5" level="file">
+            <did>
+              <unittitle>Mysore Agricultural and Experimental Union, Yelahanka</unittitle>
+              <unitid>MS-012-1-3-2-5</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9800</unitid>
+              <unitdate datechar="creation">9 January 1954</unitdate>
+              <container id="aspace_a195b9e3777a9dc86c3d504e3875b99f" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_8ce39c97785ff6795e86b4fbca91352e" parent="aspace_a195b9e3777a9dc86c3d504e3875b99f" type="folder">5</container>
+              <daogrp xlink:title="Mysore Agricultural and Experimental Union, Yelahanka" xlink:type="extended">
+                <daodesc>
+                  <p>Mysore Agricultural and Experimental Union, Yelahanka</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/73" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/b60a2548-6378-4c6d-bd8f-be0207a3fa91/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_39d05887fbbebae8a7ee3e738faf5fb7">
+              <head>Scope and Contents</head>
+              <p>Mentions Coleman's role in making an improved plough, and breeding of ragi and sugarcane varieties to improve yield. Includes references to Mysore Agricultural Journal and Coleman's article titled ' After twenty years' and refers to the Agricultural and Experimental Union.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-6" level="file">
+            <did>
+              <unittitle>Chitradurga Taluk, Lakshmisagar Village Farmers</unittitle>
+              <unitid>MS-012-1-3-2-6</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9801</unitid>
+              <unitdate datechar="creation">19 January 1954</unitdate>
+              <container id="aspace_a689f06ac2a783fcbfaa2cf54d573c89" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_3fd26aab89edc48897c75d6e76bfbe87" parent="aspace_a689f06ac2a783fcbfaa2cf54d573c89" type="folder">6</container>
+              <daogrp xlink:title="Chitradurga Taluk, Lakshmisagar Village Farmers" xlink:type="extended">
+                <daodesc>
+                  <p>Chitradurga Taluk, Lakshmisagar Village Farmers</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/74" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/35ceed5a-a632-43ef-882a-c7b94ff4a039/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_86504c3ac9a66c789d30c4fd89502f95">
+              <head>Scope and Contents</head>
+              <p>Mentions government supported use of 'jarsa' breed of ragi during drought years. Includes issues regarding a well at the local school.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-7" level="file">
+            <did>
+              <unittitle>Mysore Agricultural and Experimental Union, Goridibinur</unittitle>
+              <unitid>MS-012-1-3-2-7</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9802</unitid>
+              <unitdate datechar="creation">24 January 1954</unitdate>
+              <container id="aspace_ee8e0eadfd5e4c74287d450b14eaf993" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_71633889f0a2d90ba5524db623d0b24a" parent="aspace_ee8e0eadfd5e4c74287d450b14eaf993" type="folder">7</container>
+              <daogrp xlink:title="Mysore Agricultural and Experimental Union, Goridibinur" xlink:type="extended">
+                <daodesc>
+                  <p>Mysore Agricultural and Experimental Union, Goridibinur</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/75" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/fd2d92ce-b2a0-4449-abf4-b00e36f04334/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_853b4e5fc5b89f632175c8797da11f7b">
+              <head>Scope and Contents</head>
+              <p>Mentions name of some of the farmers of Goribidinur taluk who worked with Coleman. Includes references to sugarcane and tobacco, Acharya high school, and the requirement of an artificial insemination centre and poultry demonstration unit in the district.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-8" level="file">
+            <did>
+              <unittitle>Mysore Agricultural and Experimental Union, Channapatna Taluk</unittitle>
+              <unitid>MS-012-1-3-2-8</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9803</unitid>
+              <unitdate datechar="creation">13 February 1954</unitdate>
+              <container id="aspace_675c143f2ffdc3335bd714efd6160e0f" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_6bed8ffe83a24983d0413df0ce8177fc" parent="aspace_675c143f2ffdc3335bd714efd6160e0f" type="folder">8</container>
+              <daogrp xlink:title="Mysore Agricultural and Experimental Union, Channapatna Taluk" xlink:type="extended">
+                <daodesc>
+                  <p>Mysore Agricultural and Experimental Union, Channapatna Taluk</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/76" xlink:type="locator"/>
+                <daoloc xlink:href="https://iiif.archives.ncbs.res.in/iiif/2/89fc4c10-7697-4ce2-8227-c77c5edd8e45/full/1454,/0/default.jpg?download=true" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_8da9d13507bcd35e2149e4736fc3226f">
+              <head>Scope and Contents</head>
+              <p>Mentions activities of the Channapatna Agricultural and Experimental Union, including use of a Japanese system of paddy cultivation</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-9" level="file">
+            <did>
+              <unittitle>Mysore Agricultural and Experimental Union Ryots of Ramanagaram Taluk</unittitle>
+              <unitid>MS-012-1-3-2-9</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9804</unitid>
+              <unitdate datechar="creation">13 February 1954</unitdate>
+              <container id="aspace_e84b03269586d614916ff70d7d4a29d5" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_df429d14f7a45aa415898b94b8d958d4" parent="aspace_e84b03269586d614916ff70d7d4a29d5" type="folder">9</container>
+              <daogrp xlink:title="Mysore Agricultural and Experimental Union Ryots of Ramanagaram Taluk" xlink:type="extended">
+                <daodesc>
+                  <p>Mysore Agricultural and Experimental Union Ryots of Ramanagaram Taluk</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/77" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/b264c2d9-e65a-4c15-88c3-27b2c90a822b/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_1b1a28c694f063d24aee79c7cf8595f3">
+              <head>Scope and Contents</head>
+              <p>Includes references to crop breeds, Ragi H22 and Sugarcane H M 320. Also includes a list of requirements provided by farmers of Ramanagaram Agricultural and Experimental Union.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-10" level="file">
+            <did>
+              <unittitle>Taluk Agricultural Union, Magadi</unittitle>
+              <unitid>MS-012-1-3-2-10</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9805</unitid>
+              <unitdate datechar="creation">16 February 1954</unitdate>
+              <container id="aspace_610ec75bd4bc9cbbd766bbe9dee1cb13" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_19215dac5524ee4ef6cff53d7c425def" parent="aspace_610ec75bd4bc9cbbd766bbe9dee1cb13" type="folder">10</container>
+              <daogrp xlink:title="Taluk Agricultural Union, Magadi" xlink:type="extended">
+                <daodesc>
+                  <p>Taluk Agricultural Union, Magadi</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/78" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/913b16e9-a122-408f-8dd3-8e9798e9b040/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_3b59f89a411a504128c97d7b1b363743">
+              <head>Scope and Contents</head>
+              <p>Mentions activities of the Taluk Agricultural and Experimental Union, Magadi.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-11" level="file">
+            <did>
+              <unittitle>Kolar District Agricultural and Experimental Union</unittitle>
+              <unitid>MS-012-1-3-2-11</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9806</unitid>
+              <unitdate datechar="creation">19 February 1954</unitdate>
+              <container id="aspace_8cfdb0b3ec676ef5c5d3547164080e56" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_30a235ec8ecc956de1ed841ef4923c30" parent="aspace_8cfdb0b3ec676ef5c5d3547164080e56" type="folder">11</container>
+              <daogrp xlink:title="Kolar District Agricultural and Experimental Union" xlink:type="extended">
+                <daodesc>
+                  <p>Kolar District Agricultural and Experimental Union</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/79" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/03ed0b26-5901-441b-94bf-dbdaa87043a5/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_696cc5729c3d80c66e4969618cc4a578">
+              <head>Scope and Contents</head>
+              <p>Mentions mixed farming methods in dry tracts in the arid Kolar district. Includes reference to Mokshagundam Visweswaraiah.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-12" level="file">
+            <did>
+              <unittitle>Mysore Agricultural and Experimental Union, Bangarpet Taluk</unittitle>
+              <unitid>MS-012-1-3-2-12</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9807</unitid>
+              <unitdate datechar="creation">20 February 1954</unitdate>
+              <container id="aspace_fa2d938ae7f90956f192f659bf3338e2" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_40c3ae1f51cce6ec0f28eb1996f0b191" parent="aspace_fa2d938ae7f90956f192f659bf3338e2" type="folder">12</container>
+              <daogrp xlink:title="Mysore Agricultural and Experimental Union, Bangarpet Taluk" xlink:type="extended">
+                <daodesc>
+                  <p>Mysore Agricultural and Experimental Union, Bangarpet Taluk</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/80" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/a9fa30eb-ef43-4591-ab09-b07f8ef51f71/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_654a317074871ba23d7ff62b9d4514c6">
+              <head>Scope and Contents</head>
+              <p>Mentions H22 Ragi breed, and requirement for a ragi variant to be grown through July to October, which is the sparse rainfall season in Kolar district.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-13" level="file">
+            <did>
+              <unittitle>Mysore Agricultural and Experimental Union, Chintamani Taluk</unittitle>
+              <unitid>MS-012-1-3-2-13</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9808</unitid>
+              <unitdate datechar="creation">21 February 1954</unitdate>
+              <container id="aspace_07a429946057f50f2d001a382536b7e3" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_320ed2c13025e1f986dc78489755b8e6" parent="aspace_07a429946057f50f2d001a382536b7e3" type="folder">13</container>
+              <daogrp xlink:title="Mysore Agricultural and Experimental Union, Chintamani Taluk" xlink:type="extended">
+                <daodesc>
+                  <p>Mysore Agricultural and Experimental Union, Chintamani Taluk</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/81" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/server/api/core/bitstreams/791a0fdf-2b13-4a0e-869f-71bcdbd5e7d1/content" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_80045061d9238491df801ef14601b8b7">
+              <head>Scope and Contents</head>
+              <p>Mentions H 22 Ragi breed, 'Koleroga' and measures against grasshopper attack implemented by Coleman. Also lists requirements of the Agricultural and Experimental Union of Chintamani Taluk.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-14" level="file">
+            <did>
+              <unittitle>Unknown Title</unittitle>
+              <unitid>MS-012-1-3-2-14</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9809</unitid>
+              <unitdate datechar="creation">21 February 1954</unitdate>
+              <container id="aspace_bab1a9f6e1ce220423074791983573e6" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_84ab6b018d0ec2176f1a0f42c99de8cb" parent="aspace_bab1a9f6e1ce220423074791983573e6" type="folder">14</container>
+              <daogrp xlink:title="Unknown Title" xlink:type="extended">
+                <daodesc>
+                  <p>Unknown Title</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/82" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/ab9fec8a-61ed-4294-bb4a-a10f919d3e66/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_7b8cb156584638d9f73434d99dc024c9">
+              <head>Scope and Contents</head>
+              <p>Mentions cattle veterinary centre in Malur town. Includes names of dignitaries present at the event and unveiling of the donor's statue at the veterinary centre.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-15" level="file">
+            <did>
+              <unittitle>Mandya District Mahajans</unittitle>
+              <unitid>MS-012-1-3-2-15</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9810</unitid>
+              <unitdate datechar="creation">25 February 1954</unitdate>
+              <container id="aspace_9d87e1a270a951b17d173d22d2601198" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_70a4a8d3f454a5a471eb4b1b89655fe2" parent="aspace_9d87e1a270a951b17d173d22d2601198" type="folder">15</container>
+              <daogrp xlink:title="Mandya District Mahajans" xlink:type="extended">
+                <daodesc>
+                  <p>Mandya District Mahajans</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/83" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/514c2604-eba0-46c8-a5e0-4001ce12af0a/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_1bf8afb0411e2b67d01a8b317d452589">
+              <head>Scope and Contents</head>
+              <p>Mentions Coleman's contribution in setting up of Coffee Research Station at Balehonnur and Visvesvaraya canal in Mandya.</p>
+            </scopecontent>
+          </c>
+          <c id="aspace_MS-012-1-3-2-16" level="file">
+            <did>
+              <unittitle>Village Panchayat, Bidadi, Ramanagaram Taluk</unittitle>
+              <unitid>MS-012-1-3-2-16</unitid>
+              <unitid type="aspace_uri">/repositories/2/archival_objects/9811</unitid>
+              <unitdate datechar="creation">10 March 1954</unitdate>
+              <container id="aspace_9d4172dededc7d512b1b6a594f299a5a" label="Mixed Materials" type="box">MS-012 Box 2</container>
+              <container id="aspace_f051e7923a2f69f1a78af364acfd8fc4" parent="aspace_9d4172dededc7d512b1b6a594f299a5a" type="folder">16</container>
+              <daogrp xlink:title="Village Panchayat, Bidadi, Ramanagaram Taluk" xlink:type="extended">
+                <daodesc>
+                  <p>Village Panchayat, Bidadi, Ramanagaram Taluk</p>
+                </daodesc>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/handle/42412/84" xlink:type="locator"/>
+                <daoloc xlink:href="https://collections.archives.ncbs.res.in/bitstreams/a41667dd-4661-4868-a190-9a72c31c2869/download" xlink:type="locator"/>
+              </daogrp>
+            </did>
+            <scopecontent id="aspace_c6c624c519a6dee149a3eb8725d8a623">
+              <head>Scope and Contents</head>
+              <p>Mentions Coleman's contribution in setting up a Veterinary Department in the taluk.</p>
+            </scopecontent>
+          </c>
+        </c>
+      </c>
