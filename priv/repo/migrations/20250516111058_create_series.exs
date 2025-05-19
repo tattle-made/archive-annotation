@@ -3,7 +3,7 @@ defmodule Kosh.Repo.Migrations.CreateSeries do
 
   def change do
     create table(:series) do
-      add :title, :string, null: false
+      add :title, :text, null: false
       add :unitid, :map, default: %{}, null: false
       add :collection_id, references(:collections, on_delete: :restrict), null: false
 

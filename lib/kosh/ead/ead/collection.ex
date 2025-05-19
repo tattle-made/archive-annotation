@@ -4,6 +4,8 @@ defmodule Kosh.EAD.Collection do
 
   schema "collections" do
     field :title, :string
+    # will be derived from unitid, separate field for better querying and indexing
+    field :unit_code, :string
     field :scopecontent, :map, default: %{}
 
     many_to_many :subjects, Kosh.EAD.Subject,
@@ -21,10 +23,11 @@ defmodule Kosh.EAD.Collection do
   @doc false
   def changeset(collection, attrs) do
     collection
-    |> cast(attrs, [:title, :scopecontent])
+    |> cast(attrs, [:title, :unit_code, :scopecontent])
     |> cast_embed(:unitdate)
     |> cast_embed(:unitid)
-    |> validate_required([:title])
+    |> validate_required([:title, :unit_code])
     |> unique_constraint(:title)
+    |> unique_constraint(:unit_code)
   end
 end

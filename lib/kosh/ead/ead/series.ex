@@ -14,7 +14,7 @@ defmodule Kosh.EAD.Series do
     @doc false
   def changeset(series, attrs) do
     series
-    |> cast(attrs, [:name, :collection_id])
+    |> cast(attrs, [:title, :collection_id])
     |> cast_embed(:unitid)
     |> validate_required([:title, :collection_id])
     |> assoc_constraint(:collection)

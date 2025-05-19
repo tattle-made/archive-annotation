@@ -3,8 +3,8 @@ defmodule Kosh.Repo.Migrations.CreateFiles do
 
   def change do
     create table(:files) do
-      add :title, :string, null: false
-      add :description, {:array, :string}, default: [], null: false
+      add :title, :text, null: false
+      add :description, {:array, :text}, default: [], null: false
       add :unitdate, :map, default: %{}, null: false
       add :unitid, :map, default: %{}, null: false
       add :dao, :map, default: %{}, null: false
