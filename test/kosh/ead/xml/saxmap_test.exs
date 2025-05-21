@@ -12,6 +12,8 @@ defmodule Kosh.EAD.XML.SaxmapTest do
 
     {:ok, parsed_map} = Saxmap.parse(xml_content)
 
+    IO.inspect(parsed_map)
+
     processed_map = Saxmap.process_ead_map(parsed_map)
 
     ead = get_in(processed_map, ["ead"])

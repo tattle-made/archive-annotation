@@ -9,10 +9,7 @@ defmodule Kosh.EAD.ModelTest  do
   test "changeset/2" do
     map = EADFixtures.simple_xml_map()
     changeset = Model.changeset(%Model{}, map)
-    IO.inspect(changeset, label: "CHANGESET")
     struct = Changeset.apply_changes(changeset)
-
-    IO.inspect(struct)
 
     assert struct.ead.eadheader.eadid.countrycode == "IN"
     assert struct.ead.archdesc.did.repository.corpname == "Archives at NCBS"

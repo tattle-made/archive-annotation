@@ -3,11 +3,11 @@ defmodule Kosh.EAD.XML.Saxmap do
   Parse xml file into Elixir map using saxmap
   """
   alias SAXMap
+  alias Kosh.EAD.XML.LeslieMap
 
   def parse(doc) do
     SAXMap.from_string(doc, ignore_attribute: false)
   end
-
 
   def process_ead_map(nil), do: nil
 
@@ -20,17 +20,32 @@ defmodule Kosh.EAD.XML.Saxmap do
   end
 
   def process_ead_map(list) when is_list(list) do
-    Enum.map(list, &process_ead_map/1)
+    list
+    |> Enum.map(&process_ead_map/1)
+    |> Enum.map(fn
+      str when is_binary(str) -> String.trim(str)
+      other -> other
+    end)
+    |> Enum.reject(fn
+      nil -> true
+      "" -> true
+      [] -> true
+      _ -> false
+    end)
+    |> case do
+      [single] -> single
+      other -> other
+    end
   end
 
   def process_ead_map(map) when is_map(map) do
     Enum.reduce(map, %{}, fn
-      # Special “content” key: handle but don’t directly put under "content"
+      # Special "content" key: handle but don't directly put under "content"
       {"content", v}, acc ->
         processed = process_ead_map(v)
 
         cond do
-          processed == nil ->
+          processed in [nil, [], %{}] ->
             acc
 
           is_map(processed) ->
@@ -46,105 +61,129 @@ defmodule Kosh.EAD.XML.Saxmap do
     end)
   end
 
-  def runTest do
-    test_map = %{
-      "ead" => %{
-        "content" => %{
-          "archdesc" => %{
-            "content" => %{
-              "did" => %{
-                "content" => %{
-                  "repository" => %{
-                    "content" => %{"corpname" => %{"content" => "Archives at NCBS"}}
-                  }
-                }
-              }
-            },
+  def extract_contents_from_processed_map(map) when is_map(map) do
+    with ead when not is_nil(ead) <- get_in(map, ["ead"]),
+         archdesc when not is_nil(archdesc) <- get_in(ead, ["archdesc"]),
+         collection_did when not is_nil(collection_did) <- get_in(archdesc, ["did"]),
+         collection_title when not is_nil(collection_title) <- get_in(collection_did, ["unittitle"]) do
+      collection_scopecontent = get_in(archdesc, ["scopecontent"]) || %{}
+      collection_subjects = get_in(archdesc, ["controlaccess", "subject"]) || []
+      collection_unitdate = get_in(collection_did, ["unitdate"]) || %{}
 
-          },
-          "eadheader" => %{
-            "content" => %{
-              "address" => %{
-                "content" => %{
-                  "addressline" => [
-                    %{
-                      "content" =>
-                        "National Centre for Biological Sciences - Tata Institute of Fundamental Research"
-                    },
-                    %{"content" => "Bangalore, Karnataka 560065"},
-                    %{"content" => "Business Number: +9180 6717 6010"},
-                    %{"content" => "Business Number: +9180 6717 6011"},
-                    %{"content" => "archives@ncbs.res.in"}
-                  ]
-                }
-              },
-              "eadid" => %{"_countrycode" => "IN", "content" => nil}
-            }
+      {collection_unitid, collection_unit_code} =
+        extract_unitid(collection_did)
+
+      collection = %{
+        title: collection_title,
+        unit_code: collection_unit_code,
+        scopecontent: collection_scopecontent,
+        subjects: collection_subjects,
+        unitdate: collection_unitdate,
+        unitid: collection_unitid
+      }
+
+      children = archdesc |> get_in(["dsc", "c"]) |> List.wrap()
+      nested_structure = process_children_nodes(children)
+
+      {:ok, {collection, nested_structure}}
+    else
+      nil -> {:error, "Invalid EAD structure: missing required fields"}
+    end
+  end
+
+  defp process_children_nodes(nodes) when is_list(nodes) do
+    Enum.map(nodes, &process_node/1)
+  end
+
+  defp process_node(node) do
+    case node["level"] do
+      "series" ->
+        with title when not is_nil(title) <- node["did"]["unittitle"] do
+          %{
+            type: :series,
+            title: title,
+            unitid: extract_unitid(node["did"]) |> elem(0),
+            children: process_children_nodes(List.wrap(node["c"]))
           }
-        }
-      }
-    }
+        else
+          nil -> nil
+        end
 
-    test_map4 = %{
-  "ead" => %{
-    "content" => %{
-      "archdesc" => %{
-        "content" => %{
-          "controlaccess" => %{
-            "content" => %{
-              "subject" => [
-                %{"content" => "Agriculture", "source" => "local"},
-                %{"content" => "Betel nut", "source" => "local"},
-                %{"content" => "Coffee berry borer", "source" => "local"},
-                %{"content" => "Coffee plantations", "source" => "local"},
-                %{"content" => "Colonial portraits", "source" => "local"},
-                %{"content" => "Colonial administrators", "source" => "local"},
-                %{"content" => "Colonies", "source" => "local"},
-                %{"content" => "Farm supplies", "source" => "local"},
-                %{"content" => "Field experiments", "source" => "local"}
-              ]
-            }
-          },
-          "did" => %{
-            "content" => %{
-              "repository" => %{
-                "content" => %{"corpname" => %{"content" => "Archives at NCBS"}}
-              }
-            }
+      "subseries" ->
+        with title when not is_nil(title) <- node["did"]["unittitle"] do
+          %{
+            type: :subseries,
+            title: title,
+            unitid: extract_unitid(node["did"]) |> elem(0),
+            children: process_children_nodes(List.wrap(node["c"]))
           }
-        }
-      },
-      "eadheader" => %{
-        "content" => %{
-          "address" => %{
-            "content" => %{
-              "addressline" => [
-                %{
-                  "content" => "National Centre for Biological Sciences - Tata Institute of Fundamental Research"
-                },
-                %{"content" => "Bangalore, Karnataka 560065"},
-                %{"content" => "Business Number: +9180 6717 6010"},
-                %{"content" => "Business Number: +9180 6717 6011"},
-                %{"content" => "archives@ncbs.res.in"}
-              ]
-            }
-          },
-          "eadid" => %{"content" => nil, "countrycode" => "IN"}
-        }
-      }
-    }
-  }
-}
+        else
+          nil -> nil
+        end
 
-    test_map2 = %{
-      "a" => %{
-        "content" => "hello",
-        "b" => "bb"
-      }
-    }
+      "file" ->
+        with title when not is_nil(title) <- node["did"]["unittitle"] do
+          %{
+            type: :file,
+            title: title,
+            unitid: extract_unitid(node["did"]) |> elem(0),
+            description:
+              node
+              |> get_in(["scopecontent", "p"])
+              |> List.wrap(),
+            unitdate: node["did"]["unitdate"] || %{},
+            dao: node["did"]["daogrp"] |> extract_dao(),
+            subjects: node["controlaccess"]["subject"] |> List.wrap()
+          }
+        else
+          nil -> nil
+        end
 
-    ans = process_ead_map(test_map4)
-    # ans = processEadMap(test_map)
-    IO.inspect(ans)
+      _ ->
+        nil
+    end
+  end
+
+  defp extract_dao(daogrp) do
+    case daogrp do
+      %{
+        "daoloc" => daolocs,
+        "xlink:title" => title,
+        "xlink:type" => type
+      } ->
+        %{
+          xlink_title: title,
+          xlink_type: type,
+          daolocs:
+            Enum.map(daolocs, fn loc ->
+              %{
+                xlink_href: loc["xlink:href"],
+                xlink_type: loc["xlink:type"]
+              }
+            end)
+        }
+
+      _ ->
+        %{}
+    end
+  end
+
+  defp extract_unitid(did) do
+    case get_in(did, ["unitid"]) do
+      [id, %{"content" => uri, "type" => type}] ->
+        {%{id: id, uri: uri, type: type}, id}
+
+      id when is_binary(id) ->
+        {%{id: id}, id}
+
+      _ ->
+        {%{}, nil}
+    end
+  end
+
+  def getmap() do
+    map = LeslieMap.get_map()
+    ans = extract_contents_from_processed_map(map)
+    IO.inspect(ans, label: "ans", limit: :infinity)
   end
 end

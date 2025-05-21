@@ -39,8 +39,13 @@ defmodule KoshWeb.UploadLive do
 
         # Process the XML file and save to the database
         case EAD.process_xml_file(dest) do
-          {:ok, ead} ->
-            {:ok, %{path: destination_path, processed: true, ead_id: ead.id}}
+          {:ok, collection} ->
+            {:ok, %{
+              path: destination_path,
+              processed: true,
+              collection_id: collection.id,
+              title: collection.title
+            }}
 
           {:error, reason} ->
             {:ok, %{path: destination_path, processed: false, error: reason}}
@@ -49,11 +54,11 @@ defmodule KoshWeb.UploadLive do
 
     processing_status =
       case uploaded_files do
-        [%{processed: true, ead_id: ead_id}] ->
-          {:success, "File processed successfully.", ead_id}
+        [%{processed: true, collection_id: collection_id, title: title}] ->
+          {:success, "File processed successfully. Collection '#{title}' has been created.", collection_id}
 
         [%{processed: false, error: reason}] ->
-          {:error, "Failed to process file: #{inspect(reason)}"}
+          {:error, "Failed to process file: #{reason}"}
 
         _ ->
           nil
@@ -81,7 +86,7 @@ defmodule KoshWeb.UploadLive do
     <div class="w-full">
       <div class="w-full p-6 mt-6">
         <div class="rounded-lg border border-gray-300 p-8 mx-auto max-w-xl">
-          <h2 class="text-2xl font-semibold text-secondary-purple mb-6">Upload XML File</h2>
+          <h2 class="text-2xl font-semibold text-secondary-purple mb-6">Upload EAD XML File</h2>
           <p class="text-gray-600 mb-6">Max Size: 5MB</p>
 
           <form phx-submit="save" phx-change="validate">
@@ -133,18 +138,18 @@ defmodule KoshWeb.UploadLive do
               type="submit"
               class="btn-primary-purple text-white font-semibold py-2 px-6 rounded"
             >
-              Upload XML
+              Upload EAD XML
             </button>
           </form>
 
           <%= if @processing_status do %>
             <%= case @processing_status do %>
-              <% {:success, message, ead_id} -> %>
+              <% {:success, message, collection_id} -> %>
                 <div class="mt-8 p-4 border border-green-200 bg-green-50 rounded">
                   <h3 class="text-lg font-medium text-green-800 mb-2"><%= message %></h3>
                   <p class="text-green-700">
-                    <.link navigate={~p"/display/#{ead_id}"} class="underline font-medium">
-                      View latest processed data
+                    <.link navigate={~p"/display"} class="underline font-medium">
+                      View collection details
                     </.link>
                   </p>
                 </div>
