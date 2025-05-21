@@ -62,30 +62,33 @@ defmodule Kosh.EAD.XML.Saxmap do
   end
 
   def extract_contents_from_processed_map(map) when is_map(map) do
-    ead = get_in(map, ["ead"])
-    archdesc = get_in(ead, ["archdesc"])
-    collection_did = get_in(archdesc, ["did"])
-    collection_scopecontent = get_in(archdesc, ["scopecontent"]) || %{}
-    collection_subjects = get_in(archdesc, ["controlaccess", "subject"]) || []
-    collection_title = get_in(collection_did, ["unittitle"])
-    collection_unitdate = get_in(collection_did, ["unitdate"]) || %{}
+    with ead when not is_nil(ead) <- get_in(map, ["ead"]),
+         archdesc when not is_nil(archdesc) <- get_in(ead, ["archdesc"]),
+         collection_did when not is_nil(collection_did) <- get_in(archdesc, ["did"]),
+         collection_title when not is_nil(collection_title) <- get_in(collection_did, ["unittitle"]) do
+      collection_scopecontent = get_in(archdesc, ["scopecontent"]) || %{}
+      collection_subjects = get_in(archdesc, ["controlaccess", "subject"]) || []
+      collection_unitdate = get_in(collection_did, ["unitdate"]) || %{}
 
-    {collection_unitid, collection_unit_code} =
-      extract_unitid(collection_did)
+      {collection_unitid, collection_unit_code} =
+        extract_unitid(collection_did)
 
-    collection = %{
-      title: collection_title,
-      unit_code: collection_unit_code,
-      scopecontent: collection_scopecontent,
-      subjects: collection_subjects,
-      unitdate: collection_unitdate,
-      unitid: collection_unitid
-    }
+      collection = %{
+        title: collection_title,
+        unit_code: collection_unit_code,
+        scopecontent: collection_scopecontent,
+        subjects: collection_subjects,
+        unitdate: collection_unitdate,
+        unitid: collection_unitid
+      }
 
-    children = archdesc |> get_in(["dsc", "c"]) |> List.wrap()
-    nested_structure = process_children_nodes(children)
+      children = archdesc |> get_in(["dsc", "c"]) |> List.wrap()
+      nested_structure = process_children_nodes(children)
 
-    {collection, nested_structure}
+      {:ok, {collection, nested_structure}}
+    else
+      nil -> {:error, "Invalid EAD structure: missing required fields"}
+    end
   end
 
   defp process_children_nodes(nodes) when is_list(nodes) do
@@ -95,40 +98,46 @@ defmodule Kosh.EAD.XML.Saxmap do
   defp process_node(node) do
     case node["level"] do
       "series" ->
-        title = node["did"]["unittitle"]
-        # IO.inspect(title, label: "Series title")
-        %{
-          type: :series,
-          title: title,
-          unitid: extract_unitid(node["did"]) |> elem(0),
-          children: process_children_nodes(List.wrap(node["c"]))
-        }
+        with title when not is_nil(title) <- node["did"]["unittitle"] do
+          %{
+            type: :series,
+            title: title,
+            unitid: extract_unitid(node["did"]) |> elem(0),
+            children: process_children_nodes(List.wrap(node["c"]))
+          }
+        else
+          nil -> nil
+        end
 
       "subseries" ->
-        title = node["did"]["unittitle"]
-        # IO.inspect(title, label: "SubSeries title")
-        %{
-          type: :subseries,
-          title: title,
-          unitid: extract_unitid(node["did"]) |> elem(0),
-          children: process_children_nodes(List.wrap(node["c"]))
-        }
+        with title when not is_nil(title) <- node["did"]["unittitle"] do
+          %{
+            type: :subseries,
+            title: title,
+            unitid: extract_unitid(node["did"]) |> elem(0),
+            children: process_children_nodes(List.wrap(node["c"]))
+          }
+        else
+          nil -> nil
+        end
 
       "file" ->
-        title = node["did"]["unittitle"]
-        # IO.inspect(title, label: "File title")
-        %{
-          type: :file,
-          title: title,
-          unitid: extract_unitid(node["did"]) |> elem(0),
-          description:
-            node
-            |> get_in(["scopecontent", "p"])
-            |> List.wrap(),
-          unitdate: node["did"]["unitdate"] || %{},
-          dao: node["did"]["daogrp"] |> extract_dao(),
-          subjects: node["controlaccess"]["subject"] |> List.wrap()
-        }
+        with title when not is_nil(title) <- node["did"]["unittitle"] do
+          %{
+            type: :file,
+            title: title,
+            unitid: extract_unitid(node["did"]) |> elem(0),
+            description:
+              node
+              |> get_in(["scopecontent", "p"])
+              |> List.wrap(),
+            unitdate: node["did"]["unitdate"] || %{},
+            dao: node["did"]["daogrp"] |> extract_dao(),
+            subjects: node["controlaccess"]["subject"] |> List.wrap()
+          }
+        else
+          nil -> nil
+        end
 
       _ ->
         nil
