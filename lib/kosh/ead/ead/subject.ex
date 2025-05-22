@@ -16,6 +16,11 @@ defmodule Kosh.EAD.Subject do
       on_delete: :nothing,
       on_replace: :delete
 
+    many_to_many :annotations, Kosh.Annotations.SubjectsAnnotation,
+      join_through: "subjects_annotations_subjects",
+      on_delete: :nothing,
+      on_replace: :delete
+
     timestamps()
   end
 
