@@ -7,7 +7,7 @@ defmodule Kosh.Repo.Migrations.CreateDescriptionAnnotations do
       add :file_id,     references(:files, on_delete: :delete_all), null: false
       add :user_id,     references(:users, on_delete: :nothing), null: false
       add :admin_id,    references(:users, on_delete: :nothing)
-      add :status,      :enum, values: ["pending", "accepted", "rejected"], null: false, default: "pending"
+      add :status,      :annotation_status, null: false, default: "pending"
 
       timestamps()
     end
