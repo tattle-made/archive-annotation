@@ -7,7 +7,16 @@ const path = require("path");
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
-  content: ["./js/**/*.js", "../lib/kosh_web.ex", "../lib/kosh_web/**/*.*ex"],
+  content: [
+    "./js/**/*.js",
+    "../lib/kosh_web.ex",
+    "../lib/kosh_web/**/*.*ex",
+    "../lib/kosh_web/**/*.heex",
+    "../lib/kosh_web/**/*.html",
+    "../deps/live_select/lib/live_select/component.*ex",
+    "../deps/live_select/lib/**/*.ex",        // <<< include LiveSelect’s templates :contentReference[oaicite:1]{index=1}    
+    "../deps/live_select/lib/**/*.heex"
+  ],
   // theme: {
   //   extend: {
   //     colors: {

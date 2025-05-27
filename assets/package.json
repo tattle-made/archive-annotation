@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "tailwind.config.js",
   "dependencies": {
-    "alpinejs": "^3.14.9"
+    "alpinejs": "^3.14.9",
+    "live_select":  "file:../deps/live_select"
   },
   "devDependencies": {},
   "scripts": {

@@ -8,6 +8,7 @@ defmodule Kosh.Repo.Migrations.CreateDescriptionAnnotations do
       add :user_id,     references(:users, on_delete: :nothing), null: false
       add :admin_id,    references(:users, on_delete: :nothing)
       add :status,      :annotation_status, null: false, default: "pending"
+      # The annotation_status enum is created in the previous migration 20250522105739_create_annotation_status_enum.exs
 
       timestamps()
     end

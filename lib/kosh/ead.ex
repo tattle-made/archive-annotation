@@ -22,17 +22,19 @@ defmodule Kosh.EAD do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 
     try do
-      {count, _} = Repo.insert_all(
-        "collections_subjects",
-        Enum.map(processed_subjects, fn subject ->
-          %{
-            collection_id: collection.id,
-            subject_id: subject.id,
-            inserted_at: now,
-            updated_at: now
-          }
-        end)
-      )
+      {count, _} =
+        Repo.insert_all(
+          "collections_subjects",
+          Enum.map(processed_subjects, fn subject ->
+            %{
+              collection_id: collection.id,
+              subject_id: subject.id,
+              inserted_at: now,
+              updated_at: now
+            }
+          end)
+        )
+
       if count == length(processed_subjects) do
         {:ok, collection}
       else
@@ -74,17 +76,19 @@ defmodule Kosh.EAD do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 
     try do
-      {count, _} = Repo.insert_all(
-        "files_subjects",
-        Enum.map(processed_subjects, fn subject ->
-          %{
-            file_id: file.id,
-            subject_id: subject.id,
-            inserted_at: now,
-            updated_at: now
-          }
-        end)
-      )
+      {count, _} =
+        Repo.insert_all(
+          "files_subjects",
+          Enum.map(processed_subjects, fn subject ->
+            %{
+              file_id: file.id,
+              subject_id: subject.id,
+              inserted_at: now,
+              updated_at: now
+            }
+          end)
+        )
+
       if count == length(processed_subjects) do
         {:ok, file}
       else
@@ -120,7 +124,9 @@ defmodule Kosh.EAD do
       case Repo.get_by(Subject, content: content) do
         nil ->
           case Repo.insert(Subject.changeset(%Subject{}, %{content: content, source: source})) do
-            {:ok, inserted_subject} -> inserted_subject
+            {:ok, inserted_subject} ->
+              inserted_subject
+
             {:error, changeset} ->
               # If insert fails, try to get the subject again in case it was inserted concurrently
               case Repo.get_by(Subject, content: content) do
@@ -135,13 +141,21 @@ defmodule Kosh.EAD do
     end)
   end
 
+  def search_subjects(name) when is_binary(name) do
+    Subject
+    |> where([s], ilike(s.content, ^"%#{name}%"))
+    |> limit(10)
+    |> Repo.all()
+  end
+
   # Main EAD processing function
   @spec process_xml_file(String.t()) :: {:ok, struct()} | {:error, String.t()}
   def process_xml_file(file_path) do
     with {:ok, xml_content} <- Elixir.File.read(file_path),
          {:ok, parsed_map} <- Saxmap.parse(xml_content),
          processed_map <- Saxmap.process_ead_map(parsed_map),
-         {:ok, {collection, nested_structure}} <- Saxmap.extract_contents_from_processed_map(processed_map) do
+         {:ok, {collection, nested_structure}} <-
+           Saxmap.extract_contents_from_processed_map(processed_map) do
       insert_ead_contents({collection, nested_structure})
     else
       {:error, reason} -> {:error, reason}
@@ -165,15 +179,19 @@ defmodule Kosh.EAD do
                 :ok -> inserted_collection
                 {:error, reason} -> Repo.rollback("Failed to process nested structure: #{reason}")
               end
-            {:error, reason} -> Repo.rollback("Failed to add subjects: #{reason}")
+
+            {:error, reason} ->
+              Repo.rollback("Failed to add subjects: #{reason}")
           end
+
         {:error, changeset} ->
           Repo.rollback("Failed to create collection: #{inspect(changeset.errors)}")
       end
     end)
   end
 
-  @spec process_nested_structure(list(), integer(), integer() | nil, integer() | nil) :: :ok | {:error, String.t()}
+  @spec process_nested_structure(list(), integer(), integer() | nil, integer() | nil) ::
+          :ok | {:error, String.t()}
   defp process_nested_structure(nodes, collection_id, series_id, sub_series_id)
        when is_list(nodes) do
     try do
@@ -183,13 +201,15 @@ defmodule Kosh.EAD do
           {:error, reason} -> throw({:error, reason})
         end
       end)
+
       :ok
     catch
       {:error, reason} -> {:error, reason}
     end
   end
 
-  @spec process_node_for_db(map(), integer(), integer() | nil, integer() | nil) :: {:ok, struct()} | {:error, String.t()}
+  @spec process_node_for_db(map(), integer(), integer() | nil, integer() | nil) ::
+          {:ok, struct()} | {:error, String.t()}
   defp process_node_for_db(%{type: :series} = node, collection_id, _series_id, _sub_series_id) do
     # Drop non-schema fields and add collection_id
     series_attrs =
@@ -204,7 +224,9 @@ defmodule Kosh.EAD do
           :ok -> {:ok, inserted_series}
           {:error, reason} -> {:error, reason}
         end
-      {:error, changeset} -> {:error, "Failed to create series: #{inspect(changeset.errors)}"}
+
+      {:error, changeset} ->
+        {:error, "Failed to create series: #{inspect(changeset.errors)}"}
     end
   end
 
@@ -221,11 +243,18 @@ defmodule Kosh.EAD do
     # Insert subseries
     case create_sub_series(sub_series_attrs) do
       {:ok, inserted_sub_series} ->
-        case process_nested_structure(node.children, collection_id, series_id, inserted_sub_series.id) do
+        case process_nested_structure(
+               node.children,
+               collection_id,
+               series_id,
+               inserted_sub_series.id
+             ) do
           :ok -> {:ok, inserted_sub_series}
           {:error, reason} -> {:error, reason}
         end
-      {:error, changeset} -> {:error, "Failed to create subseries: #{inspect(changeset.errors)}"}
+
+      {:error, changeset} ->
+        {:error, "Failed to create subseries: #{inspect(changeset.errors)}"}
     end
   end
 
@@ -247,7 +276,9 @@ defmodule Kosh.EAD do
           {:ok, _} -> {:ok, inserted_file}
           {:error, reason} -> {:error, "Failed to add subjects to file: #{reason}"}
         end
-      {:error, changeset} -> {:error, "Failed to create file: #{inspect(changeset.errors)}"}
+
+      {:error, changeset} ->
+        {:error, "Failed to create file: #{inspect(changeset.errors)}"}
     end
   end
 

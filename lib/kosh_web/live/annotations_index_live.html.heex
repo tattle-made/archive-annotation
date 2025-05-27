@@ -1,0 +1,126 @@
+<div class="section-gutter w-full ">
+  <div class="mb-8">
+    <h2 class="text-xl font-bold text-primary-purple mb-4">Submitted</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <%= for annotation <- @submitted_descriptions do %>
+        <div class="bg-[#F4F3FB] rounded-xl shadow border border-[#E6E9F5] p-6 relative">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-base font-bold text-gray-500 bg-gray-200 px-3 py-1 rounded">Description</span>
+            </div>
+            <svg class="w-4 h-4 text-gray-400 cursor-pointer" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+          </div>
+          <div class="text-lg font-semibold text-[#2D254C] mb-2">
+            <%= annotation.description %>
+          </div>
+          <div class="text-[#8B8BA7] text-lg mb-4">
+            <%= annotation.file && annotation.file.title %>
+          </div>
+          <div class="flex justify-between items-center text-base text-[#8B8BA7] bg-[#E6E9F5] rounded-b-xl px-4 py-2 mt-6 -mx-6 -mb-6">
+            <span class="uppercase tracking-wide">
+              <%= Calendar.strftime(annotation.inserted_at, "%d %B %Y") %>
+            </span>
+            <span class="uppercase tracking-wide">
+              <%= annotation.file && annotation.file.unitid && annotation.file.unitid.id %>
+            </span>
+          </div>
+        </div>
+      <% end %>
+      <%= for annotation <- @submitted_subjects do %>
+        <div class="bg-[#F4F3FB] rounded-xl shadow border border-[#E6E9F5] p-6 relative">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-base font-bold text-gray-500 bg-gray-200 px-3 py-1 rounded">Subject</span>
+            </div>
+            <svg class="w-4 h-4 text-gray-400 cursor-pointer" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+          </div>
+          <%= if Map.has_key?(annotation, :subjects) && annotation.subjects && length(annotation.subjects) > 0 do %>
+            <ul class="mb-2">
+              <%= for subject <- annotation.subjects do %>
+                <li class="text-lg font-semibold text-[#2D254C]"> <%= subject.content %> </li>
+              <% end %>
+            </ul>
+          <% end %>
+          <%= if Map.has_key?(annotation, :new_subjects) && annotation.new_subjects && length(annotation.new_subjects) > 0 do %>
+            <ul class="mb-2">
+              <%= for subject <- annotation.new_subjects do %>
+                <li class="text-lg font-semibold text-violet-500"> <%= subject %> </li>
+              <% end %>
+            </ul>
+          <% end %>
+          <div class="text-[#8B8BA7] text-lg mb-4">
+            <%= annotation.file && annotation.file.title %>
+          </div>
+          <div class="flex justify-between items-center text-base text-[#8B8BA7] bg-[#E6E9F5] rounded-b-xl px-4 py-2 mt-6 -mx-6 -mb-6">
+            <span class="uppercase tracking-wide">
+              <%= Calendar.strftime(annotation.inserted_at, "%d %B %Y") %>
+            </span>
+            <span class="uppercase tracking-wide">
+              <%= annotation.file && annotation.file.unitid && annotation.file.unitid.id %>
+            </span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="text-xl font-bold text-primary-purple mb-4">Approved</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <%= for annotation <- @approved_descriptions do %>
+        <div class="bg-[#F4F3FB] rounded-xl shadow border border-[#E6E9F5] p-6 relative">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-[#34D399]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+              <span class="text-base font-bold text-[#34D399] bg-[#D1FAE5] px-3 py-1 rounded">Description</span>
+            </div>
+            <svg class="w-4 h-4 text-gray-400 cursor-pointer" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+          </div>
+          <div class="text-2xl font-semibold text-[#2D254C] mb-2">
+            <%= annotation.description %>
+          </div>
+          <div class="text-[#8B8BA7] text-lg mb-4">
+            <%= annotation.file && annotation.file.title %>
+          </div>
+          <div class="flex justify-between items-center text-base text-[#8B8BA7] bg-[#E6E9F5] rounded-b-xl px-4 py-2 mt-6 -mx-6 -mb-6">
+            <span class="uppercase tracking-wide">
+              <%= Calendar.strftime(annotation.inserted_at, "%d %B %Y") %>
+            </span>
+            <span class="uppercase tracking-wide">
+              <%= annotation.file && annotation.file.unitid && annotation.file.unitid.id %>
+            </span>
+          </div>
+        </div>
+      <% end %>
+      <%= for annotation <- @approved_subjects do %>
+        <div class="bg-[#F4F3FB] rounded-xl shadow border border-[#E6E9F5] p-6 relative">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-[#60A5FA]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+              <span class="text-base font-bold text-[#60A5FA] bg-[#DBEAFE] px-3 py-1 rounded">Subject</span>
+            </div>
+            <svg class="w-4 h-4 text-gray-400 cursor-pointer" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+          </div>
+          <%= if Map.has_key?(annotation, :subjects) && annotation.subjects && length(annotation.subjects) > 0 do %>
+            <ul class="mb-2">
+              <%= for subject <- annotation.subjects do %>
+                <li class="text-2xl font-semibold text-[#2D254C]"> <%= subject.content %> </li>
+              <% end %>
+            </ul>
+          <% end %>
+          <div class="text-[#8B8BA7] text-lg mb-4">
+            <%= annotation.file && annotation.file.title %>
+          </div>
+          <div class="flex justify-between items-center text-base text-[#8B8BA7] bg-[#E6E9F5] rounded-b-xl px-4 py-2 mt-6 -mx-6 -mb-6">
+            <span class="uppercase tracking-wide">
+              <%= Calendar.strftime(annotation.inserted_at, "%d %B %Y") %>
+            </span>
+            <span class="uppercase tracking-wide">
+              <%= annotation.file && annotation.file.unitid && annotation.file.unitid.id %>
+            </span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
