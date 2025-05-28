@@ -28,6 +28,9 @@ defmodule Kosh.EAD.File do
       on_delete: :nothing,
       on_replace: :delete
 
+    has_many :description_annotations, Kosh.Annotations.DescriptionAnnotation
+    has_many :subjects_annotations, Kosh.Annotations.SubjectsAnnotation
+
     timestamps()
   end
 

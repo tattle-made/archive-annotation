@@ -4,6 +4,7 @@ defmodule KoshWeb.DisplayLive do
 
   @impl Phoenix.LiveView
   def mount(%{"id" => id}, _session, socket) do
+    # IO.inspect(socket, label: "id")
     case EAD.get_file(id) do
       nil ->
         {:ok,
@@ -14,6 +15,11 @@ defmodule KoshWeb.DisplayLive do
       file ->
         {:ok, assign(socket, file: file)}
     end
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({:flash, kind, message}, socket) do
+    {:noreply, put_flash(socket, kind, message)}
   end
 
   @impl Phoenix.LiveView
@@ -33,7 +39,6 @@ defmodule KoshWeb.DisplayLive do
               <p class="text-secondary-purple"><%= @file.title %></p>
             </div>
           </div>
-
           <!-- Subject(s) Section -->
           <div>
             <h2 class="text-primary-purple font-bold mb-2">Subject(s)</h2>
@@ -50,7 +55,6 @@ defmodule KoshWeb.DisplayLive do
               <% end %>
             </div>
           </div>
-
           <!-- Description Section -->
           <div>
             <h2 class="text-primary-purple font-bold mb-2">Description</h2>
@@ -62,7 +66,6 @@ defmodule KoshWeb.DisplayLive do
               <% end %>
             </div>
           </div>
-
           <!-- Collection Section -->
           <div>
             <h2 class="text-primary-purple font-bold mb-2">Collection</h2>
@@ -70,7 +73,6 @@ defmodule KoshWeb.DisplayLive do
               <p class="text-secondary-purple"><%= @file.collection.title %></p>
             </div>
           </div>
-
           <!-- Series Section -->
           <div>
             <h2 class="text-primary-purple font-bold mb-2">Series</h2>
@@ -82,7 +84,6 @@ defmodule KoshWeb.DisplayLive do
               <% end %>
             </div>
           </div>
-
           <!-- Sub-series Section -->
           <div>
             <h2 class="text-primary-purple font-bold mb-2">Sub-series</h2>
@@ -94,7 +95,6 @@ defmodule KoshWeb.DisplayLive do
               <% end %>
             </div>
           </div>
-
           <!-- Date(s) Section -->
           <div>
             <h2 class="text-primary-purple font-bold mb-2">Date(s)</h2>
@@ -106,7 +106,6 @@ defmodule KoshWeb.DisplayLive do
               <% end %>
             </div>
           </div>
-
           <!-- Identifier Section -->
           <div>
             <h2 class="text-primary-purple font-bold mb-2">Identifier</h2>
@@ -118,7 +117,6 @@ defmodule KoshWeb.DisplayLive do
               <% end %>
             </div>
           </div>
-
           <!-- Key Object Links Section -->
           <div>
             <h2 class="text-primary-purple font-bold mb-2">Key Object Links</h2>
@@ -127,10 +125,15 @@ defmodule KoshWeb.DisplayLive do
                 <%= for loc <- @file.dao.daolocs do %>
                   <div class="bg-gray-100 rounded p-4 flex items-center justify-between">
                     <p class="text-secondary-purple truncate flex-1">
-                      <%= loc["xlink_href"] && "Digital Object URL..." || "No URL" %>
+                      <%= (loc["xlink_href"] && "Digital Object URL...") || "No URL" %>
                     </p>
                     <%= if loc["xlink_href"] do %>
-                      <a href={loc["xlink_href"]} target="_blank" rel="noopener noreferrer" class="ml-2 flex-shrink-0">
+                      <a
+                        href={loc["xlink_href"]}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="ml-2 flex-shrink-0"
+                      >
                         <span class="inline-block ml-2">↗</span>
                       </a>
                     <% end %>
@@ -161,6 +164,7 @@ defmodule KoshWeb.DisplayLive do
         </div>
       </div>
     </div>
+    <.live_component module={KoshWeb.Components.AnnotationFormComponent} id="annotation-form" file={@file} current_user={@current_user} />
     """
   end
 end

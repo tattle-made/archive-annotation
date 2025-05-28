@@ -22,15 +22,19 @@ import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
 import Alpine from 'alpinejs'
+import live_select from "live_select"
  
 window.Alpine = Alpine
  
 Alpine.start()
 
+const hooks = {...live_select}
+
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 let liveSocket = new LiveSocket("/live", Socket, {
+  hooks,
   longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },
   dom: {

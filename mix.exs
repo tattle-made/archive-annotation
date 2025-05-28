@@ -61,7 +61,8 @@ defmodule Kosh.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:sax_map, "~> 1.4"},
-      {:saxy, "~> 1.6"}
+      {:saxy, "~> 1.6"},
+      {:live_select, "~> 1.6.0"}
     ]
   end
 

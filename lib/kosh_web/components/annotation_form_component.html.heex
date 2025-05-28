@@ -1,0 +1,61 @@
+<div class="section-gutter w-full bg-secondary-purple pt-9 pb-20">
+  <p class="text-white text-body-md-18 sm:text-body-lg-24 xl:text-2xl">
+    An object has many lives
+  </p>
+  <p class="text-[#E9FFB1] text-body-lg-24 sm:text-heading-28 xl:text-display-40 font-bold mb-9">
+    Discover what others have to say about these collections.
+  </p>
+  <div class="py-10 sm:py-14 xl:py-20 bg-white flex flex-col lg:flex-row w-[90%] sm:w-[85%] xl:w-[80%] mx-auto rounded-lg space-y-10 lg:space-y-0 lg:space-x-10">
+    <div class="w-full lg:w-1/4">
+      <p>Featured Annotations</p>
+      <p>Add Annotations</p>
+    </div>
+    <.form
+      for={@form}
+      phx-change="validate"
+      phx-submit="submit"
+      phx-target={@myself}
+      class="grow flex flex-col space-y-10"
+    >
+      <div class="flex flex-col lg:flex-row space-y-10 lg:space-y-0 lg:space-x-10">
+        <div class="w-full lg:w-1/2">
+          <p class="text-secondary-purple font-bold text-body-md-18">Descriptions</p>
+          <.input
+            field={@form[:description]}
+            type="textarea"
+            name="annotation_form[description]"
+            value={@form.params["description"]}
+            placeholder="Add your descriptions here..."
+            class="h-60 sm:h-70 xl:h-80 border-2 !border-primary-purple focus:!border-secondary-purple border-dotted !text-primary-grey focus:!text-secondary-purple focus:border-solid !rounded-[4px]"
+          />
+        </div>
+        <div class="w-full lg:w-1/2 subjects text-gray-500 h-fit">
+          <p class="text-secondary-purple font-bold text-body-md-18 mb-2">Subjects</p>
+          <.live_select
+            id="annotation_subjects"
+            field={@form[:subjects]}
+            phx-target={@myself}
+            update_min_len={1}
+            options={[]}
+            debounce={1000}
+            mode={:quick_tags}
+            placeholder="Add a subject..."
+            text_input_class="w-full p-3 text-secondary-purple border-2 border-primary-purple border-dotted rounded-[4px] focus:border-secondary-purple active:border-primary-purple focus:ring-0 focus:outline-none focus:border-solid focus:rounded-none active:outline-none outline-none ring-0"
+            container_extra_class="gap-5 flex flex-col"
+            tags_container_class="w-full flex flex-col gap-5 [&:not(:has(*))]:hidden"
+            tag_class="border-2 border-primary-purple text-primary-grey p-3 relative"
+            clear_tag_button_class="absolute -top-3 -right-3 bg-secondary-pale-grey rounded-full text-primary-purple cursor-pointer"
+            option_class="!text-primary-grey !p-2 sm:!p-3 hover:bg-secondary-lilac"
+            active_option_class="!bg-secondary-lilac"
+            dropdown_extra_class="max-h-40 sm:max-h-56 overflow-y-auto"
+          />
+        </div>
+      </div>
+      <div class="w-full flex justify-end">
+        <button type="submit" class="btn-primary-purple">
+          Save
+        </button>
+      </div>
+    </.form>
+  </div>
+</div>
