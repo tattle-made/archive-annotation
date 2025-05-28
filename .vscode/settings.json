@@ -1,0 +1,12 @@
+{
+  "tailwindCSS.includeLanguages": {
+    "heex": "html",
+    "elixir": "html"
+  },
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "files.associations": {
+    "*.heex": "phoenix-heex"
+  }
+} 
