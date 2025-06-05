@@ -13,7 +13,8 @@ kosh-*.tar
 /priv/static/assets/
 /priv/static/cache_manifest.json
 /priv/static/uploads
+/priv/static/subjects_seed/
 npm-debug.log
 /assets/node_modules/
 env.*
-.docker/*
+.docker/*   
