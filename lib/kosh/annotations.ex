@@ -14,6 +14,76 @@ defmodule Kosh.Annotations do
     |> Repo.insert()
   end
 
+  def approve_description_annotation(id) do
+    case Repo.get(DescriptionAnnotation, id) do
+      nil ->
+        {:error, :not_found}
+
+      annotation ->
+        annotation
+        |> DescriptionAnnotation.changeset(%{status: :accepted})
+        |> Repo.update()
+    end
+  end
+
+  def delete_description_annotation(id) do
+    case Repo.get(DescriptionAnnotation, id) do
+      nil -> {:error, :not_found}
+      annotation -> Repo.delete(annotation)
+    end
+  end
+
+  def approve_subject_annotation(id) do
+    Repo.transaction(fn ->
+      # Get the annotation, preload subjects and file (with accepted_subjects_annotations)
+      annotation =
+        Repo.get(SubjectsAnnotation, id)
+        |> Repo.preload([:subjects, file: [:accepted_subjects_annotations]])
+
+      if annotation == nil do
+        Repo.rollback({:error, :not_found})
+      end
+
+      # Insert new subjects if needed
+      new_subjects =
+        (annotation.new_subjects || [])
+        |> Enum.map(fn sub ->
+          Repo.get_by(Kosh.EAD.Subject, content: sub) ||
+            Repo.insert!(
+              Kosh.EAD.Subject.changeset(%Kosh.EAD.Subject{}, %{content: sub, source: "local"})
+            )
+        end)
+
+      # Collect all subjects (existing + new, no duplicates)
+      all_subjects =
+        (annotation.subjects ++ new_subjects)
+        |> Enum.uniq_by(& &1.id)
+
+      # Update annotation status and subjects association
+      {:ok, updated_annotation} =
+        annotation
+        |> SubjectsAnnotation.changeset(%{status: :accepted})
+        |> Repo.update()
+
+      updated_annotation
+      |> Ecto.Changeset.change()
+      |> Ecto.Changeset.put_assoc(:subjects, all_subjects)
+      |> Repo.update()
+
+      {:ok, updated_annotation}
+    end)
+  end
+
+  @doc """
+  Deletes a subject annotation.
+  """
+  def delete_subject_annotation(id) do
+    case Repo.get(SubjectsAnnotation, id) do
+      nil -> {:error, :not_found}
+      annotation -> Repo.delete(annotation)
+    end
+  end
+
   @doc """
   Lists subject annotations filtered by status.
   Status can be :pending, :accepted, or :rejected.
@@ -51,7 +121,9 @@ defmodule Kosh.Annotations do
 
   # Helper function to filter by status if provided
   defp maybe_filter_by_status(queryable, nil), do: queryable
-  defp maybe_filter_by_status(queryable, status) when status in [:pending, :accepted, :rejected] do
+
+  defp maybe_filter_by_status(queryable, status)
+       when status in [:pending, :accepted, :rejected] do
     from(q in queryable, where: q.status == ^status)
   end
 end

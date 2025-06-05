@@ -26,6 +26,12 @@ defmodule KoshWeb.Router do
     plug KoshWeb.Plugs.AuthenticateAccessToken
   end
 
+  pipeline :admin_only do
+    plug KoshWeb.Plugs.CheckAdminRole,
+      error_msg: "You must be an admin to access that page.",
+      unauthorized_path: "/users/log_in"
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", KoshWeb do
   #   pipe_through :api
@@ -137,6 +143,18 @@ defmodule KoshWeb.Router do
       live "/upload", UploadLive, :index
       live "/display", DisplayIndexLive, :index
       live "/display/:id", DisplayLive, :show
+      # live "/annotations", AnnotationsIndexLive, :index
+    end
+  end
+
+  scope "/", KoshWeb do
+    pipe_through [:browser, :require_authenticated_user, :admin_only]
+
+    live_session :admin_only_session,
+      on_mount: [
+        {KoshWeb.UserAuth, :ensure_authenticated},
+        {KoshWeb.UserAuth, :ensure_authorized}
+      ] do
       live "/annotations", AnnotationsIndexLive, :index
     end
   end
