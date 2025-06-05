@@ -1,6 +1,7 @@
 defmodule Kosh.Annotations.SubjectsAnnotation do
   use Ecto.Schema
   import Ecto.Changeset
+  require Logger
   alias Kosh.Repo
 
   schema "subjects_annotations" do
@@ -11,7 +12,7 @@ defmodule Kosh.Annotations.SubjectsAnnotation do
     field :new_subjects, {:array, :string}, default: []
 
     many_to_many :subjects, Kosh.EAD.Subject,
-      join_through: "subjects_annotations_subjects",
+      join_through: Kosh.Annotations.SubjectsAnnotationsSubjects,
       on_delete: :nothing,
       on_replace: :delete
 
@@ -22,20 +23,25 @@ defmodule Kosh.Annotations.SubjectsAnnotation do
     subjects_annotation
     |> cast(attrs, [:file_id, :user_id, :status, :admin_id, :new_subjects])
     |> validate_required([:file_id, :user_id])
-    |> cast_assoc(:file, with: &Kosh.EAD.File.changeset/2)
   end
 
   def create_with_subjects(attrs) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    IO.inspect(attrs, label: "create_with_subjects attrs")
 
     Repo.transaction(fn ->
       case %__MODULE__{} |> changeset(attrs) |> Repo.insert() do
         {:ok, annotation} ->
+          IO.inspect(annotation, label: "Created annotation")
           if subjects = attrs["subjects"] do
+            IO.inspect(subjects, label: "Processing subjects")
             subject_ids = Enum.map(subjects, fn %{id: id} ->
-              {id_int, _} = Integer.parse(to_string(id))
-              id_int
+              case id do
+                id when is_integer(id) -> id
+                id when is_binary(id) -> {id_int, _} = Integer.parse(id); id_int
+              end
             end)
+            IO.inspect(subject_ids, label: "Parsed subject IDs")
 
             # Insert join table entries with timestamps
             {count, _} = Repo.insert_all(
@@ -60,6 +66,7 @@ defmodule Kosh.Annotations.SubjectsAnnotation do
           end
 
         {:error, changeset} ->
+          Logger.error("Failed to create subjects annotation: #{inspect(changeset.errors)}")
           Repo.rollback(changeset)
       end
     end)

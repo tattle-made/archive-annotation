@@ -14,7 +14,7 @@ module.exports = {
     "../lib/kosh_web/**/*.heex",
     "../lib/kosh_web/**/*.html",
     "../deps/live_select/lib/live_select/component.*ex",
-    "../deps/live_select/lib/**/*.ex",        // <<< include LiveSelect’s templates :contentReference[oaicite:1]{index=1}    
+    "../deps/live_select/lib/**/*.ex",    
     "../deps/live_select/lib/**/*.heex"
   ],
   // theme: {

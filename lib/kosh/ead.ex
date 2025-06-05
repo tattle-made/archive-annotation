@@ -103,7 +103,14 @@ defmodule Kosh.EAD do
   @spec get_file(integer()) :: struct() | nil
   def get_file(id) do
     File
-    |> preload([:subjects, :collection, :series, :sub_series])
+    |> preload([
+      :subjects,
+      :collection,
+      :series,
+      :sub_series,
+      :accepted_description_annotations,
+      accepted_subjects_annotations: :subjects
+    ])
     |> Repo.get(id)
   end
 
@@ -116,10 +123,10 @@ defmodule Kosh.EAD do
 
   # Subject functions
   @spec process_subjects(list()) :: [struct()]
-  defp process_subjects(subjects) when is_list(subjects) do
+  def process_subjects(subjects) when is_list(subjects) do
     Enum.map(subjects, fn subject ->
       content = if is_map(subject), do: subject["content"], else: subject
-      source = if is_map(subject), do: subject["source"], else: "EAD"
+      source = if is_map(subject), do: subject["source"], else: "local"
 
       case Repo.get_by(Subject, content: content) do
         nil ->

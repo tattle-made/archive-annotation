@@ -34,15 +34,15 @@ defmodule KoshWeb.DisplayLive do
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- Title Section -->
           <div>
-            <h2 class="text-primary-purple font-bold mb-2">Title</h2>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Title</h2>
             <div class="bg-gray-100 rounded p-4">
               <p class="text-secondary-purple"><%= @file.title %></p>
             </div>
           </div>
           <!-- Subject(s) Section -->
           <div>
-            <h2 class="text-primary-purple font-bold mb-2">Subject(s)</h2>
-            <div class="space-y-2">
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Subject(s)</h2>
+            <div class="space-y-2 max-h-60 overflow-y-auto">
               <%= for subject <- @file.subjects do %>
                 <div class="bg-gray-100 rounded p-4">
                   <p class="text-secondary-purple"><%= subject.content %></p>
@@ -53,29 +53,49 @@ defmodule KoshWeb.DisplayLive do
                   <p class="text-gray-500">No subjects</p>
                 </div>
               <% end %>
-            </div>
-          </div>
-          <!-- Description Section -->
-          <div>
-            <h2 class="text-primary-purple font-bold mb-2">Description</h2>
-            <div class="bg-gray-100 rounded p-4">
-              <%= if @file.description && length(@file.description) > 0 do %>
-                <p class="text-secondary-purple"><%= Enum.join(@file.description, " ") %></p>
-              <% else %>
-                <p class="text-gray-500">No description available</p>
+              <%= if length(@file.accepted_subjects_annotations) > 0 do %>
+                <h3 class="text-primary-purple text-md font-bold mb-2 px-2">Annotations</h3>
+                <%= for annotation <- @file.accepted_subjects_annotations do %>
+                <%= for sub <- annotation.subjects do %>
+                  <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
+                    <%= sub.content %>
+                  </p>
+                <% end %>
+                <% end %>
               <% end %>
             </div>
           </div>
+          <!-- Description Section -->
+          <div class="">
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Description</h2>
+           <div class="max-h-60 overflow-y-auto">
+              <div class="bg-gray-100 rounded p-4 mb-1">
+                <%= if @file.description && length(@file.description) > 0 do %>
+                  <p class="text-secondary-purple"><%= Enum.join(@file.description, " ") %></p>
+                <% else %>
+                  <p class="text-gray-500">No description available</p>
+                <% end %>
+              </div>
+                <%= if length(@file.accepted_description_annotations) > 0 do %>
+                <h3 class="text-primary-purple text-md font-bold mb-2 px-2">Annotations</h3>
+                <%= for annotation <- @file.accepted_description_annotations do %>
+                  <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
+                    <%= annotation.description %>
+                  </p>
+                <% end %>
+              <% end %>
+           </div>
+          </div>
           <!-- Collection Section -->
           <div>
-            <h2 class="text-primary-purple font-bold mb-2">Collection</h2>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Collection</h2>
             <div class="bg-gray-100 rounded p-4">
               <p class="text-secondary-purple"><%= @file.collection.title %></p>
             </div>
           </div>
           <!-- Series Section -->
           <div>
-            <h2 class="text-primary-purple font-bold mb-2">Series</h2>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Series</h2>
             <div class="bg-gray-100 rounded p-4">
               <%= if @file.series do %>
                 <p class="text-secondary-purple"><%= @file.series.title %></p>
@@ -86,7 +106,7 @@ defmodule KoshWeb.DisplayLive do
           </div>
           <!-- Sub-series Section -->
           <div>
-            <h2 class="text-primary-purple font-bold mb-2">Sub-series</h2>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Sub-series</h2>
             <div class="bg-gray-100 rounded p-4">
               <%= if @file.sub_series do %>
                 <p class="text-secondary-purple"><%= @file.sub_series.title %></p>
@@ -97,7 +117,7 @@ defmodule KoshWeb.DisplayLive do
           </div>
           <!-- Date(s) Section -->
           <div>
-            <h2 class="text-primary-purple font-bold mb-2">Date(s)</h2>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Date(s)</h2>
             <div class="bg-gray-100 rounded p-4">
               <%= if @file.unitdate && @file.unitdate.content do %>
                 <p class="text-secondary-purple"><%= @file.unitdate.content %></p>
@@ -108,7 +128,7 @@ defmodule KoshWeb.DisplayLive do
           </div>
           <!-- Identifier Section -->
           <div>
-            <h2 class="text-primary-purple font-bold mb-2">Identifier</h2>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Identifier</h2>
             <div class="bg-gray-100 rounded p-4">
               <%= if @file.unitid && @file.unitid.id do %>
                 <p class="text-secondary-purple"><%= @file.unitid.id %></p>
@@ -119,7 +139,7 @@ defmodule KoshWeb.DisplayLive do
           </div>
           <!-- Key Object Links Section -->
           <div>
-            <h2 class="text-primary-purple font-bold mb-2">Key Object Links</h2>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Key Object Links</h2>
             <%= if @file.dao && map_size(@file.dao) > 0 && @file.dao.daolocs && length(@file.dao.daolocs) > 0 do %>
               <div class="space-y-2">
                 <%= for loc <- @file.dao.daolocs do %>

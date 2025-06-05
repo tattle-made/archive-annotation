@@ -31,6 +31,22 @@ defmodule Kosh.EAD.File do
     has_many :description_annotations, Kosh.Annotations.DescriptionAnnotation
     has_many :subjects_annotations, Kosh.Annotations.SubjectsAnnotation
 
+    has_many :accepted_description_annotations,
+             Kosh.Annotations.DescriptionAnnotation,
+             where: [status: :accepted],
+             foreign_key: :file_id
+
+    has_many :accepted_subjects_annotations,
+             Kosh.Annotations.SubjectsAnnotation,
+             where: [status: :accepted],
+             foreign_key: :file_id
+
+    # many_to_many :annotated_subjects, Kosh.EAD.Subject,
+    #   join_through: "files_subjects",
+    #   on_delete: :nothing,
+    #   on_replace: :delete,
+    #   where: [origin: "annotation"]
+
     timestamps()
   end
 

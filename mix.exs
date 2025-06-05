@@ -62,7 +62,9 @@ defmodule Kosh.MixProject do
       {:bandit, "~> 1.5"},
       {:sax_map, "~> 1.4"},
       {:saxy, "~> 1.6"},
-      {:live_select, "~> 1.6.0"}
+      {:live_select, "~> 1.6.0"},
+      {:timex, "~> 3.0"}
+
     ]
   end
 
