@@ -63,7 +63,8 @@ defmodule Kosh.MixProject do
       {:sax_map, "~> 1.4"},
       {:saxy, "~> 1.6"},
       {:live_select, "~> 1.6.0"},
-      {:timex, "~> 3.0"}
+      {:timex, "~> 3.0"},
+      {:httpoison, "~> 2.0"}
 
     ]
   end
