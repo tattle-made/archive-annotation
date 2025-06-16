@@ -13,7 +13,51 @@ defmodule KoshWeb.DisplayLive do
          |> redirect(to: ~p"/upload")}
 
       file ->
-        {:ok, assign(socket, file: file)}
+        handle_url =
+          file.dao.daolocs
+          |> Enum.find(&String.contains?(&1["xlink_href"], "/handle/"))
+          |> Map.fetch!("xlink_href")
+
+        item_uuid = fetch_item_uuid(handle_url)
+
+        manifest_url =
+          if item_uuid do
+            URI.encode(
+              "https://collections.archives.ncbs.res.in/server/iiif/#{item_uuid}/manifest"
+            )
+          else
+            nil
+          end
+
+        {:ok, assign(socket, file: file, manifest_url: manifest_url)}
+    end
+  end
+
+  defp fetch_item_uuid(handle_url) do
+    case HTTPoison.get(handle_url, [], follow_redirect: false) do
+      {:ok, %HTTPoison.Response{status_code: code, headers: headers}} when code in [301, 302] ->
+        case List.keyfind(headers, "Location", 0) do
+          {"Location", location} ->
+            # If it's a relative path, prefix the site origin
+            redirect_url =
+              if String.starts_with?(location, "/") do
+                "https://collections.archives.ncbs.res.in" <> location
+              else
+                location
+              end
+
+            # Extract the UUID from /items/<UUID>
+            case Regex.run(~r{/items/([0-9a-fA-F\-]+)}, redirect_url, capture: :all_but_first) do
+              [uuid] -> uuid
+              _ -> nil
+            end
+
+          _ ->
+            nil
+        end
+
+      _ ->
+        nil
     end
   end
 
@@ -27,8 +71,34 @@ defmodule KoshWeb.DisplayLive do
     ~H"""
     <div class="section-gutter w-full">
       <div class="w-full text-secondary-purple font-semibold bg-[#E6E9F5]/50 mt-[2px] flex items-center text-body-md-18 h-12 px-4 sm:text-body-lg-24 sm:h-14 sm:px-6 xl:text-heading-28 xl:h-16 xl:px-8">
-        Miili's Archives Annotation Tool
+        <%!-- Miili's Archives Annotation Tool --%>
+        <%= @file.title %>
       </div>
+
+      <%!--Sample Mirador Viewer --%>
+      <%!-- <iframe
+          _ngcontent-dspace-angular-c283=""
+          title="Mirador Viewer"
+          allowtransparency="true"
+          id="mirador-viewer"
+          class="w-full h-[60vh] rounded-lg border"
+          src="https://collections.archives.ncbs.res.in/iiif/mirador/index.html?manifest=https%3A%2F%2Fcollections.archives.ncbs.res.in%2Fserver%2Fiiif%2F9835e173-cb7e-4cf6-994e-94cf57313b0c%2Fmanifest&amp;notMobile=true"
+        >
+        </iframe>  --%>
+
+      <%= if @manifest_url do %>
+        <iframe
+          title="Mirador Viewer"
+          allowtransparency="true"
+          src={"https://collections.archives.ncbs.res.in/iiif/mirador/index.html?manifest=#{@manifest_url}&notMobile=true"}
+          class="w-3/4 h-[60vh] mt-2 mb-4 mx-auto"
+        >
+        </iframe>
+      <% else %>
+        <div class="w-1/2 h-[60vh] mt-2 mb-4 mx-auto flex items-center justify-center bg-gray-100 rounded">
+          <p class="text-gray-500">Digital object viewer not available</p>
+        </div>
+      <% end %>
 
       <div class="py-6  mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -56,11 +126,11 @@ defmodule KoshWeb.DisplayLive do
               <%= if length(@file.accepted_subjects_annotations) > 0 do %>
                 <h3 class="text-primary-purple text-md font-bold mb-2 px-2">Annotations</h3>
                 <%= for annotation <- @file.accepted_subjects_annotations do %>
-                <%= for sub <- annotation.subjects do %>
-                  <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
-                    <%= sub.content %>
-                  </p>
-                <% end %>
+                  <%= for sub <- annotation.subjects do %>
+                    <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
+                      <%= sub.content %>
+                    </p>
+                  <% end %>
                 <% end %>
               <% end %>
             </div>
@@ -68,7 +138,7 @@ defmodule KoshWeb.DisplayLive do
           <!-- Description Section -->
           <div class="">
             <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Description</h2>
-           <div class="max-h-60 overflow-y-auto">
+            <div class="max-h-60 overflow-y-auto">
               <div class="bg-gray-100 rounded p-4 mb-1">
                 <%= if @file.description && length(@file.description) > 0 do %>
                   <p class="text-secondary-purple"><%= Enum.join(@file.description, " ") %></p>
@@ -76,7 +146,7 @@ defmodule KoshWeb.DisplayLive do
                   <p class="text-gray-500">No description available</p>
                 <% end %>
               </div>
-                <%= if length(@file.accepted_description_annotations) > 0 do %>
+              <%= if length(@file.accepted_description_annotations) > 0 do %>
                 <h3 class="text-primary-purple text-md font-bold mb-2 px-2">Annotations</h3>
                 <%= for annotation <- @file.accepted_description_annotations do %>
                   <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
@@ -84,7 +154,7 @@ defmodule KoshWeb.DisplayLive do
                   </p>
                 <% end %>
               <% end %>
-           </div>
+            </div>
           </div>
           <!-- Collection Section -->
           <div>
@@ -184,7 +254,12 @@ defmodule KoshWeb.DisplayLive do
         </div>
       </div>
     </div>
-    <.live_component module={KoshWeb.Components.AnnotationFormComponent} id="annotation-form" file={@file} current_user={@current_user} />
+    <.live_component
+      module={KoshWeb.Components.AnnotationFormComponent}
+      id="annotation-form"
+      file={@file}
+      current_user={@current_user}
+    />
     """
   end
 end
