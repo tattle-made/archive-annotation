@@ -64,8 +64,8 @@ defmodule Kosh.MixProject do
       {:saxy, "~> 1.6"},
       {:live_select, "~> 1.6.0"},
       {:timex, "~> 3.0"},
-      {:httpoison, "~> 2.0"}
-
+      {:httpoison, "~> 2.0"},
+      {:gen_smtp, "~> 1.3"}
     ]
   end
 
