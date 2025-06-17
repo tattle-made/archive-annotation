@@ -23,18 +23,22 @@ import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
 import Alpine from 'alpinejs'
 import live_select from "live_select"
- 
+import Download from "./hooks/download"
+
 window.Alpine = Alpine
  
 Alpine.start()
 
-const hooks = {...live_select}
-
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
+let Hooks = {
+  Download,
+  ...live_select
+}
+
 let liveSocket = new LiveSocket("/live", Socket, {
-  hooks,
+  hooks: Hooks,
   longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },
   dom: {
@@ -47,9 +51,9 @@ let liveSocket = new LiveSocket("/live", Socket, {
 });
 /**
 dom.onBeforeElUpdated Configuration:
-Under the hood, LiveView “patches” the DOM using a library called morphdom. Every time LiveView wants to update an element it replaces the old <el> with a freshly‑rendered <el>. Unfortunately Alpine.js stores all of its reactive state in a hidden property (_x_dataStack) on the old element, so by default any Alpine‑driven UI (dropdowns, tabs, toggles, etc.) will get reset whenever LiveView patches it.
+Under the hood, LiveView "patches" the DOM using a library called morphdom. Every time LiveView wants to update an element it replaces the old <el> with a freshly‑rendered <el>. Unfortunately Alpine.js stores all of its reactive state in a hidden property (_x_dataStack) on the old element, so by default any Alpine‑driven UI (dropdowns, tabs, toggles, etc.) will get reset whenever LiveView patches it.
 
-The onBeforeElUpdated(from, to) hook gives us a chance to copy anything from the old node into the new one before replacement. By checking for from._x_dataStack (i.e. “did Alpine initialize this node?”) and then calling window.Alpine.clone(from, to), you transplant the Alpine‑managed state into the new element so your UI doesn’t “blink” or reset on every LiveView update 
+The onBeforeElUpdated(from, to) hook gives us a chance to copy anything from the old node into the new one before replacement. By checking for from._x_dataStack (i.e. "did Alpine initialize this node?") and then calling window.Alpine.clone(from, to), you transplant the Alpine‑managed state into the new element so your UI doesn't "blink" or reset on every LiveView update 
 Stack Overflow ref: https://stackoverflow.com/questions/75630647/modify-alpinejs-x-data-from-elixir-phoenix-liveviews-js-library
 .
  */

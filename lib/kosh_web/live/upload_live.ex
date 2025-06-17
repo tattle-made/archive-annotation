@@ -4,6 +4,9 @@ defmodule KoshWeb.UploadLive do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
+    # Ensure uploads directory exists
+    ensure_uploads_dir()
+
     {:ok,
      socket
      |> assign(:uploaded_files, [])
@@ -32,33 +35,56 @@ defmodule KoshWeb.UploadLive do
   @impl Phoenix.LiveView
   def handle_event("save", _params, socket) do
     uploaded_files =
-      consume_uploaded_entries(socket, :xml_file, fn %{path: path}, entry ->
-        dest = Path.join([:code.priv_dir(:kosh), "static", "uploads", Path.basename(path)])
-        File.cp!(path, dest)
-        destination_path = "/uploads/#{Path.basename(dest)}"
+      consume_uploaded_entries(socket, :xml_file, fn %{path: temp_path}, entry ->
+        # Check if file with same name already exists in uploads
+        dest_full = Path.join([:code.priv_dir(:kosh), "static", "uploads", entry.client_name])
 
-        # Process the XML file and save to the database
-        case EAD.process_xml_file(dest) do
-          {:ok, collection} ->
-            {:ok, %{
-              path: destination_path,
-              processed: true,
-              collection_id: collection.id,
-              title: collection.title
-            }}
+        if File.exists?(dest_full) do
+          {:ok,
+           %{
+             path: nil,
+             processed: false,
+             error: "A file with the name '#{entry.client_name}' already exists"
+           }}
+        else
+          # First try to process the file from its temporary location
+          case EAD.process_xml_file(temp_path, dest_full) do
+            # {:ok, collection} ->
+            #   # Only if processing is successful, save to uploads directory
+            #   ensure_uploads_dir()
+            #   File.cp!(temp_path, dest_full)
+            #   destination_path = "/uploads/#{entry.client_name}"
 
-          {:error, reason} ->
-            {:ok, %{path: destination_path, processed: false, error: reason}}
+            #   {:ok,
+            #    %{
+            #      path: destination_path,
+            #      processed: true,
+            #      collection_id: collection.id,
+            #      title: collection.title
+            #    }}
+            {:ok, collection} ->
+              {:ok,
+               %{
+                 path: "/uploads/" <> entry.client_name,
+                 processed: true,
+                 collection_id: collection.id,
+                 title: collection.title
+               }}
+
+            {:error, reason} ->
+              {:ok, %{path: nil, processed: false, error: format_error(reason)}}
+          end
         end
       end)
 
     processing_status =
       case uploaded_files do
         [%{processed: true, collection_id: collection_id, title: title}] ->
-          {:success, "File processed successfully. Collection '#{title}' has been created.", collection_id}
+          {:success, "File processed successfully. Collection '#{title}' has been created.",
+           collection_id}
 
         [%{processed: false, error: reason}] ->
-          {:error, "Failed to process file: #{reason}"}
+          {:error, reason}
 
         _ ->
           nil
@@ -67,9 +93,24 @@ defmodule KoshWeb.UploadLive do
     {:noreply,
      socket
      |> update(:uploaded_files, fn existing ->
-       existing ++ Enum.map(uploaded_files, fn f -> f.path end)
+       (existing ++
+          Enum.map(uploaded_files, fn f ->
+            if f.processed, do: f.path, else: nil
+          end))
+       |> Enum.reject(&is_nil/1)
      end)
      |> assign(:processing_status, processing_status)}
+  end
+
+  # Format error messages in a user-friendly way
+  defp format_error(error) when is_binary(error) do
+    cond do
+      String.contains?(error, "has already been taken") ->
+        "A collection with this title already exists. Please use a different title."
+
+      true ->
+        "There was an error processing the file. Please check the file format and try again."
+    end
   end
 
   defp handle_progress(:xml_file, entry, socket) do
@@ -137,6 +178,7 @@ defmodule KoshWeb.UploadLive do
             <button
               type="submit"
               class="btn-primary-purple text-white font-semibold py-2 px-6 rounded"
+              phx-disable-with="Processing..."
             >
               Upload EAD XML
             </button>
@@ -181,4 +223,10 @@ defmodule KoshWeb.UploadLive do
   defp error_to_string(:not_accepted), do: "You can only upload XML files"
   defp error_to_string(:too_many_files), do: "You can only upload 1 file at a time"
   defp error_to_string(_), do: "Invalid file"
+
+  # Ensure uploads directory exists
+  defp ensure_uploads_dir do
+    uploads_dir = Path.join([:code.priv_dir(:kosh), "static", "uploads"])
+    unless File.dir?(uploads_dir), do: File.mkdir_p!(uploads_dir)
+  end
 end

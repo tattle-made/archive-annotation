@@ -8,6 +8,7 @@ defmodule Kosh.Repo.Migrations.CreateCollections do
       add :scopecontent, :map, default: %{}, null: false
       add :unitdate, :map, default: %{}, null: false
       add :unitid, :map, default: %{}, null: false
+      add :upload_path, :string, null: false
 
       timestamps()
     end

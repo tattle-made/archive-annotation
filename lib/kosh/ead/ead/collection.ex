@@ -7,6 +7,7 @@ defmodule Kosh.EAD.Collection do
     # will be derived from unitid, separate field for better querying and indexing
     field :unit_code, :string
     field :scopecontent, :map, default: %{}
+    field :upload_path, :string
 
     many_to_many :subjects, Kosh.EAD.Subject,
       join_through: "collections_subjects",
@@ -23,11 +24,12 @@ defmodule Kosh.EAD.Collection do
   @doc false
   def changeset(collection, attrs) do
     collection
-    |> cast(attrs, [:title, :unit_code, :scopecontent])
+    |> cast(attrs, [:title, :unit_code, :scopecontent, :upload_path])
     |> cast_embed(:unitdate)
     |> cast_embed(:unitid)
     |> validate_required([:title, :unit_code])
     |> unique_constraint(:title)
     |> unique_constraint(:unit_code)
+    |> unique_constraint(:upload_path)
   end
 end

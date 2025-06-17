@@ -71,7 +71,7 @@ defmodule Loader do
           %{
             unitid: subject_id,
             content: title,
-            source: "loc"
+            source: "lcsh"
           }
         end
 
