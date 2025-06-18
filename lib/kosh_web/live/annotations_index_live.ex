@@ -40,7 +40,7 @@ defmodule KoshWeb.AnnotationsIndexLive do
   #   end
   # end
   def handle_event("approve_description", %{"id" => id}, socket) do
-    case Annotations.approve_description_annotation(id) do
+    case Annotations.approve_description_annotation(id, socket.assigns.current_user.id) do
       {:ok, _} ->
         socket =
           socket
@@ -92,7 +92,7 @@ defmodule KoshWeb.AnnotationsIndexLive do
   end
 
   def handle_event("approve_subject_annotation", %{"id" => id}, socket) do
-    case Annotations.approve_subject_annotation(id) do
+    case Annotations.approve_subject_annotation(id, socket.assigns.current_user.id) do
       {:ok, _} ->
         socket =
           socket
@@ -103,6 +103,15 @@ defmodule KoshWeb.AnnotationsIndexLive do
 
       {:error, :not_found} ->
         socket = socket |> put_flash(:error, "Subject annotation not found")
+        {:noreply, socket}
+
+      {:error, :all_subjects_already_present} ->
+        socket =
+          socket
+          |> put_flash(
+            :error,
+            "All the subjects in this annotations are already present in the file"
+          )
         {:noreply, socket}
 
       {:error, changeset} ->

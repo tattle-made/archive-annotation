@@ -7,7 +7,7 @@ defmodule KoshWeb.Components.AnnotationFormComponent do
   import Phoenix.LiveView
   @impl true
   def mount(socket) do
-    IO.puts(">>> mounting MyComponent pid=#{inspect(self())}")
+    # IO.puts(">>> mounting MyComponent pid=#{inspect(self())}")
     # IO.inspect(socket, label: "socket from MOunt")
     form = to_form(%{}, as: "annotation_form")
     # socket = assign(socket, assigns)
@@ -16,6 +16,7 @@ defmodule KoshWeb.Components.AnnotationFormComponent do
     {:ok, socket}
   end
 
+  @impl true
   def update(new_assigns, socket) do
     socket = assign(socket, new_assigns)
     # IO.inspect(socket, label: "socket from update")
@@ -23,6 +24,7 @@ defmodule KoshWeb.Components.AnnotationFormComponent do
     {:ok, socket}
   end
 
+  @impl true
   def handle_event("live_select_change", %{"text" => text, "id" => live_select_id}, socket) do
     subjects = EAD.search_subjects(text)
     options = Enum.map(subjects, fn subject -> {subject.content, subject.id} end)
@@ -37,6 +39,7 @@ defmodule KoshWeb.Components.AnnotationFormComponent do
     {:noreply, socket}
   end
 
+  @impl true
   def handle_event("validate", %{"annotation_form" => new_params}, socket) do
     # Get current form params
     current_params = socket.assigns.form.params
@@ -52,8 +55,8 @@ defmodule KoshWeb.Components.AnnotationFormComponent do
     {:noreply, socket}
   end
 
+  @impl true
   def handle_event("submit", params, socket) do
-    IO.inspect(params, label: "params")
     %{"annotation_form" => form_data} = params
     subjects = form_data["subjects"] || []
     description = form_data["description"] || ""
@@ -62,105 +65,171 @@ defmodule KoshWeb.Components.AnnotationFormComponent do
     current_user = socket.assigns.current_user
     file = socket.assigns.file
 
-    # Create subjects annotation if subjects are selected
-    subjects_result =
-      if subjects != nil and subjects != [] do
-        {existing_subjects_ids, new_subjects} = split_number_words(subjects)
+    # Check for existing subjects
+    {existing_subjects_ids, new_subjects} = split_number_words(subjects)
 
-        subjects_params = %{
-          "file_id" => file.id,
-          "user_id" => current_user.id,
-          "subjects" => Enum.map(existing_subjects_ids, &%{id: &1}),
-          "new_subjects" => new_subjects
-        }
+    # Get all existing subjects from accepted annotations
+    existing_subjects = file.accepted_subjects_annotations
+      |> Enum.flat_map(fn annotation ->
+        annotation.subjects ++ Enum.map(annotation.new_subjects, &%{content: &1})
+      end)
+      |> Enum.map(& &1.content)
+      |> Enum.map(&String.trim/1)
+      |> Enum.map(&String.downcase/1)
+      |> Kernel.++(Enum.map(file.subjects, & &1.content))
+      |> Enum.map(&String.trim/1)
+      |> Enum.map(&String.downcase/1)
 
-        case Annotations.create_subject_annotation(subjects_params) do
-          {:ok, _annotation} ->
-            {:ok, "Subjects annotation created successfully"}
+    # Check if any of the new subjects already exist
+    duplicate_subjects = new_subjects
+      |> Enum.map(&String.trim/1)
+      |> Enum.map(&String.downcase/1)
+      |> Enum.filter(&(&1 in existing_subjects))
+      |> Enum.map(&"\"#{&1}\"")
 
-          {:error, changeset} ->
-            {:error, "Failed to create subjects annotation: #{inspect(changeset.errors)}"}
+    # Check if any of the existing subject IDs are already annotated
+    duplicate_ids = existing_subjects_ids
+      |> Enum.filter(fn id ->
+        id_int = String.to_integer(id)
+        # Check in file.subjects
+        file_has_subject = Enum.any?(file.subjects, &(&1.id == id_int))
+        # Check in accepted annotations
+        annotation_has_subject = file.accepted_subjects_annotations
+          |> Enum.any?(fn annotation ->
+            Enum.any?(annotation.subjects, &(&1.id == id_int))
+          end)
+
+        file_has_subject or annotation_has_subject
+      end)
+      |> Enum.map(fn id ->
+        id_int = String.to_integer(id)
+        # First check in file.subjects
+        case Enum.find(file.subjects, &(&1.id == id_int)) do
+          nil ->
+            # If not in file.subjects, check in annotations
+            file.accepted_subjects_annotations
+            |> Enum.flat_map(& &1.subjects)
+            |> Enum.find(&(&1.id == id_int))
+            |> Map.get(:content)
+          subject ->
+            subject.content
         end
+      end)
+      |> Enum.map(&String.trim/1)
+      |> Enum.map(&String.downcase/1)
+      |> Enum.map(&"\"#{&1}\"")
+
+    if duplicate_subjects != [] or duplicate_ids != [] do
+      error_message = cond do
+        duplicate_subjects != [] and duplicate_ids != [] ->
+          "Subjects #{Enum.join(duplicate_subjects ++ duplicate_ids, ", ")} already exist"
+        duplicate_subjects != [] ->
+          "Subjects #{Enum.join(duplicate_subjects, ", ")} already exist"
+        true ->
+          "Subjects #{Enum.join(duplicate_ids, ", ")} already exist"
       end
 
-    # Create description annotation if description is not empty
-    description_result =
-      if description != nil and description != "" and String.trim(description) != "" do
-        description_params = %{
-          "file_id" => file.id,
-          "user_id" => current_user.id,
-          "description" => String.trim(description)
-        }
+      send(self(), {:flash, :error, error_message})
+      {:noreply, socket}
+    else
+      # Create subjects annotation if subjects are selected
+      subjects_result =
+        if subjects != nil and subjects != [] do
+          subjects_params = %{
+            "file_id" => file.id,
+            "user_id" => current_user.id,
+            "subjects" => Enum.map(existing_subjects_ids, &%{id: &1}),
+            "new_subjects" => new_subjects
+          }
 
-        case Annotations.create_description_annotation(description_params) do
-          {:ok, _annotation} ->
-            {:ok, "Description annotation created successfully"}
+          case Annotations.create_subject_annotation(subjects_params) do
+            {:ok, _annotation} ->
+              {:ok, "Subjects annotation created successfully"}
 
-          {:error, changeset} ->
-            {:error, "Failed to create description annotation: #{inspect(changeset.errors)}"}
+            {:error, changeset} ->
+              {:error, "Failed to create subjects annotation: #{inspect(changeset.errors)}"}
+          end
         end
-      end
 
-    # Reset form and handle results
-    message =
-      case {subjects_result, description_result} do
-        {{:ok, _}, {:ok, _}} ->
-          {:info, "Annotations created successfully"}
+      # Create description annotation if description is not empty
+      description_result =
+        if description != nil and description != "" and String.trim(description) != "" do
+          description_params = %{
+            "file_id" => file.id,
+            "user_id" => current_user.id,
+            "description" => String.trim(description)
+          }
 
-        {{:ok, _}, nil} ->
-          {:info, "Annotations created successfully"}
+          case Annotations.create_description_annotation(description_params) do
+            {:ok, _annotation} ->
+              {:ok, "Description annotation created successfully"}
 
-        {nil, {:ok, _}} ->
-          {:info, "Annotations created successfully"}
+            {:error, changeset} ->
+              {:error, "Failed to create description annotation: #{inspect(changeset.errors)}"}
+          end
+        end
 
-        {{:error, subjects_error}, {:error, desc_error}} ->
-          {:error, "Failed to create annotations: #{subjects_error}, #{desc_error}"}
+      # Reset form and handle results
+      message =
+        case {subjects_result, description_result} do
+          {{:ok, _}, {:ok, _}} ->
+            {:info, "Annotations created successfully"}
 
-        {{:error, error}, nil} ->
-          {:error, error}
+          {{:ok, _}, nil} ->
+            {:info, "Annotations created successfully"}
 
-        {nil, {:error, error}} ->
-          {:error, error}
+          {nil, {:ok, _}} ->
+            {:info, "Annotations created successfully"}
 
-        _ ->
-          {:error, "No annotations were created"}
-      end
+          {{:error, subjects_error}, {:error, desc_error}} ->
+            {:error, "Failed to create annotations: #{subjects_error}, #{desc_error}"}
 
-    socket =
-      if elem(message, 0) == :info do
-        socket
-        |> assign(
-          :form,
-          to_form(
-            %{
-              "subjects" => [],
-              "subjects_text_input" => "",
-              "description" => nil
-            },
-            as: "annotation_form"
-          )
-        )
-        |> then(fn socket ->
-          send_update(LiveSelect.Component,
-            id: "annotation_subjects",
-            options: [],
-            value: nil,
-            current_text: ""
-          )
+          {{:error, error}, nil} ->
+            {:error, error}
+
+          {nil, {:error, error}} ->
+            {:error, error}
+
+          _ ->
+            {:error, "No annotations were created"}
+        end
+
+      socket =
+        if elem(message, 0) == :info do
           socket
-        end)
-      else
-        socket
-      end
+          |> assign(
+            :form,
+            to_form(
+              %{
+                "subjects" => [],
+                "subjects_text_input" => "",
+                "description" => nil
+              },
+              as: "annotation_form"
+            )
+          )
+          |> then(fn socket ->
+            send_update(LiveSelect.Component,
+              id: "annotation_subjects",
+              options: [],
+              value: nil,
+              current_text: ""
+            )
 
-    send(self(), {:flash, elem(message, 0), elem(message, 1)})
-    {:noreply, socket}
+            socket
+          end)
+        else
+          socket
+        end
+
+      send(self(), {:flash, elem(message, 0), elem(message, 1)})
+      {:noreply, socket}
+    end
   end
 
-  @doc """
-  Splits a list of strings into {numbers, words}, where numbers are
-  those strings which are valid integers with no extra chars.
-  """
+  # Splits a list of strings into {numbers, words}, where numbers are
+  # those strings which are valid integers with no extra chars.
+
   defp split_number_words(list) when is_list(list) do
     Enum.split_with(list, &is_integer_string?/1)
   end
