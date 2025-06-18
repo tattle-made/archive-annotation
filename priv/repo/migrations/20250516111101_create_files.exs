@@ -18,7 +18,8 @@ defmodule Kosh.Repo.Migrations.CreateFiles do
     end
 
     create index(:files, [:collection_id])
-    create index(:files, [:series_id])
-    create index(:files, [:sub_series_id])
+    create index(:files, [:uri])
+    # create index(:files, [:series_id])
+    # create index(:files, [:sub_series_id])
   end
 end
