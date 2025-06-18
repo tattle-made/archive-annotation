@@ -8,7 +8,7 @@ defmodule Kosh.Accounts.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"Kosh", "contact@example.com"})
+      |> from({"Kosh", "admin@tattle.co.in"})
       |> subject(subject)
       |> text_body(body)
 

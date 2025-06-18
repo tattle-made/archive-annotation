@@ -21,20 +21,33 @@ if System.get_env("PHX_SERVER") do
 end
 
 if config_env() == :prod do
-  database_url =
-    System.get_env("DATABASE_URL") ||
-      raise """
-      environment variable DATABASE_URL is missing.
-      For example: ecto://USER:PASS@HOST/DATABASE
-      """
-
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
   config :kosh, Kosh.Repo,
     # ssl: true,
-    url: database_url,
+    username: System.get_env("DATABASE_USER"),
+    password: System.get_env("DATABASE_PASSWORD"),
+    hostname: System.get_env("DATABASE_HOSTNAME"),
+    database: System.get_env("DATABASE_NAME"),
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
-    socket_options: maybe_ipv6
+    socket_options: maybe_ipv6,
+    stacktrace: true
+
+  aws_access_key_id =
+    System.get_env("AWS_ACCESS_KEY_ID") ||
+      raise """
+      aws access key is missing. Please contact tattle admin.
+      """
+
+  aws_secret_access_key =
+    System.get_env("AWS_SECRET_ACCESS_KEY") ||
+      raise """
+      aws secret acess key are missing. Please contact tattle admin.
+      """
+
+  config :uli_community,
+    aws_access_key_id: aws_access_key_id,
+    aws_secret_access_key: aws_secret_access_key
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
@@ -48,7 +61,7 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
+  host = System.get_env("PHX_SERVER") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :kosh, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
@@ -114,4 +127,10 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+  # ## Configuring the mailer
+  config :kosh, Kosh.Mailer,
+    adapter: Swoosh.Adapters.AmazonSES,
+    region: "ap-south-1",
+    access_key: aws_access_key_id,
+    secret: aws_secret_access_key
 end
