@@ -4,6 +4,7 @@ defmodule Kosh.Repo.Migrations.CreateFiles do
   def change do
     create table(:files) do
       add :title, :text, null: false
+      add :uri, :string, null: false
       add :description, {:array, :text}, default: [], null: false
       add :unitdate, :map, default: %{}, null: false
       add :unitid, :map, default: %{}, null: false

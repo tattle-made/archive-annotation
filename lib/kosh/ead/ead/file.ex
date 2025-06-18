@@ -7,6 +7,7 @@ defmodule Kosh.EAD.File do
   schema "files" do
     field :title, :string
     field :description, {:array, :string}, default: []
+    field :uri, :string
 
     # all possible fields: address, arrangement, blockquote, chronlist, dao, daogrp, head, list, note, p, scopecontent, table
     # field :scopecontent, :map,
@@ -24,7 +25,7 @@ defmodule Kosh.EAD.File do
     belongs_to :sub_series, Kosh.EAD.SubSeries
 
     many_to_many :subjects, Kosh.EAD.Subject,
-      join_through: "files_subjects",
+      join_through: Kosh.EAD.FilesSubject,
       on_delete: :nothing,
       on_replace: :delete
 
@@ -58,13 +59,14 @@ defmodule Kosh.EAD.File do
       :description,
       :collection_id,
       :series_id,
-      :sub_series_id
+      :sub_series_id,
+      :uri
     ])
     |> cast_embed(:unitdate)
     |> cast_embed(:unitid)
     |> cast_embed(:dao)
     |> cast_assoc(:subjects, with: &Kosh.EAD.Subject.changeset/2)
-    |> validate_required([:title, :collection_id])
+    |> validate_required([:title, :collection_id, :uri])
     |> then(fn cs ->
       Ecto.Changeset.validate_change(cs, :sub_series_id, fn :sub_series_id, ss_id ->
         if ss_id && is_nil(get_field(cs, :series_id)) do

@@ -72,6 +72,7 @@ defmodule KoshWeb.UploadLive do
                }}
 
             {:error, reason} ->
+              IO.inspect(reason)
               {:ok, %{path: nil, processed: false, error: format_error(reason)}}
           end
         end
