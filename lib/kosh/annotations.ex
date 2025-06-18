@@ -14,14 +14,14 @@ defmodule Kosh.Annotations do
     |> Repo.insert()
   end
 
-  def approve_description_annotation(id) do
-    case Repo.get(DescriptionAnnotation, id) do
+  def approve_description_annotation(annotation_id, admin_id) do
+    case Repo.get(DescriptionAnnotation, annotation_id) do
       nil ->
         {:error, :not_found}
 
       annotation ->
         annotation
-        |> DescriptionAnnotation.changeset(%{status: :accepted})
+        |> DescriptionAnnotation.changeset(%{status: :accepted, admin_id: admin_id})
         |> Repo.update()
     end
   end
@@ -33,45 +33,69 @@ defmodule Kosh.Annotations do
     end
   end
 
-  def approve_subject_annotation(id) do
-    Repo.transaction(fn ->
-      # Get the annotation, preload subjects and file (with accepted_subjects_annotations)
-      annotation =
-        Repo.get(SubjectsAnnotation, id)
-        |> Repo.preload([:subjects, file: [:accepted_subjects_annotations]])
+  def approve_subject_annotation(annotation_id, admin_id) do
+    case Repo.transaction(fn ->
+           # Get the annotation, preload subjects and file (with accepted_subjects_annotations)
+           annotation =
+             Repo.get(SubjectsAnnotation, annotation_id)
+             |> Repo.preload([
+               :subjects,
+               file: [accepted_subjects_annotations: [:subjects], subjects: []]
+             ])
 
-      if annotation == nil do
-        Repo.rollback({:error, :not_found})
-      end
+           if annotation == nil do
+             Repo.rollback({:error, :not_found})
+           end
 
-      # Insert new subjects if needed
-      new_subjects =
-        (annotation.new_subjects || [])
-        |> Enum.map(fn sub ->
-          Repo.get_by(Kosh.EAD.Subject, content: sub) ||
-            Repo.insert!(
-              Kosh.EAD.Subject.changeset(%Kosh.EAD.Subject{}, %{content: sub, source: "local"})
-            )
-        end)
+           # Get all existing subjects from file's accepted annotations and file's own subjects
+           existing_subjects =
+             (annotation.file.accepted_subjects_annotations || [])
+             |> Enum.flat_map(& &1.subjects)
+             |> Enum.concat(annotation.file.subjects || [])
+             |> Enum.uniq_by(& &1.id)
 
-      # Collect all subjects (existing + new, no duplicates)
-      all_subjects =
-        (annotation.subjects ++ new_subjects)
-        |> Enum.uniq_by(& &1.id)
+           # Filter out subjects that already exist
+           new_subjects =
+             (annotation.new_subjects || [])
+             |> Enum.map(fn sub ->
+               Repo.get_by(Kosh.EAD.Subject, content: sub) ||
+                 Repo.insert!(
+                   Kosh.EAD.Subject.changeset(%Kosh.EAD.Subject{}, %{
+                     content: sub,
+                     source: "local"
+                   })
+                 )
+             end)
 
-      # Update annotation status and subjects association
-      {:ok, updated_annotation} =
-        annotation
-        |> SubjectsAnnotation.changeset(%{status: :accepted})
-        |> Repo.update()
+           # Collect all subjects (existing + new, no duplicates) and filter out ones that already exist in the file
+           all_subjects =
+             (annotation.subjects ++ new_subjects)
+             |> Enum.uniq_by(& &1.id)
+             |> Enum.reject(fn subject ->
+               Enum.any?(existing_subjects, fn existing -> existing.id == subject.id end)
+             end)
 
-      updated_annotation
-      |> Ecto.Changeset.change()
-      |> Ecto.Changeset.put_assoc(:subjects, all_subjects)
-      |> Repo.update()
+           # If no new subjects to add, return early
+           if Enum.empty?(all_subjects) do
+             Repo.rollback({:error, :all_subjects_already_present})
+           else
+             # Update annotation status and subjects association
+             {:ok, updated_annotation} =
+               annotation
+               |> SubjectsAnnotation.changeset(%{status: :accepted, admin_id: admin_id})
+               |> Repo.update()
 
-      {:ok, updated_annotation}
-    end)
+             updated_annotation
+             |> Ecto.Changeset.change()
+             |> Ecto.Changeset.put_assoc(:subjects, all_subjects)
+             |> Repo.update()
+
+             {:ok, updated_annotation}
+           end
+         end) do
+      {:ok, result} -> result
+      {:error, error} -> error
+    end
   end
 
   @doc """
