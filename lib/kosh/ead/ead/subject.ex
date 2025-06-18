@@ -8,12 +8,12 @@ defmodule Kosh.EAD.Subject do
     field :unitid, :string, default: nil
 
     many_to_many :files, Kosh.EAD.File,
-      join_through: "files_subjects",
+      join_through: Kosh.EAD.FilesSubject,
       on_delete: :nothing,
       on_replace: :delete
 
     many_to_many :collections, Kosh.EAD.Collection,
-      join_through: "collections_subjects",
+      join_through: Kosh.EAD.CollectionsSubject,
       on_delete: :nothing,
       on_replace: :delete
 

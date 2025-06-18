@@ -10,7 +10,7 @@ defmodule Kosh.EAD.Collection do
     field :upload_path, :string
 
     many_to_many :subjects, Kosh.EAD.Subject,
-      join_through: "collections_subjects",
+      join_through: Kosh.EAD.CollectionsSubject,
       on_delete: :nothing,
       on_replace: :delete
 

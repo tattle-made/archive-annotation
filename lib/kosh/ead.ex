@@ -20,27 +20,18 @@ defmodule Kosh.EAD do
   @spec add_subjects_to_collection(struct(), list()) :: {:ok, struct()} | {:error, String.t()}
   def add_subjects_to_collection(collection, subjects) do
     processed_subjects = process_subjects(subjects)
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 
     try do
-      {count, _} =
-        Repo.insert_all(
-          "collections_subjects",
-          Enum.map(processed_subjects, fn subject ->
-            %{
-              collection_id: collection.id,
-              subject_id: subject.id,
-              inserted_at: now,
-              updated_at: now
-            }
-          end)
-        )
+      # Preload the collection with its subjects
+      collection = Repo.preload(collection, :subjects)
 
-      if count == length(processed_subjects) do
-        {:ok, collection}
-      else
-        {:error, "Failed to insert all subjects"}
-      end
+      # Use Ecto's put_assoc to handle the many-to-many relationship
+      collection
+      |> Ecto.Changeset.change()
+      |> Ecto.Changeset.put_assoc(:subjects, processed_subjects)
+      |> Repo.update()
+
+      {:ok, collection}
     rescue
       e in Ecto.QueryError -> {:error, "Database error: #{inspect(e)}"}
       e in Postgrex.Error -> {:error, "Database error: #{inspect(e)}"}
@@ -148,27 +139,18 @@ defmodule Kosh.EAD do
   @spec add_subjects_to_file(struct(), list()) :: {:ok, struct()} | {:error, String.t()}
   def add_subjects_to_file(file, subjects) do
     processed_subjects = process_subjects(subjects)
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 
     try do
-      {count, _} =
-        Repo.insert_all(
-          "files_subjects",
-          Enum.map(processed_subjects, fn subject ->
-            %{
-              file_id: file.id,
-              subject_id: subject.id,
-              inserted_at: now,
-              updated_at: now
-            }
-          end)
-        )
+      # Preload the file with its subjects
+      file = Repo.preload(file, :subjects)
 
-      if count == length(processed_subjects) do
-        {:ok, file}
-      else
-        {:error, "Failed to insert all subjects"}
-      end
+      # Use Ecto's put_assoc to handle the many-to-many relationship
+      file
+      |> Ecto.Changeset.change()
+      |> Ecto.Changeset.put_assoc(:subjects, processed_subjects)
+      |> Repo.update()
+
+      {:ok, file}
     rescue
       e in Ecto.QueryError -> {:error, "Database error: #{inspect(e)}"}
       e in Postgrex.Error -> {:error, "Database error: #{inspect(e)}"}
@@ -435,11 +417,15 @@ defmodule Kosh.EAD do
   end
 
   defp process_node_for_db(%{type: :file} = node, collection_id, series_id, sub_series_id) do
+
+    IO.inspect(node, label: "FILE NODE: ")
     # Drop non-schema fields and add IDs
+    file_uri = node.unitid.uri
     file_attrs =
       node
       |> Map.drop([:type])
       |> Map.merge(%{
+        uri: file_uri,
         collection_id: collection_id,
         series_id: series_id,
         sub_series_id: sub_series_id
