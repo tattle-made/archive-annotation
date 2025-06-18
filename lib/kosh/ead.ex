@@ -2,6 +2,7 @@ defmodule Kosh.EAD do
   alias Kosh.EAD.{Subject, XML.Saxmap, Collection, Series, SubSeries, File}
   alias Kosh.Repo
   import Ecto.Query
+  alias Kosh.EAD.XML.SaxyUpdateEadHandler
   # import File, only: [read: 1]
 
   @moduledoc """
@@ -44,6 +45,80 @@ defmodule Kosh.EAD do
       e in Ecto.QueryError -> {:error, "Database error: #{inspect(e)}"}
       e in Postgrex.Error -> {:error, "Database error: #{inspect(e)}"}
     end
+  end
+
+  def list_collections do
+    Collection
+    # |> preload(:subjects)
+    |> Repo.all()
+  end
+
+  def get_collection(collection_id) do
+    Collection
+    |> Repo.get(collection_id)
+  end
+
+  @doc """
+  Exports a collection with its approved annotations.
+
+  ## Parameters
+    - collection_id: The ID of the collection to export
+
+  ## Returns
+    - `{:ok, result}` - The exported collection data
+    - `{:error, reason}` - If an error occurs during the operation
+
+  ## Examples
+      iex> export_collection(1)
+      {:ok, "exported_data"}
+
+      iex> export_collection("invalid")
+      {:error, "Invalid collection ID"}
+  """
+  @spec export_collection(integer() | String.t()) :: {:ok, any()} | {:error, String.t()}
+  def export_collection(collection_id) when is_binary(collection_id) do
+    case Integer.parse(collection_id) do
+      {id, _} -> export_collection(id)
+      :error -> {:error, "Invalid collection ID"}
+    end
+  end
+
+  def export_collection(collection_id) when is_integer(collection_id) do
+    try do
+      collection = get_collection(collection_id)
+
+      if is_nil(collection) do
+        {:error, "Collection not found"}
+      else
+        case list_files_with_approved_annotations(collection_id) do
+          {:ok, []} ->
+            {:error, "The Collection has no annotations"}
+          {:ok, files_with_annotations} ->
+            file_path = Path.join([:code.priv_dir(:kosh), "static", collection.upload_path])
+
+            if not Elixir.File.exists?(file_path) do
+              {:error, "Collection file not found at path: #{file_path}"}
+            else
+              SaxyUpdateEadHandler.run_stream_read(file_path, files_with_annotations)
+            end
+          {:error, reason} ->
+            {:error, "Failed to get files with annotations: #{reason}"}
+        end
+      end
+    rescue
+      e in Ecto.QueryError ->
+        {:error, "Database query error: #{inspect(e)}"}
+      e in Postgrex.Error ->
+        {:error, "Database error: #{inspect(e)}"}
+      e in ArgumentError ->
+        {:error, "Invalid argument: #{inspect(e)}"}
+      e ->
+        {:error, "Unexpected error: #{inspect(e)}"}
+    end
+  end
+
+  def export_collection(_invalid) do
+    {:error, "Invalid collection ID type"}
   end
 
   # Series functions
@@ -121,6 +196,82 @@ defmodule Kosh.EAD do
     |> Repo.all()
   end
 
+  @doc """
+  Lists all files with approved annotations for a given collection.
+
+  ## Parameters
+    - collection_id: The ID of the collection to fetch files from
+
+  ## Returns
+    - `{:ok, list}` - A list of maps containing file information with approved annotations
+    - `{:error, reason}` - If an error occurs during the operation
+
+  ## Examples
+      iex> list_files_with_approved_annotations(1)
+      {:ok, [%{unitid: %{id: "123", uri: "http://example.com", type: "local"}, ...}]}
+
+      iex> list_files_with_approved_annotations("invalid")
+      {:error, "Invalid collection ID"}
+  """
+  @spec list_files_with_approved_annotations(integer() | String.t()) ::
+          {:ok, list(map())} | {:error, String.t()}
+  def list_files_with_approved_annotations(collection_id) when is_binary(collection_id) do
+    case Integer.parse(collection_id) do
+      {id, _} -> list_files_with_approved_annotations(id)
+      :error -> {:error, "Invalid collection ID"}
+    end
+  end
+
+  def list_files_with_approved_annotations(collection_id) when is_integer(collection_id) do
+    try do
+      files =
+        File
+        |> where([f], f.collection_id == ^collection_id)
+        |> preload([:accepted_description_annotations, accepted_subjects_annotations: [:subjects]])
+        |> Repo.all()
+
+      result =
+        files
+        |> Enum.filter(fn f ->
+          f.accepted_description_annotations != [] or f.accepted_subjects_annotations != []
+        end)
+        |> Enum.map(fn f ->
+          %{
+            unitid: %{
+              id: f.unitid && f.unitid.id,
+              uri: f.unitid && f.unitid.uri,
+              type: f.unitid && f.unitid.type
+            },
+            description_annotations:
+              Enum.map(f.accepted_description_annotations, fn da ->
+                %{id: da.id, description: da.description}
+              end),
+            subjects_annotations:
+              f.accepted_subjects_annotations
+              |> Enum.flat_map(fn sa -> sa.subjects || [] end)
+              |> Enum.map(fn s ->
+                %{content: s.content, source: s.source, unitid: s.unitid}
+              end)
+          }
+        end)
+
+      {:ok, result}
+    rescue
+      e in Ecto.QueryError ->
+        {:error, "Database query error: #{inspect(e)}"}
+      e in Postgrex.Error ->
+        {:error, "Database error: #{inspect(e)}"}
+      e in ArgumentError ->
+        {:error, "Invalid argument: #{inspect(e)}"}
+      e ->
+        {:error, "Unexpected error: #{inspect(e)}"}
+    end
+  end
+
+  def list_files_with_approved_annotations(_invalid) do
+    {:error, "Invalid collection ID type"}
+  end
+
   # Subject functions
   @spec process_subjects(list()) :: [struct()]
   def process_subjects(subjects) when is_list(subjects) do
@@ -155,46 +306,64 @@ defmodule Kosh.EAD do
     |> Repo.all()
   end
 
-  # Main EAD processing function
-  @spec process_xml_file(String.t()) :: {:ok, struct()} | {:error, String.t()}
-  def process_xml_file(file_path) do
-    with {:ok, xml_content} <- Elixir.File.read(file_path),
+  @spec process_xml_file(String.t(), String.t()) :: {:ok, struct()} | {:error, String.t()}
+  def process_xml_file(tmp_path, dest_full) do
+    upload_path = "/uploads/" <> Path.basename(dest_full)
+
+    with {:ok, xml_content} <- Elixir.File.read(tmp_path),
          {:ok, parsed_map} <- Saxmap.parse(xml_content),
          processed_map <- Saxmap.process_ead_map(parsed_map),
-         {:ok, {collection, nested_structure}} <-
+         {:ok, {collection_map, nested_structure}} <-
            Saxmap.extract_contents_from_processed_map(processed_map) do
-      insert_ead_contents({collection, nested_structure})
+      insert_ead_contents({collection_map, nested_structure}, tmp_path, dest_full, upload_path)
     else
       {:error, reason} -> {:error, reason}
       error -> {:error, "Unexpected error: #{inspect(error)}"}
     end
   end
 
-  @spec insert_ead_contents({map(), list()}) :: {:ok, struct()} | {:error, String.t()}
-  defp insert_ead_contents({collection, nested_structure}) do
-    Repo.transaction(fn ->
-      # Process subjects first
-      subjects = collection.subjects
-      collection_without_subjects = Map.drop(collection, [:subjects])
+  @spec insert_ead_contents({map(), list()}, String.t(), String.t(), String.t()) ::
+          {:ok, struct()} | {:error, String.t()}
+  defp insert_ead_contents({collection_map, nested_structure}, tmp_path, dest_full, upload_path) do
+    case Repo.transaction(fn ->
+           subjects = collection_map.subjects
+           attrs = collection_map |> Map.drop([:subjects]) |> Map.put(:upload_path, upload_path)
 
-      # Create collection without subjects
-      case create_collection(collection_without_subjects) do
-        {:ok, inserted_collection} ->
-          case add_subjects_to_collection(inserted_collection, subjects) do
-            {:ok, _} ->
-              case process_nested_structure(nested_structure, inserted_collection.id, nil, nil) do
-                :ok -> inserted_collection
-                {:error, reason} -> Repo.rollback("Failed to process nested structure: #{reason}")
-              end
+           inserted_collection =
+             case create_collection(attrs) do
+               {:ok, coll} ->
+                 coll
 
-            {:error, reason} ->
-              Repo.rollback("Failed to add subjects: #{reason}")
-          end
+               {:error, changeset} ->
+                 Repo.rollback("Failed to create collection: #{inspect(changeset.errors)}")
+             end
 
-        {:error, changeset} ->
-          Repo.rollback("Failed to create collection: #{inspect(changeset.errors)}")
-      end
-    end)
+           case add_subjects_to_collection(inserted_collection, subjects) do
+             {:ok, _} -> :ok
+             {:error, reason} -> Repo.rollback("Failed to add subjects: #{reason}")
+           end
+
+           case process_nested_structure(nested_structure, inserted_collection.id, nil, nil) do
+             :ok -> :ok
+             {:error, reason} -> Repo.rollback("Failed to process nested structure: #{reason}")
+           end
+
+           case Elixir.File.cp(tmp_path, dest_full) do
+             :ok ->
+               inserted_collection
+
+             {:error, reason} ->
+               Elixir.File.rm(dest_full)
+               Repo.rollback("Failed to copy file: #{inspect(reason)}")
+           end
+         end) do
+      {:ok, inserted_collection} ->
+        {:ok, inserted_collection}
+
+      {:error, reason} ->
+        if Elixir.File.exists?(dest_full), do: Elixir.File.rm(dest_full)
+        {:error, reason}
+    end
   end
 
   @spec process_nested_structure(list(), integer(), integer() | nil, integer() | nil) ::
@@ -218,7 +387,7 @@ defmodule Kosh.EAD do
   @spec process_node_for_db(map(), integer(), integer() | nil, integer() | nil) ::
           {:ok, struct()} | {:error, String.t()}
   defp process_node_for_db(%{type: :series} = node, collection_id, _series_id, _sub_series_id) do
-    # Drop non-schema fields and add collection_id
+
     series_attrs =
       node
       |> Map.drop([:type, :children])

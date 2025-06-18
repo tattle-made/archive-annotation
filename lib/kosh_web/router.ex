@@ -143,6 +143,7 @@ defmodule KoshWeb.Router do
       live "/upload", UploadLive, :index
       live "/display", DisplayIndexLive, :index
       live "/display/:id", DisplayLive, :show
+      live "/export-ead", ExportEADLive, :index
       # live "/annotations", AnnotationsIndexLive, :index
     end
   end

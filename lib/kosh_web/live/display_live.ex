@@ -14,11 +14,16 @@ defmodule KoshWeb.DisplayLive do
 
       file ->
         handle_url =
-          file.dao.daolocs
-          |> Enum.find(&String.contains?(&1["xlink_href"], "/handle/"))
-          |> Map.fetch!("xlink_href")
+          if file.dao && file.dao.daolocs do
+            case Enum.find(file.dao.daolocs, &String.contains?(&1["xlink_href"], "/handle/")) do
+              nil -> nil
+              loc -> Map.get(loc, "xlink_href")
+            end
+          else
+            nil
+          end
 
-        item_uuid = fetch_item_uuid(handle_url)
+        item_uuid = if handle_url, do: fetch_item_uuid(handle_url), else: nil
 
         manifest_url =
           if item_uuid do
@@ -28,7 +33,7 @@ defmodule KoshWeb.DisplayLive do
           else
             nil
           end
-
+        # IO.inspect(file, label: "Display File")
         {:ok, assign(socket, file: file, manifest_url: manifest_url)}
     end
   end

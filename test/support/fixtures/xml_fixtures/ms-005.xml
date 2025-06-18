@@ -1,80 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-22-9 https://www.loc.gov/ead/ead.xsd">
+<ead xmlns="urn:isbn:1-931666-22-9"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-22-9 https://www.loc.gov/ead/ead.xsd">
 
-<eadheader countryencoding="iso3166-1" dateencoding="iso8601" langencoding="iso639-2b" repositoryencoding="iso15511">
-  <eadid 
-    countrycode="IN" 
-    mainagencycode="IN-National Centre for Biological Sciences" 
-    url="Archives ar NCBS, National Centre for Biological Sciences, Bangalore - 560065">
+  <eadheader countryencoding="iso3166-1" dateencoding="iso8601" langencoding="iso639-2b" repositoryencoding="iso15511">
+    <eadid countrycode="IN" mainagencycode="IN-National Centre for Biological Sciences" url="Archives ar NCBS, National Centre for Biological Sciences, Bangalore - 560065">
       MS-005
-  </eadid>
-  <filedesc>
-    <titlestmt>
-      <titleproper>Ajith Kumar Papers <num>MS-005</num>
-      </titleproper>
-    </titlestmt>
-    <publicationstmt>
-      <publisher>Archives at NCBS</publisher>
-      <p id="logostmt"><extref xlink:actuate="onLoad" xlink:href="https://archives.ncbs.res.in/sites/default/files/logo_archivesatncbs.png" xlink:show="embed" xlink:type="simple"/>
-      </p>
-      <address>
-        <addressline>National Centre for Biological Sciences - Tata Institute of Fundamental Research</addressline>
-        <addressline>Bangalore, Karnataka 560065</addressline>
-        <addressline>Business Number: +9180 6717 6010</addressline>
-        <addressline>Business Number: +9180 6717 6011</addressline>
-        <addressline>archives@ncbs.res.in</addressline>
-        <addressline>URL: 
-          <extptr xlink:href="https://archives.ncbs.res.in/" xlink:show="new" xlink:title="https://archives.ncbs.res.in/" xlink:type="simple"/>
-        </addressline>
-      </address>
-    </publicationstmt>
-  </filedesc>
-  <profiledesc>
-    <creation>This finding aid was produced using ArchivesSpace on <date>2025-04-23 18:14:05 +0530</date>.
-    </creation>
-    <langusage>English</langusage>
-    <descrules>Describing Archives: A Content Standard
-    </descrules>
-  </profiledesc>
-</eadheader>
+    </eadid>
+    <filedesc>
+      <titlestmt>
+        <titleproper>Ajith Kumar Papers <num>MS-005</num>
+        </titleproper>
+      </titlestmt>
+      <publicationstmt>
+        <publisher>Archives at NCBS</publisher>
+        <p id="logostmt">
+          <extref xlink:actuate="onLoad" xlink:href="https://archives.ncbs.res.in/sites/default/files/logo_archivesatncbs.png" xlink:show="embed" xlink:type="simple"/>
+        </p>
+        <address>
+          <addressline>National Centre for Biological Sciences - Tata Institute of Fundamental Research</addressline>
+          <addressline>Bangalore, Karnataka 560065</addressline>
+          <addressline>Business Number: +9180 6717 6010</addressline>
+          <addressline>Business Number: +9180 6717 6011</addressline>
+          <addressline>archives@ncbs.res.in</addressline>
+          <addressline>URL: 
+            <extptr xlink:href="https://archives.ncbs.res.in/" xlink:show="new" xlink:title="https://archives.ncbs.res.in/" xlink:type="simple"/>
+          </addressline>
+        </address>
+      </publicationstmt>
+    </filedesc>
+    <profiledesc>
+      <creation>This finding aid was produced using ArchivesSpace on <date>2025-04-23 18:14:05 +0530</date>.
+      </creation>
+      <langusage>English</langusage>
+      <descrules>Describing Archives: A Content Standard
+      </descrules>
+    </profiledesc>
+  </eadheader>
 
-<archdesc level="collection">
-  <did>
-    <repository>
-      <corpname>Archives at NCBS</corpname>
-    </repository>
-    <unittitle>Ajith Kumar Papers</unittitle>
-    <unitid>MS-005</unitid>
-    <unitid type="aspace_uri">/repositories/2/resources/17</unitid>
-    <physdesc altrender="whole">
-      <extent altrender="materialtype spaceoccupied">0.5 Linear Feet</extent>
-    </physdesc>
-    <unitdate datechar="creation" normal="1982/1983" type="bulk">1982-1983</unitdate>
-    <physloc id="aspace_2114f932b6a4b92a8ed16e6168c739b1" label="Repository">Archives at NCBS, National Centre for Biological Sciences, Bangalore -560065</physloc>
-    <physdesc id="aspace_e4ec8e824b483ee87a88fb80bff5e751" label="Condition Description">The collection is in good condition except one set of field notes damaged by pests.</physdesc>
-    <langmaterial>
-      <language langcode="eng">English</language>
-    </langmaterial>
-  </did>
-  <accessrestrict id="aspace_113a0ca4211a85a74ca9afd37d3524a4">
-    <head>Access</head>
-<p>The collections of the Archives at NCBS are open to the public. People interested in accessing the collections are requested to apply in writing to archives@ncbs.res.in</p>  </accessrestrict>
-  <userestrict id="aspace_6a4a0b999ec3ce69f4115b8943a58ad4">
-    <head>Publication</head>
-<p>Copyright may not have been assigned to Archives, National Centre for Biological Sciences. Permission for reproduction or distribution must be obtained in writing from the Archives at NCBS (archives@ncbs.res.in). The Archives at NCBS makes no representation that it is the copyright owner in all of its collections. The user must obtain all necessary rights and clearances before use of material and material may only be reproduced for academic and non-commercial use.</p>  </userestrict>
-  <prefercite id="aspace_ab198514301f0ac6e03599db9b49071b">
-    <head>Preferred Citation</head>
-<p>Ajith Kumar Papers, Archives at NCBS</p>  </prefercite>
-  <acqinfo id="aspace_5c5a99c2fa4157362db6188793903ac3">
-    <head>Acquisition</head>
-<p>The Ajith Kumarn Papers came to the Archives at NCBS through a donation by Kumar in Bangalore in early 2019. The Archives was, however, familiar with the material since it first came to know of it in 2016, and has used a digital copy of it over the years.</p>  </acqinfo>
-  <bioghist id="aspace_661c64ecd3b52ae83b8a0968dc4b983f">
-    <head>Biography</head>
-<p>Born in 1952, Ajith Kumar has been a pioneer in the field of wildlife biology in India. Kumar obtained a Master's in Zoology degree from the University of Kerala, Trivandrum, in 1974. He studied the ecology and population dynamics of lion-tailed macaques in the Western Ghats for a doctorate from Cambridge University. His research interests include the ecology of primates and small mammals in the Western Ghats and the Himalayas. He has been a faculty at the Wildlife Institute of India (Dehradun) and at the Salim Ali Centre for Ornithology and Natural History (Coimbatore). He joined the Wildlife Conservation Society - India in 2003. As one of the core architects of the Masters in Wildlife Biology and Conservation program, hosted by the National Centre for Biological Sciences (NCBS), the Centre for Wildlife Studies (CWS) Bangalore, and Wildlife Conservation Society (WCS-New York), Kumar has been an educator and mentor to dozens of wildlife biology students.</p>  </bioghist>
-  <scopecontent id="aspace_1c7594516a927355f96f702f65c67f95">
-    <head>Content Description</head>
-<p>The collection contains the papers of Ajith Kumar -- research field notes gathered during Kumar's fieldwork in the early 1980s. Being a small volume, the material is all contained within one folder in the Research series.</p>  </scopecontent>
-  <dsc><c id="aspace_1a163485c51a8c748aa2765d7fdd785f" level="file"><did><unittitle>Field notes written on Braille paper regarding competition for resources among tree-living mammals, Anamalai Hills, Tamil Nadu.
-</unittitle><unitid>MS-005-1-1-1-1</unitid><unitid type="aspace_uri">/repositories/2/archival_objects/4329</unitid><unitdate datechar="creation" normal="1982/1983" type="bulk">1982-1983</unitdate><langmaterial><language langcode="eng">English</language></langmaterial><container altrender="Ajith Kumar Papers" id="aspace_4b132ce28a1e2568be229e404355f032" label="Mixed Materials" type="box">1</container><container id="aspace_16e7053c6618eab622b2aa2c2d63e07c" parent="aspace_4b132ce28a1e2568be229e404355f032" type="folder">1</container></did><scopecontent id="aspace_1997eecb3012c9c596f73500b431bc1d"><head>Scope and Contents</head><p>Ajith Kumar's field notes from 1982-83, written on Braille paper (sourced from a church in the US, since resources were limited, and it was good non-blotting paper). The notes are for studies on how four species of tree living mammals (Bonnet monkey, lion-tailed monkey, Nilgiri langur and giant squirrel) co-exist and compete for same resources in the Anamalai Hills, Tamil Nadu.</p></scopecontent><controlaccess><subject authfilenumber="sh94008942" source="lcsh">Braille</subject><subject authfilenumber="sh85014871" source="lcsh">Bibles for the blind</subject></controlaccess></c></dsc>
-</archdesc>
+  <archdesc level="collection">
+    <did>
+      <repository>
+        <corpname>Archives at NCBS</corpname>
+      </repository>
+      <unittitle>Ajith Kumar Papers</unittitle>
+      <unitid>MS-005</unitid>
+      <unitid type="aspace_uri">/repositories/2/resources/17</unitid>
+      <physdesc altrender="whole">
+        <extent altrender="materialtype spaceoccupied">0.5 Linear Feet</extent>
+      </physdesc>
+      <unitdate datechar="creation" normal="1982/1983" type="bulk">1982-1983</unitdate>
+      <physloc id="aspace_2114f932b6a4b92a8ed16e6168c739b1" label="Repository">Archives at NCBS, National Centre for Biological Sciences, Bangalore -560065</physloc>
+      <physdesc id="aspace_e4ec8e824b483ee87a88fb80bff5e751" label="Condition Description">The collection is in good condition except one set of field notes damaged by pests.</physdesc>
+      <langmaterial>
+        <language langcode="eng">English</language>
+      </langmaterial>
+    </did>
+    <accessrestrict id="aspace_113a0ca4211a85a74ca9afd37d3524a4">
+      <head>Access</head>
+      <p>The collections of the Archives at NCBS are open to the public. People interested in accessing the collections are requested to apply in writing to archives@ncbs.res.in</p>
+    </accessrestrict>
+    <userestrict id="aspace_6a4a0b999ec3ce69f4115b8943a58ad4">
+      <head>Publication</head>
+      <p>Copyright may not have been assigned to Archives, National Centre for Biological Sciences. Permission for reproduction or distribution must be obtained in writing from the Archives at NCBS (archives@ncbs.res.in). The Archives at NCBS makes no representation that it is the copyright owner in all of its collections. The user must obtain all necessary rights and clearances before use of material and material may only be reproduced for academic and non-commercial use.</p>
+    </userestrict>
+    <prefercite id="aspace_ab198514301f0ac6e03599db9b49071b">
+      <head>Preferred Citation</head>
+      <p>Ajith Kumar Papers, Archives at NCBS</p>
+    </prefercite>
+    <acqinfo id="aspace_5c5a99c2fa4157362db6188793903ac3">
+      <head>Acquisition</head>
+      <p>The Ajith Kumarn Papers came to the Archives at NCBS through a donation by Kumar in Bangalore in early 2019. The Archives was, however, familiar with the material since it first came to know of it in 2016, and has used a digital copy of it over the years.</p>
+    </acqinfo>
+    <bioghist id="aspace_661c64ecd3b52ae83b8a0968dc4b983f">
+      <head>Biography</head>
+      <p>Born in 1952, Ajith Kumar has been a pioneer in the field of wildlife biology in India. Kumar obtained a Master's in Zoology degree from the University of Kerala, Trivandrum, in 1974. He studied the ecology and population dynamics of lion-tailed macaques in the Western Ghats for a doctorate from Cambridge University. His research interests include the ecology of primates and small mammals in the Western Ghats and the Himalayas. He has been a faculty at the Wildlife Institute of India (Dehradun) and at the Salim Ali Centre for Ornithology and Natural History (Coimbatore). He joined the Wildlife Conservation Society - India in 2003. As one of the core architects of the Masters in Wildlife Biology and Conservation program, hosted by the National Centre for Biological Sciences (NCBS), the Centre for Wildlife Studies (CWS) Bangalore, and Wildlife Conservation Society (WCS-New York), Kumar has been an educator and mentor to dozens of wildlife biology students.</p>
+    </bioghist>
+    <scopecontent id="aspace_1c7594516a927355f96f702f65c67f95">
+      <head>Content Description</head>
+      <p>The collection contains the papers of Ajith Kumar -- research field notes gathered during Kumar's fieldwork in the early 1980s. Being a small volume, the material is all contained within one folder in the Research series.</p>
+    </scopecontent>
+    <dsc>
+      <c id="aspace_1a163485c51a8c748aa2765d7fdd785f" level="file">
+        <did>
+          <unittitle>Field notes written on Braille paper regarding competition for resources among tree-living mammals, Anamalai Hills, Tamil Nadu.
+          </unittitle>
+          <unitid>MS-005-1-1-1-1</unitid>
+          <unitid type="aspace_uri">/repositories/2/archival_objects/4329</unitid>
+          <unitdate datechar="creation" normal="1982/1983" type="bulk">1982-1983</unitdate>
+          <langmaterial>
+            <language langcode="eng">English</language>
+          </langmaterial>
+          <container altrender="Ajith Kumar Papers" id="aspace_4b132ce28a1e2568be229e404355f032" label="Mixed Materials" type="box">1</container>
+          <container id="aspace_16e7053c6618eab622b2aa2c2d63e07c" parent="aspace_4b132ce28a1e2568be229e404355f032" type="folder">1</container>
+        </did>
+        <scopecontent id="aspace_1997eecb3012c9c596f73500b431bc1d">
+          <head>Scope and Contents</head>
+          <p>Ajith Kumar's field notes from 1982-83, written on Braille paper (sourced from a church in the US, since resources were limited, and it was good non-blotting paper). The notes are for studies on how four species of tree living mammals (Bonnet monkey, lion-tailed monkey, Nilgiri langur and giant squirrel) co-exist and compete for same resources in the Anamalai Hills, Tamil Nadu.</p>
+        </scopecontent>
+        <controlaccess>
+          <subject authfilenumber="sh94008942" source="lcsh">Braille</subject>
+          <subject authfilenumber="sh85014871" source="lcsh">Bibles for the blind</subject>
+        </controlaccess>
+      </c>
+    </dsc>
+  </archdesc>
 </ead>
