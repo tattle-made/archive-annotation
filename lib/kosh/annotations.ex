@@ -166,4 +166,36 @@ defmodule Kosh.Annotations do
        when status in [:pending, :accepted, :rejected] do
     from(q in queryable, where: q.status == ^status)
   end
+
+  def count_total_annotations_of_user(user_id) do
+    subject_count =
+      SubjectsAnnotation
+      |> where([a], a.user_id == ^user_id)
+      |> select([a], count(a.id))
+      |> Repo.one()
+
+    description_count =
+      DescriptionAnnotation
+      |> where([a], a.user_id == ^user_id)
+      |> select([a], count(a.id))
+      |> Repo.one()
+
+    subject_count + description_count
+  end
+
+  def count_total_approved_annotations do
+    subject_count =
+      SubjectsAnnotation
+      |> where([a], a.status == :accepted)
+      |> select([a], count(a.id))
+      |> Repo.one()
+
+    description_count =
+      DescriptionAnnotation
+      |> where([a], a.status == :accepted)
+      |> select([a], count(a.id))
+      |> Repo.one()
+
+    subject_count + description_count
+  end
 end

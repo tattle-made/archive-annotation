@@ -6,9 +6,10 @@ defmodule KoshWeb.Components.DescriptionAnnotationCard do
   # or "approved"
   # or accepted or draft or rejected
   attr :type, :string, default: "submitted"
-  attr :current_user, :map, required: true
+  attr :current_user, :map, default: nil
   attr :on_approve, :string, default: nil
   attr :on_delete, :string, default: nil
+  attr :display_only?, :boolean, default: false
 
   def description_annotation_card(assigns) do
     ~H"""
@@ -22,6 +23,7 @@ defmodule KoshWeb.Components.DescriptionAnnotationCard do
               Description
             </span>
           </div>
+          <%= if !@display_only? do %>
           <div class="relative w-4 h-4" x-data="{ open: false }">
             <%!-- <svg
               class=" h-4 w-4 text-gray-400 cursor-pointer bg-secondary-lime rounded-full "
@@ -67,6 +69,7 @@ defmodule KoshWeb.Components.DescriptionAnnotationCard do
               <img src="/images/annotation-menu-icon.svg" alt="menu-icon" />
             </button>
           </div>
+          <% end %>
         </div>
         <div class=" mb-3">
           <%= @annotation.description %>

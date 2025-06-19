@@ -1,0 +1,33 @@
+<div class="flex space-x-3 justify-center">
+  <%= if Enum.empty?(@featured_description_annotations) and Enum.empty?(@featured_subjects_annotations) do %>
+    <div>
+      <p class="text-secondary-purple font-bold text-body-md-18">Featured Annotations</p>
+      <p class="text-secondary-grey my-3 mx-1 text-sm">No featured annotations to display.</p>
+    </div>
+  <% else %>
+    <div class="flex flex-col gap-3 flex-1">
+      <p class="text-secondary-purple font-bold 2xl:text-body-md-18">Descriptions</p>
+      <%= if Enum.empty?(@featured_description_annotations) do %>
+        <p class="text-secondary-grey text-sm">No featured annotations to display.</p>
+      <% else %>
+        <%= for annotation <- @featured_description_annotations do %>
+          <.description_annotation_card
+            annotation={annotation}
+            type="approved"
+            display_only?={true}
+          />
+        <% end %>
+      <% end %>
+    </div>
+    <div class="flex flex-col gap-3 flex-1">
+      <p class="text-secondary-purple font-bold 2xl:text-body-md-18">Subjects</p>
+      <%= if Enum.empty?(@featured_subjects_annotations) do %>
+        <p class="text-secondary-grey text-sm">No featured annotations to display.</p>
+      <% else %>
+        <%= for annotation <- @featured_subjects_annotations do %>
+          <.subject_annotation_card annotation={annotation} type="approved" display_only?={true} />
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

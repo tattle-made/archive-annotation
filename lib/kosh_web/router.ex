@@ -110,6 +110,7 @@ defmodule KoshWeb.Router do
     live_session :home_live,
       on_mount: [{KoshWeb.UserAuth, :mount_current_user}] do
       live "/", HomeLive1, :index
+      live "/annotation/all-annotations", PublicDisplayAllAnnotationsLive, :index
     end
 
     # get "/", PageController, :home

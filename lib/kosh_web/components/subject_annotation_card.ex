@@ -4,9 +4,10 @@ defmodule KoshWeb.Components.SubjectAnnotationCard do
   attr :annotation, :map, required: true
   # or "approved"
   attr :type, :string, default: "submitted"
-  attr :current_user, :map, required: true
+  attr :current_user, :map, default: nil
   attr :on_approve, :string, default: nil
   attr :on_delete, :string, default: nil
+  attr :display_only?, :boolean, default: false
   def subject_annotation_card(assigns) do
     ~H"""
     <div class="flex flex-col space-y-[2px] items-center">
@@ -18,6 +19,7 @@ defmodule KoshWeb.Components.SubjectAnnotationCard do
               Subject
             </span>
           </div>
+          <%= if !@display_only? do %>
           <div class="relative w-4 h-4" x-data="{ open: false }">
             <div
               class="absolute -top-2 -right-2 bg-white text-primary-grey rounded p-2 pt-8 w-44 flex flex-col gap-2 items-end drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] z-0"
@@ -49,6 +51,7 @@ defmodule KoshWeb.Components.SubjectAnnotationCard do
               <img src="/images/annotation-menu-icon.svg" alt="menu-icon" />
             </button>
           </div>
+          <% end %>
         </div>
         <div class=" mb-3">
           <ul>

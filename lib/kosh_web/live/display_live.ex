@@ -304,8 +304,8 @@ defmodule KoshWeb.DisplayLive do
       </div>
     </div>
     <.live_component
-      module={KoshWeb.Components.AnnotationFormComponent}
-      id="annotation-form"
+      module={KoshWeb.Components.AnnotationSection.AnnotationSectionWrapper}
+      id="annotation-section-wrapper"
       file={@file}
       current_user={@current_user}
     />
