@@ -107,8 +107,12 @@ defmodule KoshWeb.Router do
   scope "/", KoshWeb do
     pipe_through :browser
 
+    live_session :home_live,
+      on_mount: [{KoshWeb.UserAuth, :mount_current_user}] do
+      live "/", HomeLive1, :index
+    end
+
     # get "/", PageController, :home
-    live "/", HomeLive1, :index
   end
 
   scope "/", KoshWeb do
@@ -156,10 +160,11 @@ defmodule KoshWeb.Router do
       live "/display-files", DisplayIndexLive, :index
       live "/display/:uri", DisplayLive, :show
       live "/display/repositories/:repository_id/archival_objects/:object_id", DisplayLive, :show
+      live "/my-annotations", MyAnnotationsLive, :index
     end
   end
 
-  scope "/", KoshWeb do
+  scope "/admin", KoshWeb do
     pipe_through [:browser, :require_authenticated_user, :admin_only]
 
     live_session :admin_only_session,
@@ -167,7 +172,7 @@ defmodule KoshWeb.Router do
         {KoshWeb.UserAuth, :ensure_authenticated},
         {KoshWeb.UserAuth, :ensure_authorized}
       ] do
-      live "/all-annotations", AnnotationsIndexLive, :index
+      live "/all-annotations", AllAnnotationsIndexAdminLive, :index
       live "/export-ead", ExportEADLive, :index
       live "/upload", UploadLive, :index
     end

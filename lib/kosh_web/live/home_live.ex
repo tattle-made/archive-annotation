@@ -26,10 +26,16 @@ defmodule KoshWeb.HomeLive1 do
               </p>
             </div>
 
+           <%= if @current_user do %>
+            <.link navigate={~p"/annotation/my-annotations"} class="text-secondary-purple font-semibold xl:mt-10 mt-8 text-body-md-18 xl:text-body-lg-24 hover:underline ">
+               View My Annotations
+            </.link>
+           <% else %>
             <p class="text-secondary-purple font-semibold xl:mt-10 mt-8 text-body-md-18 xl:text-body-lg-24">
               Are you a new user? <.link navigate={~p"/users/register"} class="underline">Register to Annotate</.link>. If not,
               <.link navigate={~p"/users/log_in"} class="underline">login here.</.link>
             </p>
+           <% end %>
           </div>
       <% end %>
 
@@ -53,16 +59,18 @@ defmodule KoshWeb.HomeLive1 do
         <p class="text-secondary-purple text-body-md-18 md:text-body-lg-24 mt-2 xl:w-[70%]">
           There are two types of annotations: one created by the archive itself, and another sourced from users, which is moderated.
         </p>
+        <%= if !@current_user do %>
         <.link
           navigate={~p"/users/register"}
           class="underline font-semibold text-secondary-purple text-body-md-18 md:text-body-lg-24 mt-5"
         >
           Register to Annotate.
         </.link>
-        <div class="flex gap-3 mt-5">
+        <% end %>
+        <div class="flex gap-3 mt-5 items-center">
           <img src={~p"/images/info-icon-register.svg"} alt="" />
           <p class="text-secondary-purple text-caption-14 w-full xl:w-[70%]">
-            By registering, you'll join a community that enriches the archival repository as a learning resource. Please be mindful and provide information that is accurate to the best of your knowledge.
+            <%= if !@current_user do "By registering, you'll join a community that enriches the archival repository as a learning resource." end%> Please be mindful and provide information that is accurate to the best of your knowledge.
           </p>
         </div>
       </div>
