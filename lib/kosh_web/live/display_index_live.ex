@@ -73,7 +73,7 @@ defmodule KoshWeb.DisplayIndexLive do
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <.link
-                          navigate={~p"/display/#{file.id}"}
+                          navigate={~p"/annotation/display/#{file.uri}"}
                           class="text-primary-purple hover:text-indigo-900"
                         >
                           View

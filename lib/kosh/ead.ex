@@ -171,6 +171,20 @@ defmodule Kosh.EAD do
     |> Repo.get(id)
   end
 
+  def get_file_from_uri(uri) do
+    File
+    |> preload([
+      :subjects,
+      :collection,
+      :series,
+      :sub_series,
+      :accepted_description_annotations,
+      accepted_subjects_annotations: :subjects
+    ])
+    |> Repo.get_by([uri: uri])
+
+  end
+
   @spec list_files() :: [struct()]
   def list_files do
     File
