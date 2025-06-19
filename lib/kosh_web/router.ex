@@ -140,11 +140,22 @@ defmodule KoshWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       # live "/testadmin", TestAdminRoleLive, :index
       # live "/gentoken", TokenGeneratorLive, :index
-      live "/upload", UploadLive, :index
-      live "/display", DisplayIndexLive, :index
-      live "/display/:id", DisplayLive, :show
-      live "/export-ead", ExportEADLive, :index
+
       # live "/annotations", AnnotationsIndexLive, :index
+    end
+  end
+
+  scope "/annotation", KoshWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :annotation_files_authenticated,
+      on_mount: [
+        {KoshWeb.UserAuth, :ensure_authenticated},
+        {KoshWeb.UserAuth, :ensure_authorized}
+      ] do
+      live "/display-files", DisplayIndexLive, :index
+      live "/display/:uri", DisplayLive, :show
+      live "/display/repositories/:repository_id/archival_objects/:object_id", DisplayLive, :show
     end
   end
 
@@ -156,7 +167,9 @@ defmodule KoshWeb.Router do
         {KoshWeb.UserAuth, :ensure_authenticated},
         {KoshWeb.UserAuth, :ensure_authorized}
       ] do
-      live "/annotations", AnnotationsIndexLive, :index
+      live "/all-annotations", AnnotationsIndexLive, :index
+      live "/export-ead", ExportEADLive, :index
+      live "/upload", UploadLive, :index
     end
   end
 

@@ -47,7 +47,7 @@ defmodule KoshWeb.UploadLive do
              error: "A file with the name '#{entry.client_name}' already exists"
            }}
         else
-          # First try to process the file from its temporary location
+          ensure_uploads_dir()
           case EAD.process_xml_file(temp_path, dest_full) do
             # {:ok, collection} ->
             #   # Only if processing is successful, save to uploads directory
