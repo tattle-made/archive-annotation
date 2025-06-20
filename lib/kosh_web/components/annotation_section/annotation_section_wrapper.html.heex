@@ -28,27 +28,29 @@
         } />
         <span>Featured Annotations</span>
       </button>
-      <button
-        phx-click="show_form"
-        phx-target={@myself}
-        class={[
-          "w-full flex items-center justify-start space-x-1 text-caption-14 2xl:text-base py-[14px] px-3",
-          if !@render_annotation_form do
-            "text-primary-grey hover:text-secondary-purple"
-          else
-            "rounded-lg text-secondary-purple bg-gradient-to-r from-[#EEEFF5] to-[#FFFFFF]"
-          end
-        ]}
-      >
-        <image src={
-          if @render_annotation_form do
-            "/images/add-annotation-icon-colored.svg"
-          else
-            "/images/add-annotation-icon.svg"
-          end
-        } />
-        <span>Add Annotations</span>
-      </button>
+      <%= if @current_user do %>
+        <button
+          phx-click="show_form"
+          phx-target={@myself}
+          class={[
+            "w-full flex items-center justify-start space-x-1 text-caption-14 2xl:text-base py-[14px] px-3",
+            if !@render_annotation_form do
+              "text-primary-grey hover:text-secondary-purple"
+            else
+              "rounded-lg text-secondary-purple bg-gradient-to-r from-[#EEEFF5] to-[#FFFFFF]"
+            end
+          ]}
+        >
+          <image src={
+            if @render_annotation_form do
+              "/images/add-annotation-icon-colored.svg"
+            else
+              "/images/add-annotation-icon.svg"
+            end
+          } />
+          <span>Add Annotations</span>
+        </button>
+      <% end %>
       <%= if @current_user do %>
         <div class="space-y-2 pt-8 2xl:text-body-md-18">
           <%= if @total_user_annotations == 0 do %>

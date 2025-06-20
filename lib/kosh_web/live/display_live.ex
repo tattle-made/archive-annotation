@@ -3,22 +3,15 @@ defmodule KoshWeb.DisplayLive do
   alias Kosh.EAD
 
   @impl Phoenix.LiveView
+
   def mount(%{"uri" => uri}, _session, socket) do
-    {:ok, socket |> redirect(to: "/annotation/display#{URI.decode(uri)}")}
-  end
-
-  @impl Phoenix.LiveView
-  def mount(%{"repository_id" => repository_id, "object_id" => object_id}, _session, socket) do
     # IO.inspect(socket, label: "id")
-
-    uri = "/repositories/#{repository_id}/archival_objects/#{object_id}"
-
-    case EAD.get_file_from_uri(URI.decode(uri)) do
+    case EAD.get_file_from_uri( URI.decode(uri)) do
       nil ->
         {:ok,
          socket
          |> put_flash(:error, "File not found")
-         |> redirect(to: ~p"/upload")}
+         |> redirect(to: ~p"/")}
 
       file ->
         handle_url =
@@ -41,46 +34,10 @@ defmodule KoshWeb.DisplayLive do
           else
             nil
           end
-
         # IO.inspect(file, label: "Display File")
         {:ok, assign(socket, file: file, manifest_url: manifest_url)}
     end
   end
-
-  # def mount(%{"uri" => uri}, _session, socket) do
-  #   # IO.inspect(socket, label: "id")
-  #   case EAD.get_file_from_uri( URI.decode(uri)) do
-  #     nil ->
-  #       {:ok,
-  #        socket
-  #        |> put_flash(:error, "File not found")
-  #        |> redirect(to: ~p"/upload")}
-
-  #     file ->
-  #       handle_url =
-  #         if file.dao && file.dao.daolocs do
-  #           case Enum.find(file.dao.daolocs, &String.contains?(&1["xlink_href"], "/handle/")) do
-  #             nil -> nil
-  #             loc -> Map.get(loc, "xlink_href")
-  #           end
-  #         else
-  #           nil
-  #         end
-
-  #       item_uuid = if handle_url, do: fetch_item_uuid(handle_url), else: nil
-
-  #       manifest_url =
-  #         if item_uuid do
-  #           URI.encode(
-  #             "https://collections.archives.ncbs.res.in/server/iiif/#{item_uuid}/manifest"
-  #           )
-  #         else
-  #           nil
-  #         end
-  #       # IO.inspect(file, label: "Display File")
-  #       {:ok, assign(socket, file: file, manifest_url: manifest_url)}
-  #   end
-  # end
 
   defp fetch_item_uuid(handle_url) do
     case HTTPoison.get(handle_url, [], follow_redirect: false) do
