@@ -43,6 +43,11 @@ defmodule KoshWeb.DisplayLive do
           end
 
         # IO.inspect(file, label: "Display File")
+        IO.inspect(
+          %{socket | assigns: Map.delete(socket.assigns, :file)},
+          label: "FILE SOCKET (without file)"
+        )
+
         {:ok, assign(socket, file: file, manifest_url: manifest_url)}
     end
   end

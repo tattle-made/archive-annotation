@@ -117,6 +117,9 @@ defmodule KoshWeb.Router do
       live "/contact", InfoRoutes.ContactLive, :index
       live "/join-us", InfoRoutes.JoinUsLive, :index
 
+      live "/annotation/display/:uri", DisplayLive, :show
+      live "/annotation/display/repositories/:repository_id/archival_objects/:object_id", DisplayLive, :show
+
       live "/annotation/all-annotations", PublicDisplayAllAnnotationsLive, :index
     end
 
@@ -166,8 +169,8 @@ defmodule KoshWeb.Router do
         {KoshWeb.UserAuth, :ensure_authorized},{KoshWeb.GetPath, :get_path}
       ] do
       live "/display-files", DisplayIndexLive, :index
-      live "/display/:uri", DisplayLive, :show
-      live "/display/repositories/:repository_id/archival_objects/:object_id", DisplayLive, :show
+      # live "/display/:uri", DisplayLive, :show
+      # live "/display/repositories/:repository_id/archival_objects/:object_id", DisplayLive, :show
       live "/my-annotations", MyAnnotationsLive, :index
     end
   end
