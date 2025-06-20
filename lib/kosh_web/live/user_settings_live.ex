@@ -5,12 +5,17 @@ defmodule KoshWeb.UserSettingsLive do
 
   def render(assigns) do
     ~H"""
-    <.header class="text-center">
+    <%!-- <.header class="text-center te">
       Account Settings
       <:subtitle>Manage your account email address and password settings</:subtitle>
-    </.header>
+    </.header> --%>
 
-    <div class="space-y-12 divide-y">
+    <div
+    class="text-secondary-purple font-semibold bg-[#E6E9F5]/50 mt-[2px] flex items-center text-body-md-18 h-12 px-4 sm:text-body-lg-24 sm:h-14 sm:px-6 xl:text-heading-28 xl:h-16 xl:px-8
+    ">
+      Account's Settings
+    </div>
+    <div class=" divide-y space-y-8 section-gutter w-full mb-4">
       <div>
         <.simple_form
           for={@email_form}
@@ -18,18 +23,27 @@ defmodule KoshWeb.UserSettingsLive do
           phx-submit="update_email"
           phx-change="validate_email"
         >
-          <.input field={@email_form[:email]} type="email" label="Email" required />
+          <.input
+            field={@email_form[:email]}
+            class="w-1/2 rounded !text-primary-purple placeholder:text-primary-purple/70 border !border-primary-purple"
+            type="email"
+            label_class="!text-primary-purple"
+            label="Email"
+            required
+          />
           <.input
             field={@email_form[:current_password]}
+            class="w-1/2 rounded !text-primary-purple placeholder:text-primary-purple/70 border !border-primary-purple "
             name="current_password"
             id="current_password_for_email"
             type="password"
+            label_class="!text-primary-purple"
             label="Current password"
             value={@email_form_current_password}
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Email</.button>
+            <button class="!btn-primary-purple" phx-disable-with="Changing...">Change Email</button>
           </:actions>
         </.simple_form>
       </div>
@@ -45,27 +59,41 @@ defmodule KoshWeb.UserSettingsLive do
         >
           <input
             name={@password_form[:email].name}
+            class="w-1/2 rounded !text-primary-purple placeholder:text-primary-purple/70 border !border-primary-purple "
             type="hidden"
             id="hidden_user_email"
             value={@current_email}
           />
-          <.input field={@password_form[:password]} type="password" label="New password" required />
+          <.input
+            field={@password_form[:password]}
+            class="w-1/2 rounded !text-primary-purple placeholder:text-primary-purple/70 border !border-primary-purple "
+            type="password"
+            label_class="!text-primary-purple"
+            label="New password"
+            required
+          />
           <.input
             field={@password_form[:password_confirmation]}
+            class="w-1/2 rounded !text-primary-purple placeholder:text-primary-purple/70 border !border-primary-purple "
             type="password"
+            label_class="!text-primary-purple"
             label="Confirm new password"
           />
           <.input
             field={@password_form[:current_password]}
+            class="w-1/2 rounded !text-primary-purple placeholder:text-primary-purple/70 border !border-primary-purple "
             name="current_password"
             type="password"
+            label_class="!text-primary-purple"
             label="Current password"
             id="current_password_for_password"
             value={@current_password}
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Password</.button>
+            <button class="!btn-primary-purple" phx-disable-with="Changing...">
+              Change Password
+            </button>
           </:actions>
         </.simple_form>
       </div>
