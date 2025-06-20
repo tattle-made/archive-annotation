@@ -1,0 +1,30 @@
+<div class="section-gutter w-full ">
+  <div class="text-secondary-purple font-semibold bg-[#E6E9F5]/50 mt-[2px] flex items-center text-body-md-18 mb-4 h-12 px-4 sm:text-body-lg-24 sm:h-14 sm:px-6 xl:text-heading-28 xl:h-16 xl:px-8
+    ">
+    My Annotations
+  </div>
+  <div class="mb-8">
+    <h2 class="text-xl font-bold text-primary-purple mb-4">Submitted</h2>
+    <%!-- <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 space-y-4"> For columns layout, like masonry layout--%>
+    <div class="flex flex-wrap gap-6">
+      <%= for annotation <- @submitted_descriptions do %>
+        <.description_annotation_card annotation={annotation} type="submitted" current_user={@current_user} on_delete= "delete_description" />
+      <% end %>
+      <%= for annotation <- @submitted_subjects do %>
+        <.subject_annotation_card annotation={annotation} type="submitted" current_user={@current_user} on_delete= "delete_subject" />
+      <% end %>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="text-xl font-bold text-primary-purple mb-4">Approved</h2>
+    <div class="flex flex-wrap gap-6">
+      <%= for annotation <- @approved_descriptions do %>
+        <.description_annotation_card annotation={annotation} type="approved" current_user={@current_user} on_delete= "delete_description" />
+      <% end %>
+      <%= for annotation <- @approved_subjects do %>
+        <.subject_annotation_card annotation={annotation} type="approved" current_user={@current_user} on_delete= "delete_subject" />
+      <% end %>
+    </div>
+  </div>
+</div>

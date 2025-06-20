@@ -1,10 +1,14 @@
-defmodule KoshWeb.Components.AnnotationFormComponent do
+defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
   use Phoenix.LiveComponent
   import KoshWeb.CoreComponents
   import LiveSelect
   alias Kosh.EAD
   alias Kosh.Annotations
   import Phoenix.LiveView
+
+
+
+
   @impl true
   def mount(socket) do
     # IO.puts(">>> mounting MyComponent pid=#{inspect(self())}")
@@ -69,7 +73,8 @@ defmodule KoshWeb.Components.AnnotationFormComponent do
     {existing_subjects_ids, new_subjects} = split_number_words(subjects)
 
     # Get all existing subjects from accepted annotations
-    existing_subjects = file.accepted_subjects_annotations
+    existing_subjects =
+      file.accepted_subjects_annotations
       |> Enum.flat_map(fn annotation ->
         annotation.subjects ++ Enum.map(annotation.new_subjects, &%{content: &1})
       end)
@@ -81,20 +86,23 @@ defmodule KoshWeb.Components.AnnotationFormComponent do
       |> Enum.map(&String.downcase/1)
 
     # Check if any of the new subjects already exist
-    duplicate_subjects = new_subjects
+    duplicate_subjects =
+      new_subjects
       |> Enum.map(&String.trim/1)
       |> Enum.map(&String.downcase/1)
       |> Enum.filter(&(&1 in existing_subjects))
       |> Enum.map(&"\"#{&1}\"")
 
     # Check if any of the existing subject IDs are already annotated
-    duplicate_ids = existing_subjects_ids
+    duplicate_ids =
+      existing_subjects_ids
       |> Enum.filter(fn id ->
         id_int = String.to_integer(id)
         # Check in file.subjects
         file_has_subject = Enum.any?(file.subjects, &(&1.id == id_int))
         # Check in accepted annotations
-        annotation_has_subject = file.accepted_subjects_annotations
+        annotation_has_subject =
+          file.accepted_subjects_annotations
           |> Enum.any?(fn annotation ->
             Enum.any?(annotation.subjects, &(&1.id == id_int))
           end)
@@ -111,6 +119,7 @@ defmodule KoshWeb.Components.AnnotationFormComponent do
             |> Enum.flat_map(& &1.subjects)
             |> Enum.find(&(&1.id == id_int))
             |> Map.get(:content)
+
           subject ->
             subject.content
         end
@@ -120,14 +129,17 @@ defmodule KoshWeb.Components.AnnotationFormComponent do
       |> Enum.map(&"\"#{&1}\"")
 
     if duplicate_subjects != [] or duplicate_ids != [] do
-      error_message = cond do
-        duplicate_subjects != [] and duplicate_ids != [] ->
-          "Subjects #{Enum.join(duplicate_subjects ++ duplicate_ids, ", ")} already exist"
-        duplicate_subjects != [] ->
-          "Subjects #{Enum.join(duplicate_subjects, ", ")} already exist"
-        true ->
-          "Subjects #{Enum.join(duplicate_ids, ", ")} already exist"
-      end
+      error_message =
+        cond do
+          duplicate_subjects != [] and duplicate_ids != [] ->
+            "Subjects #{Enum.join(duplicate_subjects ++ duplicate_ids, ", ")} already exist"
+
+          duplicate_subjects != [] ->
+            "Subjects #{Enum.join(duplicate_subjects, ", ")} already exist"
+
+          true ->
+            "Subjects #{Enum.join(duplicate_ids, ", ")} already exist"
+        end
 
       send(self(), {:flash, :error, error_message})
       {:noreply, socket}
@@ -242,5 +254,59 @@ defmodule KoshWeb.Components.AnnotationFormComponent do
       # either parse failed, or leftover chars remain
       _ -> false
     end
+  end
+
+  @impl true
+  def render(assigns) do
+    ~H"""
+    <div class="grow flex flex-col space-y-10">
+      <.form
+        for={@form}
+        phx-change="validate"
+        phx-submit="submit"
+        phx-target={@myself}
+      >
+        <div class="flex flex-col lg:flex-row space-y-10 lg:space-y-0 lg:space-x-10">
+          <div class="w-full lg:w-1/2">
+            <p class="text-secondary-purple font-bold text-body-md-18">Descriptions</p>
+            <.input
+              field={@form[:description]}
+              type="textarea"
+              name="annotation_form[description]"
+              value={@form.params["description"]}
+              placeholder="Add your descriptions here..."
+              class="h-60 sm:h-70 xl:h-80 border-2 !border-primary-purple focus:!border-secondary-purple border-dotted !text-primary-grey focus:!text-secondary-purple focus:border-solid !rounded-[4px]"
+            />
+          </div>
+          <div class="w-full lg:w-1/2 subjects text-gray-500 h-fit">
+            <p class="text-secondary-purple font-bold text-body-md-18 mb-2">Subjects</p>
+            <.live_select
+              id="annotation_subjects"
+              field={@form[:subjects]}
+              phx-target={@myself}
+              update_min_len={1}
+              options={[]}
+              debounce={1000}
+              mode={:quick_tags}
+              placeholder="Add a subject..."
+              text_input_class="w-full p-3 text-secondary-purple border-2 border-primary-purple border-dotted rounded-[4px] focus:border-secondary-purple active:border-primary-purple focus:ring-0 focus:outline-none focus:border-solid focus:rounded-none active:outline-none outline-none ring-0"
+              container_extra_class="gap-5 flex flex-col"
+              tags_container_class="w-full flex flex-col gap-5 [&:not(:has(*))]:hidden"
+              tag_class="border-2 border-primary-purple text-primary-grey p-3 relative"
+              clear_tag_button_class="absolute -top-3 -right-3 bg-secondary-pale-grey rounded-full text-primary-purple cursor-pointer"
+              option_class="!text-primary-grey !p-2 sm:!p-3 hover:bg-secondary-lilac"
+              active_option_class="!bg-secondary-lilac"
+              dropdown_extra_class="max-h-40 sm:max-h-56 overflow-y-auto"
+            />
+          </div>
+        </div>
+        <div class="w-full flex justify-end">
+          <button type="submit" class="btn-primary-purple">
+            Save
+          </button>
+        </div>
+      </.form>
+    </div>
+    """
   end
 end

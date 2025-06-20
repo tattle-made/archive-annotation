@@ -1,4 +1,4 @@
-defmodule KoshWeb.AnnotationsIndexLive do
+defmodule KoshWeb.AllAnnotationsIndexAdminLive do
   use KoshWeb, :live_view
   import KoshWeb.Components.DescriptionAnnotationCard
   import KoshWeb.Components.SubjectAnnotationCard
@@ -31,7 +31,7 @@ defmodule KoshWeb.AnnotationsIndexLive do
 
   # def handle_event("approve_description", %{"id" => id}, socket) do
   #   with {:ok, _} <- Annotations.approve_description_annotation(id) do
-  #     socket = socket |> put_flash(:info, "Description annotation approved") |> push_navigate(to: "/annotations")
+  #     socket = socket |> put_flash(:info, "Description annotation approved") |> push_navigate(to: "/admin/all-annotations")
   #     {:noreply, socket}
   #   else
   #     {:error, _} ->
@@ -45,7 +45,7 @@ defmodule KoshWeb.AnnotationsIndexLive do
         socket =
           socket
           |> put_flash(:info, "Description annotation approved")
-          |> push_navigate(to: "/annotations")
+          |> push_navigate(to: "/admin/all-annotations")
 
         {:noreply, socket}
 
@@ -71,7 +71,7 @@ defmodule KoshWeb.AnnotationsIndexLive do
         socket =
           socket
           |> put_flash(:info, "Description annotation deleted")
-          |> push_navigate(to: "/annotations")
+          |> push_navigate(to: "/admin/all-annotations")
 
         {:noreply, socket}
 
@@ -97,7 +97,7 @@ defmodule KoshWeb.AnnotationsIndexLive do
         socket =
           socket
           |> put_flash(:info, "Subject annotation approved")
-          |> push_navigate(to: "/annotations")
+          |> push_navigate(to: "/admin/all-annotations")
 
         {:noreply, socket}
 
@@ -132,7 +132,7 @@ defmodule KoshWeb.AnnotationsIndexLive do
         socket =
           socket
           |> put_flash(:info, "Subject annotation deleted")
-          |> push_navigate(to: "/annotations")
+          |> push_navigate(to: "/admin/all-annotations")
 
         {:noreply, socket}
 

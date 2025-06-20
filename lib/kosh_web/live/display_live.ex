@@ -287,25 +287,25 @@ defmodule KoshWeb.DisplayLive do
           </div>
         </div>
 
-        <div class="flex justify-between mt-8">
+        <%!-- <div class="flex justify-between mt-8">
           <.link
-            navigate={~p"/upload"}
+            navigate={~p"/admin/upload"}
             class="px-4 py-2 text-primary-purple border border-primary-purple rounded hover:bg-primary-purple/10"
           >
             Back to Upload
           </.link>
           <.link
-            navigate={~p"/display"}
+            navigate={~p"/annotation/display-files"}
             class="px-4 py-2 text-white bg-primary-purple rounded hover:bg-purple-700"
           >
             Files Index
           </.link>
-        </div>
+        </div> --%>
       </div>
     </div>
     <.live_component
-      module={KoshWeb.Components.AnnotationFormComponent}
-      id="annotation-form"
+      module={KoshWeb.Components.AnnotationSection.AnnotationSectionWrapper}
+      id="annotation-section-wrapper"
       file={@file}
       current_user={@current_user}
     />

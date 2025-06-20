@@ -178,8 +178,8 @@ defmodule Kosh.EAD do
       :collection,
       :series,
       :sub_series,
-      :accepted_description_annotations,
-      accepted_subjects_annotations: :subjects
+      accepted_description_annotations: [:file],
+      accepted_subjects_annotations: [:subjects, :file]
     ])
     |> Repo.get_by([uri: uri])
 
