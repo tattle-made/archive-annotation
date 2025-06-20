@@ -151,7 +151,7 @@ defmodule KoshWeb.NavComponent do
                 </.link>
               </li>
             <% end %>
-            <%= if @current_user.role == :admin do %>
+            <%= if (!!@current_user and @current_user.role == :admin) do %>
               <li>
                 <.link
                   navigate={~p"/admin"}
