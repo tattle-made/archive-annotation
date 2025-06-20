@@ -81,24 +81,24 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     {:ok, state}
   end
 
-  @impl true
-  def handle_event(
-        :start_element,
-        {name, attrs},
-        %{current_file: current_file, in_file: in_file} = state
-      )
-      when name == "scopecontent" and in_file and not is_nil(current_file) do
-    # when name == "scopecontent" and in_file and current_file do
-    # Debug logging
-    # IO.puts("DEBUG: scopecontent handler - name: #{name}, in_file: #{inspect(in_file)}, current_file: #{inspect(current_file)}")
-    # Write start tag, e.g. <food type="snack">
-    write(state, "<#{name}#{format_attrs(attrs)}>")
+  # @impl true
+  # def handle_event(
+  #       :start_element,
+  #       {name, attrs},
+  #       %{current_file: current_file, in_file: in_file} = state
+  #     )
+  #     when name == "scopecontent" and in_file and not is_nil(current_file) do
+  #   # when name == "scopecontent" and in_file and current_file do
+  #   # Debug logging
+  #   # IO.puts("DEBUG: scopecontent handler - name: #{name}, in_file: #{inspect(in_file)}, current_file: #{inspect(current_file)}")
+  #   # Write start tag, e.g. <food type="snack">
+  #   write(state, "<#{name}#{format_attrs(attrs)}>")
 
-    IO.puts("inside scope content")
+  #   IO.puts("inside scope content")
 
-    state = %{state | in_scopecontent: true}
-    {:ok, state}
-  end
+  #   state = %{state | in_scopecontent: true}
+  #   {:ok, state}
+  # end
 
   @impl true
   def handle_event(:start_element, {name, attrs}, %{current_file: current_file} = state)
@@ -153,17 +153,17 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
   end
 
   # Characters inside scopecontent
-  @impl true
-  def handle_event(
-        :characters,
-        chars,
-        %{current_file: current_file, in_scopecontent: in_scopecontent} = state
-      )
-      when not is_nil(current_file) and in_scopecontent do
-    write(state, chars)
-    state = %{state | descriptions_stack: [chars | state.descriptions_stack]}
-    {:ok, state}
-  end
+  # @impl true
+  # def handle_event(
+  #       :characters,
+  #       chars,
+  #       %{current_file: current_file, in_scopecontent: in_scopecontent} = state
+  #     )
+  #     when not is_nil(current_file) and in_scopecontent do
+  #   write(state, chars)
+  #   state = %{state | descriptions_stack: [chars | state.descriptions_stack]}
+  #   {:ok, state}
+  # end
 
   @impl true
   def handle_event(
@@ -202,12 +202,15 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     # check for scopecontent. Possible that there are new description annotations
     # to be added but the scopecontent is not present. If it is the case,
     # add new descriptions after creating scopecontent
-    # IO.puts("DEBUG: Condition check - in_scopecontent: #{inspect(state.in_scopecontent)}, current_file: #{inspect(current_file)}")
-    if state.in_scopecontent == false and not is_nil(current_file) do
+
+
+
+    # if state.in_scopecontent == false and not is_nil(current_file) do
+    if not is_nil(current_file) do
       new_descs = get_in(state.current_file, [:description_annotations]) || []
 
       if(new_descs != []) do
-        write(state, "<scopecontent>")
+        write(state, "<scopecontent label=\"milli-annotation\">")
 
         Enum.each(new_descs, fn desc ->
           write(state, "<p>#{xml_escape(desc.description)}</p>")
@@ -416,7 +419,7 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
   def run_stream_read(xml_path, input) when is_binary(xml_path) do
     try do
       # Open a StringIO to capture output
-      input_stream = File.stream!(xml_path, [], 2048)
+      input_stream = File.stream!(xml_path, 2048)
       {:ok, out_device} = StringIO.open("")
       initial_state = %__MODULE__{io: out_device, files: input}
 
