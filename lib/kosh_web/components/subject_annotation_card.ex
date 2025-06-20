@@ -28,7 +28,7 @@ defmodule KoshWeb.Components.SubjectAnnotationCard do
                 x-show="open"
                 @click.outside="open = false"
               >
-                <%= if(@current_user.role == :admin and @annotation.status == :pending) do %>
+                <%= if(@current_user.role == :admin and @annotation.status == :pending and !is_nil(@on_approve)) do %>
                   <button
                     class="px-2 py-1 w-full text-right hover:bg-bg-grey rounded"
                     phx-click={@on_approve}
