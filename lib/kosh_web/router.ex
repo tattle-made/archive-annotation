@@ -1,5 +1,4 @@
 defmodule KoshWeb.Router do
-
   use KoshWeb, :router
 
   import KoshWeb.UserAuth
@@ -107,7 +106,7 @@ defmodule KoshWeb.Router do
   scope "/", KoshWeb do
     pipe_through :browser
 
-    live_session :home_live,
+    live_session :public_routes,
       on_mount: [{KoshWeb.UserAuth, :mount_current_user}, {KoshWeb.GetPath, :get_path}] do
       live "/", HomeLive, :index
       live "/about", InfoRoutes.AboutLive, :index
@@ -117,8 +116,9 @@ defmodule KoshWeb.Router do
       live "/contact", InfoRoutes.ContactLive, :index
       live "/join-us", InfoRoutes.JoinUsLive, :index
 
-      live "/annotation/display/:uri", DisplayLive, :show
-      live "/annotation/display/repositories/:repository_id/archival_objects/:object_id", DisplayLive, :show
+      live "/annotation/display", DisplayLive, :show
+      # live "/annotation/display/:uri", DisplayLive, :show
+      # live "/annotation/display/repositories/:repository_id/archival_objects/:object_id", DisplayLive, :show
 
       live "/annotation/all-annotations", PublicDisplayAllAnnotationsLive, :index
     end
@@ -130,7 +130,10 @@ defmodule KoshWeb.Router do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     live_session :redirect_if_user_is_authenticated,
-      on_mount: [{KoshWeb.UserAuth, :redirect_if_user_is_authenticated},{KoshWeb.GetPath, :get_path}] do
+      on_mount: [
+        {KoshWeb.UserAuth, :redirect_if_user_is_authenticated},
+        {KoshWeb.GetPath, :get_path}
+      ] do
       # live "/users/register", UserRegistrationLive, :new
       # live "/users/log_in", UserLoginLive, :new
       live "/users/register", HomeLive, :register
@@ -149,7 +152,8 @@ defmodule KoshWeb.Router do
     live_session :require_authenticated_user,
       on_mount: [
         {KoshWeb.UserAuth, :ensure_authenticated},
-        {KoshWeb.UserAuth, :ensure_authorized},{KoshWeb.GetPath, :get_path}
+        {KoshWeb.UserAuth, :ensure_authorized},
+        {KoshWeb.GetPath, :get_path}
       ] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
@@ -166,11 +170,11 @@ defmodule KoshWeb.Router do
     live_session :annotation_files_authenticated,
       on_mount: [
         {KoshWeb.UserAuth, :ensure_authenticated},
-        {KoshWeb.UserAuth, :ensure_authorized},{KoshWeb.GetPath, :get_path}
+        {KoshWeb.UserAuth, :ensure_authorized},
+        {KoshWeb.GetPath, :get_path}
       ] do
       live "/display-files", DisplayIndexLive, :index
-      # live "/display/:uri", DisplayLive, :show
-      # live "/display/repositories/:repository_id/archival_objects/:object_id", DisplayLive, :show
+
       live "/my-annotations", MyAnnotationsLive, :index
     end
   end
@@ -181,7 +185,8 @@ defmodule KoshWeb.Router do
     live_session :admin_only_session,
       on_mount: [
         {KoshWeb.UserAuth, :ensure_authenticated},
-        {KoshWeb.UserAuth, :ensure_authorized},{KoshWeb.GetPath, :get_path}
+        {KoshWeb.UserAuth, :ensure_authorized},
+        {KoshWeb.GetPath, :get_path}
       ] do
       live "/", AdminRoutesDisplayLive, :index
       live "/all-annotations", AllAnnotationsIndexAdminLive, :index
@@ -196,7 +201,7 @@ defmodule KoshWeb.Router do
     delete "/users/log_out", UserSessionController, :delete
 
     live_session :current_user,
-      on_mount: [{KoshWeb.UserAuth, :mount_current_user},{KoshWeb.GetPath, :get_path}] do
+      on_mount: [{KoshWeb.UserAuth, :mount_current_user}, {KoshWeb.GetPath, :get_path}] do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
