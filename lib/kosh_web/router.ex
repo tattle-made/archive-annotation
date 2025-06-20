@@ -183,6 +183,7 @@ defmodule KoshWeb.Router do
         {KoshWeb.UserAuth, :ensure_authenticated},
         {KoshWeb.UserAuth, :ensure_authorized},{KoshWeb.GetPath, :get_path}
       ] do
+      live "/", AdminRoutesDisplayLive, :index
       live "/all-annotations", AllAnnotationsIndexAdminLive, :index
       live "/export-ead", ExportEADLive, :index
       live "/upload", UploadLive, :index

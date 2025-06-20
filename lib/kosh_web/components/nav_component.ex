@@ -151,6 +151,23 @@ defmodule KoshWeb.NavComponent do
                 </.link>
               </li>
             <% end %>
+            <%= if @current_user.role == :admin do %>
+              <li>
+                <.link
+                  navigate={~p"/admin"}
+                  class={
+                      "text-primary-purple font-semibold text-body-sm-16 p-3 " <>
+                      (
+                        if (@current_path == "/admin" or String.starts_with?(@current_path, "/admin")),
+                          do: "border-b-4 border-primary-purple",
+                          else: ""
+                        )
+                    }
+                >
+                  Admin
+                </.link>
+              </li>
+            <% end %>
           </ul>
         </div>
         <!-- Mobile menu (visible <= md) -->
