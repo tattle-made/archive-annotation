@@ -43,7 +43,7 @@ defmodule KoshWeb.HomeLive do
       <% end %>
 
       <div class="mt-10 w-full bg-secondary-blue h-[9rem] flex items-center  sm:h-[10.5rem]  xl:h-[11.5rem]">
-        <.form for={@search_form} class="flex items-center w-full">
+        <.form for={@search_form} phx-submit="search-redirect" class="flex items-center w-full">
           <div class="w-[60%]">
             <.input
               field={@search_form[:search_query]}
@@ -120,6 +120,21 @@ defmodule KoshWeb.HomeLive do
     # socket.assigns.live_action will be :index, :login, or :register
     socket =
       assign(socket, :subview, socket.assigns.live_action)
+
+    {:noreply, socket}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("search-redirect", unsigned_params, socket) do
+
+    query = get_in(unsigned_params, ["search_form", "search_query"])
+
+    url = "https://cat.milli.link/search?utf8=%E2%9C%93&op[]=&q[]=" <> URI.encode(query)
+
+    socket =
+      socket
+      |> push_event("search-query", %{url: url})
+      |> assign(:search_form, to_form(%{"search_query" => ""}, as: "search_form"))
 
     {:noreply, socket}
   end
