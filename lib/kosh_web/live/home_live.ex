@@ -25,14 +25,22 @@ defmodule KoshWeb.HomeLive do
                 Milli’s Annotation Tool allows users to search through and contribute annotations in the archive’s digital repository. It simplifies locating specific comments, notes, or metadata attached to materials like documents and images. By offering quick access to insights and cross-references, it’s a valuable resource for researchers and historians.
               </p>
             </div>
+            <p>
+            <.link
+                navigate={~p"/annotation/all-annotations"}
+                class="text-secondary-purple font-semibold xl:mt-10 mt-8 text-body-md-18 xl:text-body-lg-24 hover:underline "
+              >
+                View All Collected Annotations
+              </.link>
+              </p>
 
             <%= if @current_user do %>
-              <.link
+              <%!-- <.link
                 navigate={~p"/annotation/my-annotations"}
                 class="text-secondary-purple font-semibold xl:mt-10 mt-8 text-body-md-18 xl:text-body-lg-24 hover:underline "
               >
                 View My Annotations
-              </.link>
+              </.link> --%>
             <% else %>
               <p class="text-secondary-purple font-semibold xl:mt-10 mt-8 text-body-md-18 xl:text-body-lg-24">
                 Are you a new user? <.link navigate={~p"/users/register"} class="underline">Register to Annotate</.link>. If not,

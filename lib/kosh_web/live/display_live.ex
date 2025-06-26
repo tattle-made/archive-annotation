@@ -40,29 +40,47 @@ defmodule KoshWeb.DisplayLive do
   end
 
   defp fetch_item_uuid(handle_url) do
+    require Logger
+    Logger.debug("fetch_item_uuid called with handle_url: #{inspect(handle_url)}")
     case HTTPoison.get(handle_url, [], follow_redirect: false) do
       {:ok, %HTTPoison.Response{status_code: code, headers: headers}} when code in [301, 302] ->
+        Logger.debug("Received redirect response with status code: #{code}")
         case List.keyfind(headers, "Location", 0) do
           {"Location", location} ->
+            Logger.debug("Found Location header: #{inspect(location)}")
             # If it's a relative path, prefix the site origin
             redirect_url =
               if String.starts_with?(location, "/") do
+                Logger.debug("Location is a relative path, prefixing with site origin.")
                 "https://collections.archives.ncbs.res.in" <> location
               else
+                Logger.debug("Location is an absolute URL.")
                 location
               end
 
             # Extract the UUID from /items/<UUID>
             case Regex.run(~r{/items/([0-9a-fA-F\-]+)}, redirect_url, capture: :all_but_first) do
-              [uuid] -> uuid
-              _ -> nil
+              [uuid] ->
+                Logger.debug("Extracted UUID: #{uuid}")
+                uuid
+              _ ->
+                Logger.error("Could not extract UUID from redirect_url: #{inspect(redirect_url)}")
+                nil
             end
 
           _ ->
+            Logger.error("Location header not found in redirect response headers: #{inspect(headers)}")
             nil
         end
 
-      _ ->
+      {:ok, %HTTPoison.Response{status_code: code}} ->
+        Logger.error("Unexpected status code received: #{code}")
+        nil
+      {:error, reason} ->
+        Logger.error("HTTPoison.get failed: #{inspect(reason)}")
+        nil
+      other ->
+        Logger.error("Unexpected response from HTTPoison.get: #{inspect(other)}")
         nil
     end
   end
