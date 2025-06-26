@@ -76,8 +76,17 @@ defmodule KoshWeb.Components.DescriptionAnnotationCard do
           <%= @annotation.description %>
         </div>
         <%= if !@is_featured? do %>
-          <div class="text-caption-14 text-primary-grey">
-            <%= @annotation.file && @annotation.file.title %>
+          <div class="text-caption-14 text-primary-grey hover:text-secondary-grey">
+            <%= if @annotation.file && @annotation.file.title do %>
+              <.link navigate={"/annotation/display?uri=#{@annotation.file.uri}"}>
+                <%= @annotation.file.title %>
+              </.link>
+              <%= if @annotation.file.unitid && @annotation.file.unitid.id do %>
+                <span class="text-gray-500">
+                  - <%= @annotation.file.unitid.id %>
+                </span>
+              <% end %>
+            <% end %>
           </div>
         <% end %>
       </div>
@@ -90,7 +99,12 @@ defmodule KoshWeb.Components.DescriptionAnnotationCard do
             |> Timex.format!("{D} {Mfull} {YYYY}") %>
           </span>
         </div>
-        <div class="bg-bg-grey px-3 py-2 rounded-br-[4px]">
+        <%= if !!@annotation.user do %>
+          <div class="text-meta-12 ml-auto mx-2 max-w-36 truncate">
+            <%= @annotation.user.email %>
+          </div>
+        <% end %>
+        <div class="bg-bg-grey h-full flex items-center px-3 py-2 rounded-br-[4px]">
           <span class="uppercase text-meta-12 text-primary-grey">
             <%!-- <%= @annotation.file && @annotation.file.unitid && @annotation.file.unitid.id %> --%>
             <%= @annotation.id %>

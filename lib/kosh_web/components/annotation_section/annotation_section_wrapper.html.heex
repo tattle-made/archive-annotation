@@ -77,9 +77,9 @@
         <div class="space-y-2 2xl:text-body-md-18">
           <p >
             We have collected <br />
-            <span class="font-bold"><%= @total_annotations %></span> user annotations
+            <span class="font-bold"><%= @total_annotations %></span> user annotations for this file
           </p>
-          <.link navigate="/annotation/all-annotations" class="flex items-center">
+          <.link navigate={"/annotation/file-annotations?uri=#{@file.uri}"} class="flex items-center">
             <span class=" underline font-semibold">View all</span>
             <img src="/images/redirect-black.svg" alt="icon" />
           </.link>

@@ -19,7 +19,10 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationSectionWrapper do
         []
       end
 
-    total_annotations = Annotations.count_total_approved_annotations()
+    # total_annotations = Annotations.count_total_approved_annotations()
+    total_annotations =
+      length(socket.assigns.file.accepted_description_annotations) +
+        length(socket.assigns.file.accepted_subjects_annotations)
 
     socket =
       assign(socket,

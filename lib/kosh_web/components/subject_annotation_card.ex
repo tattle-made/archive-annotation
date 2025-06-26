@@ -62,13 +62,28 @@ defmodule KoshWeb.Components.SubjectAnnotationCard do
                 <li class="py-3 border-b border-white last:border-b-0">
                   <%!-- <%= subject.content %> --%>
                   <%= if @annotation.status == :pending do %>
-                    <%= subject.content %>
+                    <span><%= subject.content %></span>
+                    <span class="text-primary-grey text-sm">
+                      <%= if subject.source do
+                        "- #{subject.source}"
+                      end %>
+                    </span>
                   <% end %>
                   <%= if @annotation.status == :accepted do %>
                     <%= if Enum.member?(@annotation.new_subjects || [], subject.content) do %>
-                      <%= subject.content %><span class="text-primary-grey"> (new)</span>
+                      <%= subject.content %><span class="text-primary-grey text-sm"> (new)</span>
+                      <span class="text-primary-grey text-sm">
+                        <%= if subject.source do
+                          "- #{subject.source}"
+                        end %>
+                      </span>
                     <% else %>
-                      <%= subject.content %>
+                      <span><%= subject.content %></span>
+                      <span class="text-primary-grey text-sm">
+                        <%= if subject.source do
+                          "- #{subject.source}"
+                        end %>
+                      </span>
                     <% end %>
                   <% end %>
                 </li>
@@ -77,15 +92,28 @@ defmodule KoshWeb.Components.SubjectAnnotationCard do
             <%= if Map.has_key?(@annotation, :new_subjects) && @annotation.new_subjects && length(@annotation.new_subjects) > 0 && @annotation.status == :pending do %>
               <%= for subject <- @annotation.new_subjects do %>
                 <li>
-                  <%= subject %> <span class="text-primary-grey">(new)</span>
+                  <%= subject %> <span class="text-primary-grey text-sm">(new)</span><span class="text-primary-grey text-sm">
+                        <%= if subject.source do
+                          "- #{subject.source}"
+                        end %>
+                      </span>
                 </li>
               <% end %>
             <% end %>
           </ul>
         </div>
         <%= if !@is_featured? do %>
-          <div class="text-caption-14 text-primary-grey">
-            <%= @annotation.file && @annotation.file.title %>
+          <div class="text-caption-14 text-primary-grey hover:text-secondary-grey">
+            <%= if @annotation.file && @annotation.file.title do %>
+              <.link navigate={"/annotation/display?uri=#{@annotation.file.uri}"}>
+                <%= @annotation.file.title %>
+              </.link>
+              <%= if @annotation.file.unitid && @annotation.file.unitid.id do %>
+                <span class="text-gray-500">
+                  - <%= @annotation.file.unitid.id %>
+                </span>
+              <% end %>
+            <% end %>
           </div>
         <% end %>
       </div>
@@ -98,6 +126,11 @@ defmodule KoshWeb.Components.SubjectAnnotationCard do
             |> Timex.format!("{D} {Mfull} {YYYY}") %>
           </span>
         </div>
+        <%= if !!@annotation.user do %>
+          <div class="text-meta-12 ml-auto mx-2 max-w-36 truncate">
+            <%= @annotation.user.email %>
+          </div>
+        <% end %>
         <div class="bg-bg-grey px-3 py-2 rounded-br-[4px]">
           <span class="uppercase text-meta-12 text-primary-grey">
             <%!-- <%= @annotation.file && @annotation.file.unitid && @annotation.file.unitid.id %> --%>

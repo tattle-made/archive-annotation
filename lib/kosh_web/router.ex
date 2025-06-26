@@ -121,6 +121,7 @@ defmodule KoshWeb.Router do
       # live "/annotation/display/repositories/:repository_id/archival_objects/:object_id", DisplayLive, :show
 
       live "/annotation/all-annotations", PublicDisplayAllAnnotationsLive, :index
+      live "/annotation/file-annotations", PublicDisplayFileAnnotationsLive, :index
     end
 
     # get "/", PageController, :home
