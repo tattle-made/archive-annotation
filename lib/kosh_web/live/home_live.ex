@@ -26,13 +26,13 @@ defmodule KoshWeb.HomeLive do
               </p>
             </div>
             <p>
-            <.link
+              <.link
                 navigate={~p"/annotation/all-annotations"}
                 class="text-secondary-purple font-semibold xl:mt-10 mt-8 text-body-md-18 xl:text-body-lg-24 hover:underline "
               >
                 View All Collected Annotations
               </.link>
-              </p>
+            </p>
 
             <%= if @current_user do %>
               <%!-- <.link
@@ -134,14 +134,11 @@ defmodule KoshWeb.HomeLive do
 
   @impl Phoenix.LiveView
   def handle_event("search-redirect", unsigned_params, socket) do
-
     query = get_in(unsigned_params, ["search_form", "search_query"])
-
-    url = "https://cat.milli.link/search?utf8=%E2%9C%93&op[]=&q[]=" <> URI.encode(query)
 
     socket =
       socket
-      |> push_event("search-query", %{url: url})
+      |> push_navigate(to: "/search?q=#{query}")
       |> assign(:search_form, to_form(%{"search_query" => ""}, as: "search_form"))
 
     {:noreply, socket}
