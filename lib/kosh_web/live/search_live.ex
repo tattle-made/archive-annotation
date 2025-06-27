@@ -23,6 +23,15 @@ defmodule KoshWeb.SearchLive do
   def handle_params(unsigned_params, _uri, socket) do
     query = unsigned_params["q"]
 
+    raw_page =
+      case unsigned_params["page"] do
+        nil -> 1
+        p when is_binary(p) -> String.to_integer(p)
+        p when is_integer(p) -> p
+      end
+
+    page_size = 10
+
     default_search_form_map =
       if unsigned_params == %{} do
         %{}
@@ -32,20 +41,44 @@ defmodule KoshWeb.SearchLive do
 
     form = to_form(default_search_form_map, as: "search_form")
 
-    results =
+    search_data =
       if is_binary(query) and String.trim(query) != "" do
-        Kosh.Search.search_files(query)
+        Kosh.Search.search_files(query, raw_page, page_size)
       else
-        []
+        %{results: [], total_count: 0}
       end
 
-    # IO.inspect(results, label: "SEARCH RESULTS: ")
+    total_pages =
+      if search_data.total_count > 0 do
+        div(search_data.total_count + page_size - 1, page_size)
+      else
+        1
+      end
+
+    page =
+      cond do
+        raw_page < 1 -> 1
+        raw_page > total_pages -> total_pages
+        true -> raw_page
+      end
+
+    # If the clamped page is different, re-run the search for the valid page
+    search_data =
+      if page != raw_page and is_binary(query) and String.trim(query) != "" do
+        Kosh.Search.search_files(query, page, page_size)
+      else
+        search_data
+      end
 
     {:noreply,
      assign(socket,
-       results: results,
+       results: search_data.results,
        query: query,
        search_form: form,
+       page: page,
+       page_size: page_size,
+       total_count: search_data.total_count,
+       total_pages: total_pages,
        temporary_assigns: [search_form: nil]
      )}
   end
@@ -88,7 +121,13 @@ defmodule KoshWeb.SearchLive do
               No results found for "<%= @query %>".
             </div>
           <% else %>
-            <p class=" text-secondary-purple">Found <span class="font-bold"><%=length(@results) %></span> Search Results for <span class="font-bold">"<%= @query %>"</span></p>
+            <div class="flex justify-between ">
+              <p class=" text-secondary-purple">
+                Found <span class="font-bold"><%= @total_count %></span>
+                Search Results for <span class="font-bold">"<%= @query %>"</span>
+              </p>
+              <p class="  text-secondary-purple">Page <%= @page %> of <%= @total_pages %></p>
+            </div>
             <div class="grid gap-6">
               <%= for result <- @results do %>
                 <div class="bg-white rounded-lg shadow-milli-1 border border-secondary-pale-grey p-6">
@@ -210,6 +249,21 @@ defmodule KoshWeb.SearchLive do
                     <% end %>
                   </div>
                 </div>
+              <% end %>
+            </div>
+            <div class="flex justify-center mt-8 gap-2">
+              <%= if @page > 1 do %>
+                <.link patch={~p"/search?q=#{@query}&page=#{@page - 1}"} class="btn-primary-purple">
+                  Previous
+                </.link>
+              <% end %>
+              <span class="px-4 py-2 text-secondary-purple">
+                Page <%= @page %> of <%= @total_pages %>
+              </span>
+              <%= if @page < @total_pages do %>
+                <.link patch={~p"/search?q=#{@query}&page=#{@page + 1}"} class="btn-primary-purple">
+                  Next
+                </.link>
               <% end %>
             </div>
           <% end %>

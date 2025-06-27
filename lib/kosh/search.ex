@@ -15,41 +15,50 @@ defmodule Kosh.Search do
     - Accepted annotations: DescriptionAnnotation.description, SubjectsAnnotation.new_subjects and associated Subjects.content
   Returns a list of maps, each including only the matching annotation texts.
   """
-  def search_files(q) when is_binary(q) and q != "" do
+  def search_files(q, page, page_size) when is_binary(q) and q != "" and is_integer(page) and is_integer(page_size) do
     pattern = "%#{q}%"
+    offset = (page - 1) * page_size
 
-    query =
+    base_query =
       File
       |> join(:left, [f], c in assoc(f, :collection))
       |> join(:left, [f, c], s in assoc(f, :series))
       |> join(:left, [f, c, s], ss in assoc(f, :sub_series))
       |> join(:left, [f, c, s, ss], subj in assoc(f, :subjects))
       |> join(:left, [f, c, s, ss, subj], desc_ann in assoc(f, :accepted_description_annotations))
-      # join subject_annotations and their subjects for filtering
-      |> join(
-        :left,
-        [f, c, s, ss, subj, desc_ann],
-        subj_ann in assoc(f, :accepted_subjects_annotations)
-      )
-      |> join(
-        :left,
-        [f, c, s, ss, subj, desc_ann, subj_ann],
-        ann_subj in assoc(subj_ann, :subjects)
-      )
+      |> join(:left, [f, c, s, ss, subj, desc_ann], subj_ann in assoc(f, :accepted_subjects_annotations))
+      |> join(:left, [f, c, s, ss, subj, desc_ann, subj_ann], ann_subj in assoc(subj_ann, :subjects))
       |> where(^match_any(pattern))
-      |> distinct([f], f.id)
+      |> distinct([f], f.uri)
+
+    total_count =
+      base_query
+      |> exclude(:preload)
+      |> exclude(:order_by)
+      |> select([f], f.uri)
+      |> Repo.aggregate(:count, :uri, distinct: true)
+
+    results =
+      base_query
       |> preload([f, c, s, ss, subj, desc_ann, subj_ann, ann_subj],
         collection: c,
         series: s,
         sub_series: ss,
         subjects: subj,
         accepted_description_annotations: desc_ann,
-        # nested preload for subject annotations and their subjects
         accepted_subjects_annotations: {subj_ann, [:subjects]}
       )
+      |> limit(^page_size)
+      |> offset(^offset)
+      |> Repo.all()
+      |> Enum.uniq_by(& &1.uri)
+      |> Enum.map(&format_file(&1, q))
 
-    Repo.all(query)
-    |> Enum.map(&format_file(&1, q))
+    %{results: results, total_count: total_count}
+  end
+
+  def search_files(q) when is_binary(q) and q != "" do
+    search_files(q, 1, 20)
   end
 
   defp match_any(pattern) do
