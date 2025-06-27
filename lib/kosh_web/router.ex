@@ -122,6 +122,7 @@ defmodule KoshWeb.Router do
 
       live "/annotation/all-annotations", PublicDisplayAllAnnotationsLive, :index
       live "/annotation/file-annotations", PublicDisplayFileAnnotationsLive, :index
+      live "/search", SearchLive, :index
     end
 
     # get "/", PageController, :home

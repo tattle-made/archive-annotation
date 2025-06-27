@@ -25,14 +25,6 @@ import Alpine from 'alpinejs'
 import live_select from "live_select"
 import Download from "./hooks/download"
 
-window.addEventListener("phx:search-query", event => {
-  const url = event.detail.url;
-  if (url) {
-    window.open(url, "_blank");
-  } else {
-    console.warn("No URL in phx:search-query event", event);
-  }
-});
 window.Alpine = Alpine
  
 Alpine.start()
