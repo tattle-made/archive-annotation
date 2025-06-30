@@ -93,7 +93,7 @@ defmodule KoshWeb.Components.SubjectAnnotationCard do
               <%= for subject <- @annotation.new_subjects do %>
                 <li>
                   <%= subject %> <span class="text-primary-grey text-sm">(new)</span><span class="text-primary-grey text-sm">
-                        <%= if subject.source do
+                        <%= if is_map(subject) and subject.source do
                           "- #{subject.source}"
                         end %>
                       </span>
