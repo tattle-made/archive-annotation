@@ -19,38 +19,42 @@ defmodule Kosh.Search do
     pattern = "%#{q}%"
     offset = (page - 1) * page_size
 
-    base_query =
-      File
-      |> join(:left, [f], c in assoc(f, :collection))
-      |> join(:left, [f, c], s in assoc(f, :series))
-      |> join(:left, [f, c, s], ss in assoc(f, :sub_series))
-      |> join(:left, [f, c, s, ss], subj in assoc(f, :subjects))
-      |> join(:left, [f, c, s, ss, subj], desc_ann in assoc(f, :accepted_description_annotations))
-      |> join(:left, [f, c, s, ss, subj, desc_ann], subj_ann in assoc(f, :accepted_subjects_annotations))
-      |> join(:left, [f, c, s, ss, subj, desc_ann, subj_ann], ann_subj in assoc(subj_ann, :subjects))
-      |> where(^match_any(pattern))
-      |> distinct([f], f.uri)
+    # Use a helper to build the base query with all joins and where
+    base_query = build_search_base_query(pattern)
 
-    total_count =
+    # Step 1: Get matching file URIs (with distinct, pagination)
+    file_uris_query =
       base_query
-      |> exclude(:preload)
-      |> exclude(:order_by)
       |> select([f], f.uri)
-      |> Repo.aggregate(:count, :uri, distinct: true)
-
-    results =
-      base_query
-      |> preload([f, c, s, ss, subj, desc_ann, subj_ann, ann_subj],
-        collection: c,
-        series: s,
-        sub_series: ss,
-        subjects: subj,
-        accepted_description_annotations: desc_ann,
-        accepted_subjects_annotations: {subj_ann, [:subjects]}
-      )
+      |> distinct([f], f.uri)
       |> limit(^page_size)
       |> offset(^offset)
-      |> Repo.all()
+
+    file_uris = Repo.all(file_uris_query)
+
+    # Step 2: Get total count (distinct uris)
+    total_count_query =
+      base_query
+      |> select([f], f.uri)
+      |> distinct([f], f.uri)
+
+    total_count = Repo.aggregate(total_count_query, :count, :uri)
+
+    # Step 3: Fetch files by URI, with all associations preloaded
+    files_query =
+      File
+      |> where([f], f.uri in ^file_uris)
+      |> preload([
+        :collection,
+        :series,
+        :sub_series,
+        :subjects,
+        :accepted_description_annotations,
+        accepted_subjects_annotations: [:subjects]
+      ])
+
+    results =
+      Repo.all(files_query)
       |> Enum.uniq_by(& &1.uri)
       |> Enum.map(&format_file(&1, q))
 
@@ -63,9 +67,7 @@ defmodule Kosh.Search do
 
   defp match_any(pattern) do
     dynamic(
-      [f, c, s, ss, subj, desc_ann, subj_ann],
-      # fragment("?->>'xlink_title' ILIKE ?", f.dao, ^pattern) or
-      # 3) look inside the daolocs JSON array for any elem->>'href' matching
+      [f, c, s, ss, subj, desc_ann, subj_ann, ann_subj],
       ilike(f.title, ^pattern) or
         ilike(f.uri, ^pattern) or
         fragment("array_to_string(?, ' ') ILIKE ?", f.description, ^pattern) or
@@ -90,13 +92,9 @@ defmodule Kosh.Search do
         ilike(c.title, ^pattern) or
         ilike(s.title, ^pattern) or
         ilike(ss.title, ^pattern) or
-        ilike(subj.content, ^pattern) or
+        ilike(subj.content, ^pattern) or  # file's direct subjects
         ilike(desc_ann.description, ^pattern) or
-        fragment(
-          "exists (select 1 from unnest(?) as elem where elem ILIKE ?)",
-          subj_ann.new_subjects,
-          ^pattern
-        )
+        ilike(ann_subj.content, ^pattern) # subjects of each annotation
     )
   end
 
@@ -123,17 +121,22 @@ defmodule Kosh.Search do
       matched_subjects_annotations:
         (file.accepted_subjects_annotations || [])
         |> Enum.flat_map(fn ann ->
-          matches = []
-          # new subjects array
-          matches = matches ++ Enum.filter((ann.new_subjects || []), &String.contains?(String.downcase(&1), String.downcase(q)))
-          # existing linked subjects
-          matches =
-            (matches ++ (ann.subjects || []))
-            |> Enum.map(& &1.content)
-            |> Enum.filter(&String.contains?(String.downcase(&1), String.downcase(q)))
-
-          matches
+          (ann.subjects || [])
+          |> Enum.map(& &1.content)
+          |> Enum.filter(&String.contains?(String.downcase(&1), String.downcase(q)))
         end)
     }
+  end
+
+  defp build_search_base_query(pattern) do
+    File
+    |> join(:left, [f], c in assoc(f, :collection))
+    |> join(:left, [f, c], s in assoc(f, :series))
+    |> join(:left, [f, c, s], ss in assoc(f, :sub_series))
+    |> join(:left, [f, c, s, ss], subj in assoc(f, :subjects))
+    |> join(:left, [f, c, s, ss, subj], desc_ann in assoc(f, :accepted_description_annotations))
+    |> join(:left, [f, c, s, ss, subj, desc_ann], subj_ann in assoc(f, :accepted_subjects_annotations))
+    |> join(:left, [f, c, s, ss, subj, desc_ann, subj_ann], ann_subj in assoc(subj_ann, :subjects))
+    |> where(^match_any(pattern))
   end
 end
