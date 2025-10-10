@@ -424,7 +424,7 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
       initial_state = %__MODULE__{io: out_device, files: input}
 
       # Parse the string in SAX mode, streaming events to this module
-      {:ok, final_state} = Saxy.parse_stream(input_stream, __MODULE__, initial_state)
+      {:ok, final_state} = Saxy.parse_stream(input_stream, __MODULE__, initial_state, expand_entity: :never)
 
       # Retrieve the accumulated output
       {_input, output} = StringIO.contents(final_state.io)
