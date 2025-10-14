@@ -210,7 +210,7 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
       new_descs = get_in(state.current_file, [:description_annotations]) || []
 
       if(new_descs != []) do
-        write(state, "<scopecontent label=\"milli-annotation\">")
+        write(state, "<scopecontent><head>annomilli-annotation</head>")
 
         Enum.each(new_descs, fn desc ->
           write(state, "<p>#{xml_escape(desc.description)}</p>")
@@ -262,9 +262,9 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
 
     new_descs = remove_existing_descriptions(state.descriptions_stack, new_descs)
 
-    Enum.each(new_descs, fn desc ->
-      write(state, "<p>#{xml_escape(desc)}</p>")
-    end)
+    # Enum.each(new_descs, fn desc ->
+    #   write(state, "<p>#{xml_escape(desc)}</p>")
+    # end)
 
     write(state, "</#{name}>")
     # state = %{state | in_scopecontent: false}
