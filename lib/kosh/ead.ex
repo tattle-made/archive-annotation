@@ -181,8 +181,7 @@ defmodule Kosh.EAD do
       accepted_description_annotations: [:file, :user],
       accepted_subjects_annotations: [:subjects, :file, :user]
     ])
-    |> Repo.get_by([uri: uri])
-
+    |> Repo.get_by(uri: uri)
   end
 
   @spec list_files() :: [struct()]
@@ -223,7 +222,10 @@ defmodule Kosh.EAD do
       files =
         File
         |> where([f], f.collection_id == ^collection_id)
-        |> preload([:accepted_description_annotations, accepted_subjects_annotations: [:subjects]])
+        |> preload([
+          :accepted_description_annotations,
+          accepted_subjects_annotations: [:subjects]
+        ])
         |> Repo.all()
 
       result =
@@ -231,6 +233,7 @@ defmodule Kosh.EAD do
         |> Enum.filter(fn f ->
           f.accepted_description_annotations != [] or f.accepted_subjects_annotations != []
         end)
+        # |> IO.inspect(label: "FILTERED FILES WITH ANNOTATIONS: ")
         |> Enum.map(fn f ->
           %{
             unitid: %{
@@ -240,13 +243,30 @@ defmodule Kosh.EAD do
             },
             description_annotations:
               Enum.map(f.accepted_description_annotations, fn da ->
-                %{id: da.id, description: da.description}
+                %{
+                  id: da.id,
+                  description: da.description,
+                  user_id: da.user_id,
+                  inserted_at: to_sql_ms(da.inserted_at)
+                }
               end),
             subjects_annotations:
               f.accepted_subjects_annotations
-              |> Enum.flat_map(fn sa -> sa.subjects || [] end)
+              |> Enum.flat_map(fn sa ->
+                (sa.subjects || [])
+                |> Enum.map(fn s ->
+                  Map.merge(s, %{anno_id: sa.id, user_id: sa.user_id, anno_inserted_at: sa.inserted_at})
+                end)
+              end)
               |> Enum.map(fn s ->
-                %{content: s.content, source: s.source, unitid: s.unitid}
+                %{
+                  content: s.content,
+                  source: s.source,
+                  unitid: s.unitid,
+                  anno_id: s.anno_id,
+                  user_id: s.user_id,
+                  inserted_at: to_sql_ms(s.anno_inserted_at)
+                }
               end)
           }
         end)
@@ -300,6 +320,16 @@ defmodule Kosh.EAD do
     |> where([s], ilike(s.content, ^"%#{name}%"))
     |> limit(10)
     |> Repo.all()
+  end
+
+
+  @fmt "%Y-%m-%d %H:%M:%S.%3f"
+
+  # Accept a DateTime (any timezone) — convert to UTC then format
+  def to_sql_ms(dt) do
+    dt
+    |> Timex.Timezone.convert("Etc/UTC")
+    |> Timex.format!(@fmt, :strftime)
   end
 
   @spec process_xml_file(String.t(), String.t()) :: {:ok, struct()} | {:error, String.t()}
@@ -383,7 +413,6 @@ defmodule Kosh.EAD do
   @spec process_node_for_db(map(), integer(), integer() | nil, integer() | nil) ::
           {:ok, struct()} | {:error, String.t()}
   defp process_node_for_db(%{type: :series} = node, collection_id, _series_id, _sub_series_id) do
-
     series_attrs =
       node
       |> Map.drop([:type, :children])
@@ -431,10 +460,10 @@ defmodule Kosh.EAD do
   end
 
   defp process_node_for_db(%{type: :file} = node, collection_id, series_id, sub_series_id) do
-
     IO.inspect(node, label: "FILE NODE: ")
     # Drop non-schema fields and add IDs
     file_uri = node.unitid.uri
+
     file_attrs =
       node
       |> Map.drop([:type])
