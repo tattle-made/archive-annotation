@@ -199,28 +199,25 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
   @impl true
   def handle_event(:end_element, name, %{current_file: current_file} = state)
       when name == "c" do
-    # check for scopecontent. Possible that there are new description annotations
-    # to be added but the scopecontent is not present. If it is the case,
-    # add new descriptions after creating scopecontent
 
-
-
-    # if state.in_scopecontent == false and not is_nil(current_file) do
     if not is_nil(current_file) do
       new_descs = get_in(state.current_file, [:description_annotations]) || []
 
       if(new_descs != []) do
-        write(state, "<scopecontent><head>annomilli-annotation</head>")
 
         Enum.each(new_descs, fn desc ->
+          write(state, ~s(<scopecontent id="annnomilli-id_#{desc.id}_user_id_#{desc.user_id}_timestamp_#{desc.inserted_at}">))
+          write(state, "<head>annomilli-annotation</head>")
           write(state, "<p>#{xml_escape(desc.description)}</p>")
+          write(state, "</scopecontent>")
         end)
 
-        write(state, "</scopecontent>")
       end
     end
 
-    # Same as above but for controlaccess.
+    # check for controlaccess. Possible that there are new subject annotations
+    # to be added but the controlaccess is not present. If it is the case,
+    # add new subjects after creating controlaccess
     if !state.in_controlaccess and not is_nil(current_file) do
       new_subs = state.current_file.subjects_annotations || []
 
@@ -253,23 +250,23 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     {:ok, state}
   end
 
-  @impl true
-  def handle_event(:end_element, name, %{in_file: in_file, current_file: current_file} = state)
-      when name == "scopecontent" and in_file and not is_nil(current_file) do
-    new_descs =
-      (current_file.description_annotations || [])
-      |> Enum.map(fn annotation -> annotation.description end)
+  # @impl true
+  # def handle_event(:end_element, name, %{in_file: in_file, current_file: current_file} = state)
+  #     when name == "scopecontent" and in_file and not is_nil(current_file) do
+  #   new_descs =
+  #     (current_file.description_annotations || [])
+  #     |> Enum.map(fn annotation -> annotation.description end)
 
-    new_descs = remove_existing_descriptions(state.descriptions_stack, new_descs)
+  #   new_descs = remove_existing_descriptions(state.descriptions_stack, new_descs)
 
-    # Enum.each(new_descs, fn desc ->
-    #   write(state, "<p>#{xml_escape(desc)}</p>")
-    # end)
+  #   # Enum.each(new_descs, fn desc ->
+  #   #   write(state, "<p>#{xml_escape(desc)}</p>")
+  #   # end)
 
-    write(state, "</#{name}>")
-    # state = %{state | in_scopecontent: false}
-    {:ok, state}
-  end
+  #   write(state, "</#{name}>")
+  #   # state = %{state | in_scopecontent: false}
+  #   {:ok, state}
+  # end
 
   @impl true
   def handle_event(:end_element, name, %{in_file: in_file, current_file: current_file} = state)
@@ -349,10 +346,14 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     source = Map.get(sub, :source)
     unitid = Map.get(sub, :unitid)
     content = Map.get(sub, :content)
+    anno_id = Map.get(sub, :anno_id)
+    user_id = Map.get(sub, :user_id)
+    inserted_at = Map.get(sub, :inserted_at)
 
     attrs =
       for {value, attr} <- [
-            {source, "source"},
+            # {source, "source"},
+            {"annnomilli-id_#{anno_id}_user_id_#{user_id}_timestamp_#{inserted_at}", "source"},
             {unitid, "id"}
           ],
           value not in [nil, ""] do
