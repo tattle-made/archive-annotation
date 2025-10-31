@@ -238,6 +238,7 @@ defmodule Kosh.EAD do
         |> Enum.filter(fn f ->
           f.accepted_description_annotations != [] or f.accepted_subjects_annotations != []
         end)
+        # |> IO.inspect(label: "FILTERED FILES WITH ANNOTATIONS: ")
         |> Enum.map(fn f ->
           %{
             unitid: %{
@@ -247,13 +248,30 @@ defmodule Kosh.EAD do
             },
             description_annotations:
               Enum.map(f.accepted_description_annotations, fn da ->
-                %{id: da.id, description: da.description}
+                %{
+                  id: da.id,
+                  description: da.description,
+                  user_id: da.user_id,
+                  inserted_at: to_sql_ms(da.inserted_at)
+                }
               end),
             subjects_annotations:
               f.accepted_subjects_annotations
-              |> Enum.flat_map(fn sa -> sa.subjects || [] end)
+              |> Enum.flat_map(fn sa ->
+                (sa.subjects || [])
+                |> Enum.map(fn s ->
+                  Map.merge(s, %{anno_id: sa.id, user_id: sa.user_id, anno_inserted_at: sa.inserted_at})
+                end)
+              end)
               |> Enum.map(fn s ->
-                %{content: s.content, source: s.source, unitid: s.unitid}
+                %{
+                  content: s.content,
+                  source: s.source,
+                  unitid: s.unitid,
+                  anno_id: s.anno_id,
+                  user_id: s.user_id,
+                  inserted_at: to_sql_ms(s.anno_inserted_at)
+                }
               end)
           }
         end)
@@ -310,6 +328,16 @@ defmodule Kosh.EAD do
     |> where([s], ilike(s.content, ^"%#{name}%"))
     |> limit(10)
     |> Repo.all()
+  end
+
+
+  @fmt "%Y-%m-%d %H:%M:%S.%3f"
+
+  # Accept a DateTime (any timezone) — convert to UTC then format
+  def to_sql_ms(dt) do
+    dt
+    |> Timex.Timezone.convert("Etc/UTC")
+    |> Timex.format!(@fmt, :strftime)
   end
 
   @spec process_xml_file(String.t(), String.t()) :: {:ok, struct()} | {:error, String.t()}
