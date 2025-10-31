@@ -1,11 +1,12 @@
 defmodule KoshWeb.UploadLive do
   use KoshWeb, :live_view
   alias Kosh.EAD
+  alias KoshWeb.UploadHelpers
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     # Ensure uploads directory exists
-    ensure_uploads_dir()
+    UploadHelpers.ensure_uploads_dir()
 
     {:ok,
      socket
@@ -47,11 +48,12 @@ defmodule KoshWeb.UploadLive do
              error: "A file with the name '#{entry.client_name}' already exists"
            }}
         else
-          ensure_uploads_dir()
+          UploadHelpers.ensure_uploads_dir()
+
           case EAD.process_xml_file(temp_path, dest_full) do
             # {:ok, collection} ->
             #   # Only if processing is successful, save to uploads directory
-            #   ensure_uploads_dir()
+            #   UploadHelpers.ensure_uploads_dir()
             #   File.cp!(temp_path, dest_full)
             #   destination_path = "/uploads/#{entry.client_name}"
 
@@ -224,10 +226,4 @@ defmodule KoshWeb.UploadLive do
   defp error_to_string(:not_accepted), do: "You can only upload XML files"
   defp error_to_string(:too_many_files), do: "You can only upload 1 file at a time"
   defp error_to_string(_), do: "Invalid file"
-
-  # Ensure uploads directory exists
-  defp ensure_uploads_dir do
-    uploads_dir = Path.join([:code.priv_dir(:kosh), "static", "uploads"])
-    unless File.dir?(uploads_dir), do: File.mkdir_p!(uploads_dir)
-  end
 end

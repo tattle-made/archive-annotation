@@ -84,6 +84,7 @@ defmodule Kosh.EAD do
         case list_files_with_approved_annotations(collection_id) do
           {:ok, []} ->
             {:error, "The Collection has no annotations"}
+
           {:ok, files_with_annotations} ->
             file_path = Path.join([:code.priv_dir(:kosh), "static", collection.upload_path])
 
@@ -92,6 +93,7 @@ defmodule Kosh.EAD do
             else
               SaxyUpdateEadHandler.run_stream_read(file_path, files_with_annotations)
             end
+
           {:error, reason} ->
             {:error, "Failed to get files with annotations: #{reason}"}
         end
@@ -99,10 +101,13 @@ defmodule Kosh.EAD do
     rescue
       e in Ecto.QueryError ->
         {:error, "Database query error: #{inspect(e)}"}
+
       e in Postgrex.Error ->
         {:error, "Database error: #{inspect(e)}"}
+
       e in ArgumentError ->
         {:error, "Invalid argument: #{inspect(e)}"}
+
       e ->
         {:error, "Unexpected error: #{inspect(e)}"}
     end
@@ -275,10 +280,13 @@ defmodule Kosh.EAD do
     rescue
       e in Ecto.QueryError ->
         {:error, "Database query error: #{inspect(e)}"}
+
       e in Postgrex.Error ->
         {:error, "Database error: #{inspect(e)}"}
+
       e in ArgumentError ->
         {:error, "Invalid argument: #{inspect(e)}"}
+
       e ->
         {:error, "Unexpected error: #{inspect(e)}"}
     end
@@ -345,6 +353,61 @@ defmodule Kosh.EAD do
     else
       {:error, reason} -> {:error, reason}
       error -> {:error, "Unexpected error: #{inspect(error)}"}
+    end
+  end
+
+  def process_and_get_fetched_ead_details(body) do
+    with {:ok, parsed_map} <- Saxmap.parse(body),
+         processed_map <- Saxmap.process_ead_map(parsed_map),
+         title when is_binary(title) <- get_name_from_fetched_ead_content(processed_map),
+         {:ok, file_name, tmp_path} <- create_temp_file_for_fetched_ead_content(body, title) do
+      {:ok, %{file_name: file_name, temp_path: tmp_path, processed_map: processed_map}}
+    else
+      {:error, reason} -> {:error, reason}
+      error -> {:error, "Unexpected error: #{inspect(error)}"}
+    end
+  end
+
+  # @spec process_fetched_ead_content(String.t() :: {:ok, struct()} | {:error, String.t()})
+  def import_fetched_ead_content(processed_map, tmp_path, dest_full) do
+    upload_path = "/uploads/" <> Path.basename(dest_full)
+
+    with {:ok, {collection_map, nested_structure}} <-
+           Saxmap.extract_contents_from_processed_map(processed_map) do
+      insert_ead_contents({collection_map, nested_structure}, tmp_path, dest_full, upload_path)
+    else
+      {:error, reason} -> {:error, reason}
+      error -> {:error, "Unexpected error: #{inspect(error)}"}
+    end
+  end
+
+  defp get_name_from_fetched_ead_content(ead_map) do
+    get_in(ead_map, [
+      "OAI-PMH",
+      "GetRecord",
+      "record",
+      "metadata",
+      "ead",
+      "eadheader",
+      "filedesc",
+      "titlestmt",
+      "titleproper",
+      "content"
+    ])
+  end
+
+  # Creates a temporary file with the given content and returns its path.
+  defp create_temp_file_for_fetched_ead_content(body, title) do
+    file_name = "#{title}_#{System.unique_integer([:positive])}.xml"
+
+    temp_path =
+      System.tmp_dir!()
+      |> Path.join(file_name)
+      |> Path.expand()
+
+    case Elixir.File.write(temp_path, body) do
+      :ok -> {:ok, file_name, temp_path}
+      {:error, reason} -> {:error, "Failed to create temp file: #{inspect(reason)}"}
     end
   end
 
@@ -463,10 +526,11 @@ defmodule Kosh.EAD do
     IO.inspect(node, label: "FILE NODE: ")
     # Drop non-schema fields and add IDs
     file_uri = node.unitid.uri
+    file_subjects = get_in(node, [:subjects]) || []
 
     file_attrs =
       node
-      |> Map.drop([:type])
+      |> Map.drop([:type, :subjects])
       |> Map.merge(%{
         uri: file_uri,
         collection_id: collection_id,
@@ -477,7 +541,7 @@ defmodule Kosh.EAD do
     # Insert file
     case create_file(file_attrs) do
       {:ok, inserted_file} ->
-        case add_subjects_to_file(inserted_file, node.subjects) do
+        case add_subjects_to_file(inserted_file, file_subjects) do
           {:ok, _} -> {:ok, inserted_file}
           {:error, reason} -> {:error, "Failed to add subjects to file: #{reason}"}
         end
