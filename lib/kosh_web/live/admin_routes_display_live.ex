@@ -29,6 +29,13 @@ defmodule KoshWeb.AdminRoutesDisplayLive do
           <img src="/images/redirect-color-primary.svg" alt="logo">
         </.link>
         <.link
+          navigate={~p"/admin/upload/url"}
+          class="flex items-center text-secondary-purple font-semibold hover:underline"
+        >
+          <span>Import a new EAD file from OAI Endpoint</span>
+          <img src="/images/redirect-color-primary.svg" alt="logo">
+        </.link>
+        <.link
           navigate={~p"/admin/export-ead"}
           class="flex items-center text-secondary-purple font-semibold hover:underline"
         >

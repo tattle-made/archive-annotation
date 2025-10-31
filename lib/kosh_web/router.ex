@@ -194,6 +194,7 @@ defmodule KoshWeb.Router do
       live "/all-annotations", AllAnnotationsIndexAdminLive, :index
       live "/export-ead", ExportEADLive, :index
       live "/upload", UploadLive, :index
+      live "/upload/url", UrlEadUploadLive, :index
     end
   end
 
