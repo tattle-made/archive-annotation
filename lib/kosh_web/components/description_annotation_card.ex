@@ -1,4 +1,5 @@
 defmodule KoshWeb.Components.DescriptionAnnotationCard do
+  import KoshWeb.Helpers.FormatText
   use Phoenix.Component
   # alias Timex
 
@@ -101,7 +102,7 @@ defmodule KoshWeb.Components.DescriptionAnnotationCard do
         </div>
         <%= if !!@annotation.user do %>
           <div class="text-meta-12 ml-auto mx-2 max-w-36 truncate">
-            <%= @annotation.user.email %>
+            <%= format_user_email(@annotation.user.email) %>
           </div>
         <% end %>
         <div class="bg-bg-grey h-full flex items-center px-3 py-2 rounded-br-[4px]">

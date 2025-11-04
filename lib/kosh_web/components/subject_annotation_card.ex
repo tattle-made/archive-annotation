@@ -1,6 +1,6 @@
 defmodule KoshWeb.Components.SubjectAnnotationCard do
   use Phoenix.Component
-
+  import KoshWeb.Helpers.FormatText
   attr :annotation, :map, required: true
   # or "approved"
   attr :type, :string, default: "submitted"
@@ -128,7 +128,7 @@ defmodule KoshWeb.Components.SubjectAnnotationCard do
         </div>
         <%= if !!@annotation.user do %>
           <div class="text-meta-12 ml-auto mx-2 max-w-36 truncate">
-            <%= @annotation.user.email %>
+            <%= format_user_email(@annotation.user.email) %>
           </div>
         <% end %>
         <div class="bg-bg-grey px-3 py-2 rounded-br-[4px]">
