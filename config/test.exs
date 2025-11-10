@@ -38,3 +38,6 @@ config :phoenix, :plug_init_mode, :runtime
 # Enable helpful, but potentially expensive runtime checks
 config :phoenix_live_view,
   enable_expensive_runtime_checks: true
+
+# To prevent Oban from running jobs and plugins during test runs, enable :testing mode in test.exs
+config :kosh, Oban, testing: :manual
