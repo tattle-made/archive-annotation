@@ -43,7 +43,7 @@ defmodule Kosh.EmailNotifications do
   """
 
   def deliver_admin_notifications(%User{} = actor, %DescriptionAnnotation{} = annotation) do
-    annotation = Kosh.Repo.preload(annotation, file: :collection)
+    annotation = Kosh.Repo.preload(annotation, [file: :collection])
 
     with all_admins <- Accounts.list_users_by_role(:admin) do
       Enum.each(all_admins, fn admin ->
@@ -67,10 +67,7 @@ defmodule Kosh.EmailNotifications do
   end
 
   def deliver_admin_notifications(%User{} = actor, %SubjectsAnnotation{} = annotation) do
-    # annotation = Kosh.Repo.preload(annotation, :subjects, file: :collection)
     annotation = Kosh.Repo.preload(annotation, [:subjects, file: :collection])
-
-    IO.inspect(annotation, label: "SUB after preloading: ")
 
     with all_admins <- Accounts.list_users_by_role(:admin) do
       Enum.each(all_admins, fn admin ->
@@ -98,8 +95,8 @@ defmodule Kosh.EmailNotifications do
         %DescriptionAnnotation{} = desc_annotation,
         %SubjectsAnnotation{} = subj_annotation
       ) do
-    desc_annotation = Kosh.Repo.preload(desc_annotation, file: :collection)
-    subj_annotation = Kosh.Repo.preload(subj_annotation, :subjects, file: :collection)
+    desc_annotation = Kosh.Repo.preload(desc_annotation, [file: :collection])
+    subj_annotation = Kosh.Repo.preload(subj_annotation, [:subjects, file: :collection])
 
     with all_admins <- Accounts.list_users_by_role(:admin) do
       Enum.each(all_admins, fn admin ->
@@ -134,7 +131,7 @@ defmodule Kosh.EmailNotifications do
         %User{} = recipient,
         %DescriptionAnnotation{} = annotation
       ) do
-    annotation = Kosh.Repo.preload(annotation, file: :collection)
+    annotation = Kosh.Repo.preload(annotation, [file: :collection])
 
     deliver(recipient.email, "Annotation Discarded - Anno-Milli", """
     Hello #{recipient.email},
@@ -161,7 +158,7 @@ defmodule Kosh.EmailNotifications do
         %User{} = recipient,
         %SubjectsAnnotation{} = annotation
       ) do
-    annotation = Kosh.Repo.preload(annotation, :subjects, file: :collection)
+    annotation = Kosh.Repo.preload(annotation, [:subjects, file: :collection])
 
     deliver(recipient.email, "Annotation Discarded - Anno-Milli", """
     Hello #{recipient.email},
@@ -191,7 +188,7 @@ defmodule Kosh.EmailNotifications do
         %User{} = recipient,
         %DescriptionAnnotation{} = annotation
       ) do
-    annotation = Kosh.Repo.preload(annotation, file: :collection)
+    annotation = Kosh.Repo.preload(annotation, [file: :collection])
 
     deliver(recipient.email, "Annotation Approved - Anno-Milli", """
     Hello #{recipient.email},
@@ -217,7 +214,7 @@ defmodule Kosh.EmailNotifications do
         %User{} = recipient,
         %SubjectsAnnotation{} = annotation
       ) do
-    annotation = Kosh.Repo.preload(annotation, :subjects, file: :collection)
+    annotation = Kosh.Repo.preload(annotation, [:subjects, file: :collection])
 
     deliver(recipient.email, "Annotation Approved - Anno-Milli", """
     Hello #{recipient.email},
