@@ -39,16 +39,24 @@ defmodule KoshWeb.AllAnnotationsIndexAdminLive do
   #       {:noreply, socket}
   #   end
   # end
+  alias Kosh.EmailNotifications
+
   def handle_event("approve_description", %{"id" => id}, socket) do
-    case Annotations.approve_description_annotation(id, socket.assigns.current_user.id) do
-      {:ok, _} ->
-        socket =
-          socket
-          |> put_flash(:info, "Description annotation approved")
-          |> push_navigate(to: "/admin/all-annotations")
+    with {:ok, annotation} <- Annotations.get_description_annotation(id),
+         {:ok, _} <- Annotations.approve_description_annotation(id, socket.assigns.current_user.id) do
 
-        {:noreply, socket}
+      # Send approval notification email
+      Task.start(fn ->
+        EmailNotifications.deliver_approved_annotation_notification(annotation.user, annotation)
+      end)
 
+      socket =
+        socket
+        |> put_flash(:info, "Description annotation approved")
+        |> push_navigate(to: "/admin/all-annotations")
+
+      {:noreply, socket}
+    else
       {:error, :not_found} ->
         socket = socket |> put_flash(:error, "Description annotation not found")
         {:noreply, socket}
@@ -66,15 +74,21 @@ defmodule KoshWeb.AllAnnotationsIndexAdminLive do
   end
 
   def handle_event("delete_description", %{"id" => id}, socket) do
-    case Annotations.delete_description_annotation(id) do
-      {:ok, _} ->
-        socket =
-          socket
-          |> put_flash(:info, "Description annotation deleted")
-          |> push_navigate(to: "/admin/all-annotations")
+    with {:ok, annotation} <- Annotations.get_description_annotation(id),
+         {:ok, _} <- Annotations.delete_description_annotation(id) do
 
-        {:noreply, socket}
+      # Send rejection notification email
+      Task.start(fn ->
+        EmailNotifications.deliver_rejected_annotation_notification(annotation.user, annotation)
+      end)
 
+      socket =
+        socket
+        |> put_flash(:info, "Description annotation deleted")
+        |> push_navigate(to: "/admin/all-annotations")
+
+      {:noreply, socket}
+    else
       {:error, :not_found} ->
         socket = socket |> put_flash(:error, "Description annotation not found")
         {:noreply, socket}
@@ -92,15 +106,21 @@ defmodule KoshWeb.AllAnnotationsIndexAdminLive do
   end
 
   def handle_event("approve_subject_annotation", %{"id" => id}, socket) do
-    case Annotations.approve_subject_annotation(id, socket.assigns.current_user.id) do
-      {:ok, _} ->
-        socket =
-          socket
-          |> put_flash(:info, "Subject annotation approved")
-          |> push_navigate(to: "/admin/all-annotations")
+    with {:ok, annotation} <- Annotations.get_subject_annotation(id),
+         {:ok, _} <- Annotations.approve_subject_annotation(id, socket.assigns.current_user.id) do
 
-        {:noreply, socket}
+      # Send approval notification email
+      Task.start(fn ->
+        EmailNotifications.deliver_approved_annotation_notification(annotation.user, annotation)
+      end)
 
+      socket =
+        socket
+        |> put_flash(:info, "Subject annotation approved")
+        |> push_navigate(to: "/admin/all-annotations")
+
+      {:noreply, socket}
+    else
       {:error, :not_found} ->
         socket = socket |> put_flash(:error, "Subject annotation not found")
         {:noreply, socket}
@@ -110,7 +130,7 @@ defmodule KoshWeb.AllAnnotationsIndexAdminLive do
           socket
           |> put_flash(
             :error,
-            "All the subjects in this annotations are already present in the file"
+            "All the subjects in this annotation are already present in the file"
           )
         {:noreply, socket}
 
@@ -127,15 +147,21 @@ defmodule KoshWeb.AllAnnotationsIndexAdminLive do
   end
 
   def handle_event("delete_subject", %{"id" => id}, socket) do
-    case Annotations.delete_subject_annotation(id) do
-      {:ok, _} ->
-        socket =
-          socket
-          |> put_flash(:info, "Subject annotation deleted")
-          |> push_navigate(to: "/admin/all-annotations")
+    with {:ok, annotation} <- Annotations.get_subject_annotation(id),
+         {:ok, _} <- Annotations.delete_subject_annotation(id) do
 
-        {:noreply, socket}
+      # Send rejection notification email
+      Task.start(fn ->
+        EmailNotifications.deliver_rejected_annotation_notification(annotation.user, annotation)
+      end)
 
+      socket =
+        socket
+        |> put_flash(:info, "Subject annotation deleted")
+        |> push_navigate(to: "/admin/all-annotations")
+
+      {:noreply, socket}
+    else
       {:error, :not_found} ->
         socket = socket |> put_flash(:error, "Subject annotation not found")
         {:noreply, socket}
@@ -147,13 +173,12 @@ defmodule KoshWeb.AllAnnotationsIndexAdminLive do
             :error,
             "Failed to delete subject annotation: #{inspect(changeset.errors)}"
           )
-
         {:noreply, socket}
 
-      _ ->
+      _error ->
         socket =
-          socket |> put_flash(:info, "Something went wrong while deleting subject annotation")
-
+          socket
+          |> put_flash(:error, "Something went wrong while deleting subject annotation")
         {:noreply, socket}
     end
   end

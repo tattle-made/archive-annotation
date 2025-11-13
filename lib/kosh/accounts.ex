@@ -45,6 +45,23 @@ defmodule Kosh.Accounts do
   end
 
   @doc """
+  Gets all users with the given role.
+
+  ## Examples
+
+      iex> list_users_by_role(:admin)
+      [%User{role: :admin}, ...]
+
+      iex> list_users_by_role(:user)
+      [%User{role: :user}, ...]
+  """
+  def list_users_by_role(role) when role in [:user, :admin] do
+    User
+    |> where([u], u.role == ^role)
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single user.
 
   Raises `Ecto.NoResultsError` if the User does not exist.

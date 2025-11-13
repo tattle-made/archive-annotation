@@ -64,7 +64,7 @@ config :phoenix, :json_library, Jason
 # Configures Oban
 config :kosh, Oban,
   engine: Oban.Engines.Basic,
-  queues: [notifications: 10, default: 10],
+  queues: [notification_mailer: 10, notifications: 10, default: 10],
   repo: Kosh.Repo,
     plugins: [
     {Oban.Plugins.Pruner, max_age: 60 * 60 * 24 * 20} # prune jobs older than 20 days

@@ -33,6 +33,42 @@ defmodule Kosh.Annotations do
     end
   end
 
+  @doc """
+  Gets a single description annotation by ID.
+
+  ## Examples
+
+      iex> get_description_annotation(123)
+      {:ok, %DescriptionAnnotation{}}
+
+      iex> get_description_annotation(456)
+      {:error, :not_found}
+  """
+  def get_description_annotation(id) do
+    case Repo.get(DescriptionAnnotation, id) do
+      nil -> {:error, :not_found}
+      annotation -> {:ok, Repo.preload(annotation, [:user, file: :collection])}
+    end
+  end
+
+  @doc """
+  Gets a single subject annotation by ID.
+
+  ## Examples
+
+      iex> get_subject_annotation(123)
+      {:ok, %SubjectsAnnotation{} }
+
+      iex> get_subject_annotation(456)
+      {:error, :not_found}
+  """
+  def get_subject_annotation(id) do
+    case Repo.get(SubjectsAnnotation, id) do
+      nil -> {:error, :not_found}
+      annotation -> {:ok, Repo.preload(annotation, [:user, :subjects, file: :collection])}
+    end
+  end
+
   def approve_subject_annotation(annotation_id, admin_id) do
     case Repo.transaction(fn ->
            # Get the annotation, preload subjects and file (with accepted_subjects_annotations)
@@ -136,7 +172,7 @@ defmodule Kosh.Annotations do
   def list_description_annotations(status \\ nil) do
     DescriptionAnnotation
     |> maybe_filter_by_status(status)
-    |> preload([:file, :user, :admin])
+    |> preload([:user, :admin, file: :collection])
     |> Repo.all()
   end
 
