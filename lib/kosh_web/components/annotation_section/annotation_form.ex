@@ -195,16 +195,30 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
             subjects_annotation
           )
 
+          Kosh.Notifications.notify_admins_about_annotation(
+            description_annotation,
+            current_user.id
+          )
+
+          Kosh.Notifications.notify_admins_about_annotation(subjects_annotation, current_user.id)
+
         subjects_annotation != nil ->
           Kosh.EmailNotifications.deliver_admin_notifications(
             current_user,
             subjects_annotation
           )
 
+          Kosh.Notifications.notify_admins_about_annotation(subjects_annotation, current_user.id)
+
         description_annotation != nil ->
           Kosh.EmailNotifications.deliver_admin_notifications(
             current_user,
             description_annotation
+          )
+
+          Kosh.Notifications.notify_admins_about_annotation(
+            description_annotation,
+            current_user.id
           )
 
         true ->

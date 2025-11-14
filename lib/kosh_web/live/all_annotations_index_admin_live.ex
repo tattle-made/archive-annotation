@@ -1,4 +1,6 @@
 defmodule KoshWeb.AllAnnotationsIndexAdminLive do
+alias Kosh.Notifications
+alias Kosh.Notifications.Notification
   use KoshWeb, :live_view
   import KoshWeb.Components.DescriptionAnnotationCard
   import KoshWeb.Components.SubjectAnnotationCard
@@ -48,6 +50,7 @@ defmodule KoshWeb.AllAnnotationsIndexAdminLive do
       # Send approval notification email
       Task.start(fn ->
         EmailNotifications.deliver_approved_annotation_notification(annotation.user, annotation)
+        Notifications.notify_user_about_annotation_status(annotation, socket.assigns.current_user.id, :annotation_approved)
       end)
 
       socket =
@@ -80,6 +83,7 @@ defmodule KoshWeb.AllAnnotationsIndexAdminLive do
       # Send rejection notification email
       Task.start(fn ->
         EmailNotifications.deliver_rejected_annotation_notification(annotation.user, annotation)
+        Notifications.notify_user_about_annotation_status(annotation, socket.assigns.current_user.id, :annotation_deleted)
       end)
 
       socket =
@@ -112,6 +116,7 @@ defmodule KoshWeb.AllAnnotationsIndexAdminLive do
       # Send approval notification email
       Task.start(fn ->
         EmailNotifications.deliver_approved_annotation_notification(annotation.user, annotation)
+        Notifications.notify_user_about_annotation_status(annotation, socket.assigns.current_user.id, :annotation_approved)
       end)
 
       socket =
@@ -153,6 +158,7 @@ defmodule KoshWeb.AllAnnotationsIndexAdminLive do
       # Send rejection notification email
       Task.start(fn ->
         EmailNotifications.deliver_rejected_annotation_notification(annotation.user, annotation)
+        Notifications.notify_user_about_annotation_status(annotation, socket.assigns.current_user.id, :annotation_deleted)
       end)
 
       socket =

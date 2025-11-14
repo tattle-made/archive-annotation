@@ -159,6 +159,7 @@ defmodule KoshWeb.Router do
       ] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      live "/notifications", NotificationsLive, :index
       # live "/testadmin", TestAdminRoleLive, :index
       # live "/gentoken", TokenGeneratorLive, :index
 
