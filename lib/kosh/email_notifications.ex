@@ -52,7 +52,7 @@ defmodule Kosh.EmailNotifications do
     with all_admins <- accounts().list_users_by_role(:admin) do
       Enum.each(all_admins, fn admin ->
         deliver(admin.email, "New Annotation on Anno-Milli", """
-        Hi #{admin.email},
+        Hello Admin (#{admin.email}),
 
         A new description annotation has been added to Anno-Milli. Below are the details of the added annotation.
 
@@ -65,6 +65,9 @@ defmodule Kosh.EmailNotifications do
 
         Click here to redirect to the Anno-Milli's Admin Annotation Review Page: #{base_url()}/admin/all-annotations
 
+        Best regards,
+        The Anno-Milli Team
+
         """)
       end)
     end
@@ -76,7 +79,7 @@ defmodule Kosh.EmailNotifications do
     with all_admins <- accounts().list_users_by_role(:admin) do
       Enum.each(all_admins, fn admin ->
         deliver(admin.email, "New Annotation on Anno-Milli", """
-        Hi #{admin.email},
+        Hello Admin (#{admin.email}),
 
         A new Subjects Annotation has been added to Anno-Milli. Below are the details of the added annotation.
 
@@ -88,6 +91,9 @@ defmodule Kosh.EmailNotifications do
         #{format_subjects(annotation.new_subjects)}\n        #{format_subjects(annotation.subjects, & &1.content)}
 
         Click here to redirect to the Anno-Milli's Admin Annotation Review Page: #{base_url()}/admin/all-annotations
+
+        Best regards,
+        The Anno-Milli Team
 
         """)
       end)
@@ -105,7 +111,7 @@ defmodule Kosh.EmailNotifications do
     with all_admins <- accounts().list_users_by_role(:admin) do
       Enum.each(all_admins, fn admin ->
         deliver(admin.email, "2 New Annotations on Anno-Milli", """
-        Hi #{admin.email},
+        Hello Admin (#{admin.email}),
 
         A new Subject Annotation and a new Description Annotation have been added to Anno-Milli. Below are the details:
 
@@ -122,6 +128,9 @@ defmodule Kosh.EmailNotifications do
         #{format_subjects(subj_annotation.new_subjects)}\n        #{format_subjects(subj_annotation.subjects, & &1.content)}
 
         Click here to redirect to the Anno-Milli's Admin Annotation Review Page: #{base_url()}/admin/all-annotations
+
+        Best regards,
+        The Anno-Milli Team
 
         """)
       end)
