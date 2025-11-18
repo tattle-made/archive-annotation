@@ -5,18 +5,20 @@ defmodule Kosh.Notifications do
 
   import Ecto.Query
   alias Kosh.Annotations
-  alias Kosh.Repo
   alias Kosh.Workers.AppNotificationWorker
   alias Kosh.Notifications.{Notification, Delivery}
-  alias Kosh.Accounts
   alias Kosh.Annotations.{DescriptionAnnotation, SubjectsAnnotation}
+
+  # runtime-resolved modules so tests can inject stubs
+  defp repo, do: Application.get_env(:kosh, :repo, Kosh.Repo)
+  defp accounts, do: Application.get_env(:kosh, :accounts, Kosh.Accounts)
 
   @doc """
   Notify admins about a new annotation that needs review.
   """
   def notify_admins_about_annotation(annotation, actor_id) do
     admin_ids =
-      Accounts.list_users_by_role(:admin)
+      accounts().list_users_by_role(:admin)
       |> Enum.map(& &1.id)
 
     enqueue_notification(
@@ -78,7 +80,7 @@ defmodule Kosh.Notifications do
            actor_id
          ) do
       {title, body} ->
-        Repo.transaction(fn ->
+        repo().transaction(fn ->
           # Create the notification
           notification =
             %Notification{}
@@ -91,14 +93,13 @@ defmodule Kosh.Notifications do
               body: body,
               changes: changes || %{}
             })
-            |> Repo.insert!()
+            |> repo().insert!()
 
           # Create deliveries for each recipient
           now = DateTime.utc_now() |> DateTime.truncate(:second)
 
           deliveries =
-            recipient_ids
-            |> Enum.map(fn recipient_id ->
+            Enum.map(recipient_ids, fn recipient_id ->
               %Delivery{}
               |> Delivery.changeset(%{
                 notification_id: notification.id,
@@ -107,7 +108,7 @@ defmodule Kosh.Notifications do
                 inserted_at: now,
                 updated_at: now
               })
-              |> Repo.insert!()
+              |> repo().insert!()
             end)
 
           {notification, deliveries}
@@ -127,16 +128,16 @@ defmodule Kosh.Notifications do
 
   @doc """
   Update delivery status (read/unread).
-  
+
   ## Parameters
     * `delivery_id` - The ID of the delivery
     * `recipient_id` - The ID of the recipient
     * `status` - The new status (:read or :unread)
-  
+
   Returns `{:ok, delivery}` on success, `{:error, changeset}` otherwise.
   """
   def update_delivery_status(delivery_id, recipient_id, status) when status in [:read, :unread] do
-    case Repo.get_by(Delivery, id: delivery_id, recipient_id: recipient_id) do
+    case repo().get_by(Delivery, id: delivery_id, recipient_id: recipient_id) do
       nil ->
         {:error, :not_found}
 
@@ -146,10 +147,10 @@ defmodule Kosh.Notifications do
           read_at: if(status == :read, do: DateTime.utc_now(), else: nil),
           updated_at: DateTime.utc_now()
         }
-        
+
         delivery
         |> Delivery.changeset(attrs)
-        |> Repo.update()
+        |> repo().update()
     end
   end
 
@@ -175,7 +176,7 @@ defmodule Kosh.Notifications do
         query
       end
 
-    Repo.all(query)
+    repo().all(query)
   end
 
   @doc """
@@ -187,7 +188,7 @@ defmodule Kosh.Notifications do
         where: d.recipient_id == ^user_id and d.status == :unread,
         select: count(d.id)
 
-    Repo.one(query)
+    repo().one(query)
   end
 
   @doc """
@@ -196,56 +197,56 @@ defmodule Kosh.Notifications do
   """
   def mark_all_as_read(user_id) do
     now = DateTime.utc_now()
-    
-    {count, _} = 
-      from(d in Delivery, 
+
+    {count, _} =
+      from(d in Delivery,
         where: d.recipient_id == ^user_id and d.status == :unread
       )
-      |> Repo.update_all(
+      |> repo().update_all(
         set: [
-          status: :read, 
-          read_at: now, 
+          status: :read,
+          read_at: now,
           updated_at: now
         ]
       )
-    
+
     {:ok, count}
   end
 
   @doc """
   List paginated notifications for a user.
-  
+
   ## Parameters
     * `user_id` - The ID of the user
     * `page` - The page number (1-based)
     * `per_page` - Number of items per page
-  
+
   Returns a tuple `{notifications, has_more}` where:
     * `notifications` - List of notification maps with delivery info
     * `has_more` - Boolean indicating if there are more pages
   """
   def list_notifications(user_id, page, per_page) when is_integer(page) and page > 0 do
     offset = (page - 1) * per_page
-    
+
     # Get total count for pagination
-    total_query = 
+    total_query =
       from d in Delivery,
         where: d.recipient_id == ^user_id
-    
-    total = Repo.aggregate(total_query, :count, :id)
-    
+
+    total = repo().aggregate(total_query, :count, :id)
+
     # Get paginated deliveries with preloaded notifications
-    deliveries = 
+    deliveries =
       Delivery
       |> where([d], d.recipient_id == ^user_id)
       |> order_by([d], desc: d.inserted_at)
       |> preload(:notification)
       |> limit(^per_page)
       |> offset(^offset)
-      |> Repo.all()
-    
+      |> repo().all()
+
     # Format the data for the view
-    notifications = 
+    notifications =
       deliveries
       |> Enum.map(fn delivery ->
         %{
@@ -255,7 +256,7 @@ defmodule Kosh.Notifications do
           inserted_at: delivery.notification.inserted_at
         }
       end)
-    
+
     has_more = offset + per_page < total
     {notifications, has_more}
   end
@@ -274,6 +275,7 @@ defmodule Kosh.Notifications do
           %{description: resource.description}
 
         %SubjectsAnnotation{} ->
+          resource = repo().preload(resource, :subjects)
           %{
             all_subjs:
               resource.new_subjects ++ Enum.map(resource.subjects || [], fn sub -> sub.content end)
@@ -303,7 +305,7 @@ defmodule Kosh.Notifications do
          resource_data,
          actor_id
        ) do
-    actor = if actor_id, do: Repo.get(Accounts.User, actor_id)
+    actor = if actor_id, do: accounts().get_user!(actor_id)
 
     case {action, resource_type} do
       {:annotation_created, :description_annotation} ->

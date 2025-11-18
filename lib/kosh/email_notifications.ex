@@ -7,6 +7,10 @@ defmodule Kosh.EmailNotifications do
   alias KoshWeb.Endpoint
   alias Kosh.Accounts.User
 
+  # runtime-resolved modules so tests can inject stubs
+  defp repo, do: Application.get_env(:kosh, :repo, Kosh.Repo)
+  defp accounts, do: Application.get_env(:kosh, :accounts, Kosh.Accounts)
+
   defp format_subjects(subjects, content_fn \\ & &1) do
     subjects
     |> Enum.map(fn sub -> "• #{content_fn.(sub)}" end)
@@ -43,9 +47,9 @@ defmodule Kosh.EmailNotifications do
   """
 
   def deliver_admin_notifications(%User{} = actor, %DescriptionAnnotation{} = annotation) do
-    annotation = Kosh.Repo.preload(annotation, [file: :collection])
+    annotation = repo().preload(annotation, file: :collection)
 
-    with all_admins <- Accounts.list_users_by_role(:admin) do
+    with all_admins <- accounts().list_users_by_role(:admin) do
       Enum.each(all_admins, fn admin ->
         deliver(admin.email, "New Annotation on Anno-Milli", """
         Hi #{admin.email},
@@ -67,9 +71,9 @@ defmodule Kosh.EmailNotifications do
   end
 
   def deliver_admin_notifications(%User{} = actor, %SubjectsAnnotation{} = annotation) do
-    annotation = Kosh.Repo.preload(annotation, [:subjects, file: :collection])
+    annotation = repo().preload(annotation, [:subjects, file: :collection])
 
-    with all_admins <- Accounts.list_users_by_role(:admin) do
+    with all_admins <- accounts().list_users_by_role(:admin) do
       Enum.each(all_admins, fn admin ->
         deliver(admin.email, "New Annotation on Anno-Milli", """
         Hi #{admin.email},
@@ -95,10 +99,10 @@ defmodule Kosh.EmailNotifications do
         %DescriptionAnnotation{} = desc_annotation,
         %SubjectsAnnotation{} = subj_annotation
       ) do
-    desc_annotation = Kosh.Repo.preload(desc_annotation, [file: :collection])
-    subj_annotation = Kosh.Repo.preload(subj_annotation, [:subjects, file: :collection])
+    desc_annotation = repo().preload(desc_annotation, file: :collection)
+    subj_annotation = repo().preload(subj_annotation, [:subjects, file: :collection])
 
-    with all_admins <- Accounts.list_users_by_role(:admin) do
+    with all_admins <- accounts().list_users_by_role(:admin) do
       Enum.each(all_admins, fn admin ->
         deliver(admin.email, "2 New Annotations on Anno-Milli", """
         Hi #{admin.email},
@@ -131,7 +135,7 @@ defmodule Kosh.EmailNotifications do
         %User{} = recipient,
         %DescriptionAnnotation{} = annotation
       ) do
-    annotation = Kosh.Repo.preload(annotation, [file: :collection])
+    annotation = repo().preload(annotation, file: :collection)
 
     deliver(recipient.email, "Annotation Discarded - Anno-Milli", """
     Hello #{recipient.email},
@@ -158,7 +162,7 @@ defmodule Kosh.EmailNotifications do
         %User{} = recipient,
         %SubjectsAnnotation{} = annotation
       ) do
-    annotation = Kosh.Repo.preload(annotation, [:subjects, file: :collection])
+    annotation = repo().preload(annotation, [:subjects, file: :collection])
 
     deliver(recipient.email, "Annotation Discarded - Anno-Milli", """
     Hello #{recipient.email},
@@ -188,7 +192,7 @@ defmodule Kosh.EmailNotifications do
         %User{} = recipient,
         %DescriptionAnnotation{} = annotation
       ) do
-    annotation = Kosh.Repo.preload(annotation, [file: :collection])
+    annotation = repo().preload(annotation, file: :collection)
 
     deliver(recipient.email, "Annotation Approved - Anno-Milli", """
     Hello #{recipient.email},
@@ -214,7 +218,7 @@ defmodule Kosh.EmailNotifications do
         %User{} = recipient,
         %SubjectsAnnotation{} = annotation
       ) do
-    annotation = Kosh.Repo.preload(annotation, [:subjects, file: :collection])
+    annotation = repo().preload(annotation, [:subjects, file: :collection])
 
     deliver(recipient.email, "Annotation Approved - Anno-Milli", """
     Hello #{recipient.email},
