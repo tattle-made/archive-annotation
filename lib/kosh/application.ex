@@ -17,7 +17,8 @@ defmodule Kosh.Application do
       # Start a worker by calling: Kosh.Worker.start_link(arg)
       # {Kosh.Worker, arg},
       # Start to serve requests, typically the last entry
-      KoshWeb.Endpoint
+      KoshWeb.Endpoint,
+      {Oban, Application.fetch_env!(:kosh, Oban)}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

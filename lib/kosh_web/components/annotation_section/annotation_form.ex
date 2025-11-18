@@ -6,9 +6,6 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
   alias Kosh.Annotations
   import Phoenix.LiveView
 
-
-
-
   @impl true
   def mount(socket) do
     # IO.puts(">>> mounting MyComponent pid=#{inspect(self())}")
@@ -144,8 +141,8 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
       send(self(), {:flash, :error, error_message})
       {:noreply, socket}
     else
-      # Create subjects annotation if subjects are selected
-      subjects_result =
+      # Create both annotations and collect results
+      {subjects_result, subjects_annotation} =
         if subjects != nil and subjects != [] do
           subjects_params = %{
             "file_id" => file.id,
@@ -155,16 +152,21 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
           }
 
           case Annotations.create_subject_annotation(subjects_params) do
-            {:ok, _annotation} ->
-              {:ok, "Subjects annotation created successfully"}
+            # Subjects annotations are created after using transactions, and transaction returns
+            # everything with {ok, whatever_inside_transaction_returns}
+            {:ok, {:ok, annotation}} ->
+              IO.inspect(annotation, label: "NEWLY CREATED SUBJ ANNOTATION IS: ")
+              {{:ok, "Subjects annotation created successfully"}, annotation}
 
             {:error, changeset} ->
-              {:error, "Failed to create subjects annotation: #{inspect(changeset.errors)}"}
+              {{:error, "Failed to create subjects annotation: #{inspect(changeset.errors)}"},
+               nil}
           end
+        else
+          {nil, nil}
         end
 
-      # Create description annotation if description is not empty
-      description_result =
+      {description_result, description_annotation} =
         if description != nil and description != "" and String.trim(description) != "" do
           description_params = %{
             "file_id" => file.id,
@@ -173,13 +175,55 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
           }
 
           case Annotations.create_description_annotation(description_params) do
-            {:ok, _annotation} ->
-              {:ok, "Description annotation created successfully"}
+            {:ok, annotation} ->
+              {{:ok, "Description annotation created successfully"}, annotation}
 
             {:error, changeset} ->
-              {:error, "Failed to create description annotation: #{inspect(changeset.errors)}"}
+              {{:error, "Failed to create description annotation: #{inspect(changeset.errors)}"},
+               nil}
           end
+        else
+          {nil, nil}
         end
+
+      # Send email notifications if annotations were created successfully
+      cond do
+        subjects_annotation != nil and description_annotation != nil ->
+          Kosh.EmailNotifications.deliver_admin_notifications(
+            current_user,
+            description_annotation,
+            subjects_annotation
+          )
+
+          Kosh.Notifications.notify_admins_about_annotation(
+            description_annotation,
+            current_user.id
+          )
+
+          Kosh.Notifications.notify_admins_about_annotation(subjects_annotation, current_user.id)
+
+        subjects_annotation != nil ->
+          Kosh.EmailNotifications.deliver_admin_notifications(
+            current_user,
+            subjects_annotation
+          )
+
+          Kosh.Notifications.notify_admins_about_annotation(subjects_annotation, current_user.id)
+
+        description_annotation != nil ->
+          Kosh.EmailNotifications.deliver_admin_notifications(
+            current_user,
+            description_annotation
+          )
+
+          Kosh.Notifications.notify_admins_about_annotation(
+            description_annotation,
+            current_user.id
+          )
+
+        true ->
+          :noop
+      end
 
       # Reset form and handle results
       message =
@@ -260,12 +304,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
   def render(assigns) do
     ~H"""
     <div class="grow flex flex-col space-y-10">
-      <.form
-        for={@form}
-        phx-change="validate"
-        phx-submit="submit"
-        phx-target={@myself}
-      >
+      <.form for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself}>
         <div class="flex flex-col lg:flex-row space-y-10 lg:space-y-0 lg:space-x-10">
           <div class="w-full lg:w-1/2">
             <p class="text-secondary-purple font-bold text-body-md-18">Descriptions</p>
