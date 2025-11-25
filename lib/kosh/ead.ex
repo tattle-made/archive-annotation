@@ -326,7 +326,7 @@ defmodule Kosh.EAD do
   def search_subjects(name) when is_binary(name) do
     Subject
     |> where([s], ilike(s.content, ^"%#{name}%"))
-    |> limit(10)
+    |> limit(100)
     |> Repo.all()
   end
 

@@ -8,12 +8,15 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
 
   @impl true
   def mount(socket) do
-    # IO.puts(">>> mounting MyComponent pid=#{inspect(self())}")
-    # IO.inspect(socket, label: "socket from MOunt")
     form = to_form(%{}, as: "annotation_form")
-    # socket = assign(socket, assigns)
-    socket = assign(socket, form: form)
-    # IO.inspect(socket, label: "socket")
+
+    socket =
+      assign(socket,
+        form: form,
+        subjects_options: [],
+        curr_text: ""
+      )
+
     {:ok, socket}
   end
 
@@ -30,13 +33,16 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
     subjects = EAD.search_subjects(text)
     options = Enum.map(subjects, fn subject -> {subject.content, subject.id} end)
 
-    options =
+    # Store the original options in socket assigns
+    socket = assign(socket, subjects_options: options, curr_text: text)
+
+    display_options =
       case options do
-        [] -> [{"Add new Subject \"#{text}\" ", text}]
-        _ -> options
+        [] -> [{"Add new Subject \"#{text}\"", text}]
+        _ -> options ++ [{"Show more for #{text}", "__SHOW_MORE__"}]
       end
 
-    send_update(LiveSelect.Component, id: live_select_id, options: options)
+    send_update(LiveSelect.Component, id: live_select_id, options: display_options)
     {:noreply, socket}
   end
 
@@ -45,15 +51,58 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
     # Get current form params
     current_params = socket.assigns.form.params
 
-    # IO.inspect(socket.assigns.form, label: "current_params")
+    # IO.inspect(current_params, label: "current_params")
+    # IO.inspect(current_form, label: "current_form")
     # IO.inspect(new_params, label: "new_params")
     # IO.inspect(socket, label: "SOCKET IN VALIDATE")
 
     # Only update description, keep everything else the same because live_select is not updating properly
     updated_params = Map.put(current_params, "description", new_params["description"])
 
-    socket = assign(socket, :form, to_form(updated_params, as: "annotation_form"))
-    {:noreply, socket}
+    selected_subjs = get_in(new_params, ["subjects"]) || []
+
+    {selected_subjs, is_show_more?} =
+      if "__SHOW_MORE__" in selected_subjs do
+        {Enum.filter(selected_subjs, fn sub -> sub != "__SHOW_MORE__" end), true}
+      else
+        {selected_subjs, false}
+      end
+
+    if is_show_more? do
+      # Get the stored options
+      stored_options = socket.assigns.subjects_options || []
+
+      # Map selected values to their label-value pairs
+      selected_with_labels =
+        Enum.flat_map(selected_subjs, fn value ->
+          case Enum.find(stored_options, fn {_label, v} -> to_string(v) == to_string(value) end) do
+            {label, value} -> [{label, value}]
+            # Skip if not found in stored options
+            _ -> []
+          end
+        end)
+
+      socket
+      |> assign(:form, to_form(updated_params, as: "annotation_form"))
+      |> push_event("open_new_tab", %{
+        url: "/search-subjects?q=#{new_params["subjects_text_input"]}"
+      })
+      |> then(fn socket ->
+        send_update(LiveSelect.Component,
+          id: "annotation_subjects",
+          value: selected_with_labels
+        )
+
+        socket
+      end)
+      |> then(fn socket -> {:noreply, socket} end)
+    else
+      {:noreply, assign(socket, :form, to_form(updated_params, as: "annotation_form"))}
+    end
+
+    # IO.inspect(updated_params, label: "updated_params")
+    # socket = assign(socket, :form, to_form(updated_params, as: "annotation_form"))
+    # {:noreply, socket}
   end
 
   @impl true
@@ -155,7 +204,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
             # Subjects annotations are created after using transactions, and transaction returns
             # everything with {ok, whatever_inside_transaction_returns}
             {:ok, {:ok, annotation}} ->
-              IO.inspect(annotation, label: "NEWLY CREATED SUBJ ANNOTATION IS: ")
+              # IO.inspect(annotation, label: "NEWLY CREATED SUBJ ANNOTATION IS: ")
               {{:ok, "Subjects annotation created successfully"}, annotation}
 
             {:error, changeset} ->
@@ -336,7 +385,26 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
               option_class="!text-primary-grey !p-2 sm:!p-3 hover:bg-secondary-lilac"
               active_option_class="!bg-secondary-lilac"
               dropdown_extra_class="max-h-40 sm:max-h-56 overflow-y-auto"
-            />
+            >
+            <:option :let={option}>
+              <%= if option.value == "__SHOW_MORE__" do %>
+               <a
+                 href="#"
+                 class="block w-full h-full p-2 text-primary-purple font-bold hover:text-secondary-purple cursor-pointer"
+                 onmousedown={"
+                 event.preventDefault();
+                 window.open('/search-subjects?q=#{@curr_text}', '_blank');
+                 "}
+               >
+                 <%= option.label %>
+               </a>
+              <% else %>
+                <div class="p-2">
+                  <%= option.label %>
+                </div>
+              <% end %>
+            </:option>
+            </.live_select>
           </div>
         </div>
         <div class="w-full flex justify-end">

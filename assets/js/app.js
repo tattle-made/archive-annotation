@@ -37,6 +37,11 @@ let Hooks = {
   ...live_select
 }
 
+// Handle opening new tabs from LiveView
+window.addEventListener("phx:open_new_tab", (e) => {
+  window.open(e.detail.url, '_blank');
+})
+
 let liveSocket = new LiveSocket("/live", Socket, {
   hooks: Hooks,
   longPollFallbackMs: 2500,

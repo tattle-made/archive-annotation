@@ -162,6 +162,7 @@ defmodule KoshWeb.Router do
       live "/notifications", NotificationsLive, :index
       # for non-navigale routes
       live "/sitemap", SitemapLive, :index
+      live "/search-subjects", SearchSubjectsLive, :index
       # live "/testadmin", TestAdminRoleLive, :index
       # live "/gentoken", TokenGeneratorLive, :index
 
