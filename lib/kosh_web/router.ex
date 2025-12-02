@@ -199,6 +199,7 @@ defmodule KoshWeb.Router do
       live "/export-ead", ExportEADLive, :index
       live "/upload", UploadLive, :index
       live "/upload/url", UrlEadUploadLive, :index
+      live "/export-subjects", ExportSubjectsLive, :index
     end
   end
 
