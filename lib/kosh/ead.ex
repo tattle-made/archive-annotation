@@ -301,7 +301,7 @@ defmodule Kosh.EAD do
   def process_subjects(subjects) when is_list(subjects) do
     Enum.map(subjects, fn subject ->
       content = if is_map(subject), do: subject["content"], else: subject
-      source = if is_map(subject), do: subject["source"], else: "local"
+      source = if is_map(subject), do: subject["source"], else: "mlk"
 
       case Repo.get_by(Subject, content: content) do
         nil ->
@@ -326,7 +326,7 @@ defmodule Kosh.EAD do
   def search_subjects(name) when is_binary(name) do
     Subject
     |> where([s], ilike(s.content, ^"%#{name}%"))
-    |> limit(10)
+    |> limit(100)
     |> Repo.all()
   end
 

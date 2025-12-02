@@ -162,6 +162,7 @@ defmodule KoshWeb.Router do
       live "/notifications", NotificationsLive, :index
       # for non-navigale routes
       live "/sitemap", SitemapLive, :index
+      live "/search-subjects", SearchSubjectsLive, :index
       # live "/testadmin", TestAdminRoleLive, :index
       # live "/gentoken", TokenGeneratorLive, :index
 
@@ -198,6 +199,7 @@ defmodule KoshWeb.Router do
       live "/export-ead", ExportEADLive, :index
       live "/upload", UploadLive, :index
       live "/upload/url", UrlEadUploadLive, :index
+      live "/export-subjects", ExportSubjectsLive, :index
     end
   end
 

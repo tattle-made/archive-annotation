@@ -98,7 +98,7 @@ defmodule Kosh.Annotations do
                  Repo.insert!(
                    Kosh.EAD.Subject.changeset(%Kosh.EAD.Subject{}, %{
                      content: sub,
-                     source: "local"
+                     source: "mlk"
                    })
                  )
              end)
