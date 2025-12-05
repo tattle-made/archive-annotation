@@ -14,6 +14,7 @@ kosh-*.tar
 /priv/static/cache_manifest.json
 /priv/static/uploads
 /priv/static/subjects_seed/
+/priv/static/lcnaf_seed/
 npm-debug.log
 /assets/node_modules/
 env.prod
