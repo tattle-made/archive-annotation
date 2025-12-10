@@ -9,7 +9,7 @@ defmodule Kosh.Notifications.Notification do
   alias Kosh.Accounts.User
 
   @actions [:annotation_created, :annotation_approved, :annotation_deleted]
-  @resource_types [:description_annotation, :subjects_annotation]
+  @resource_types [:description_annotation, :subjects_annotation, :agents_annotation]
 
   schema "notifications" do
     # Who performed the action (user who created the annotation or admin who approved/deleted)

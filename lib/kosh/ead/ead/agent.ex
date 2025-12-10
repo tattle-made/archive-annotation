@@ -26,16 +26,18 @@ defmodule Kosh.EAD.Agent do
     agent
     |> cast(attrs, [:name, :source, :unitid, :type_ids])
     |> validate_required([:name, :source])
-    |> put_change(
-      :normalized_name,
-      normalize_name(get_field(agent, :name) || attrs["name"] || attrs[:name])
-    )
+    |> then(fn changeset ->
+      name = get_field(changeset, :name) || attrs["name"] || attrs[:name]
+
+      changeset
+      |> put_change(:normalized_name, normalize_name(name))
+    end)
     |> unique_constraint(:normalized_name, name: "agents_normalized_name_index")
   end
 
-  defp normalize_name(nil), do: nil
+  def normalize_name(nil), do: nil
 
-  defp normalize_name(name) when is_binary(name) do
+  def normalize_name(name) when is_binary(name) do
     name
     |> String.trim()
     |> String.normalize(:nfc)

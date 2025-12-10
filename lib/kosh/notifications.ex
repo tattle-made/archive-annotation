@@ -4,6 +4,7 @@ defmodule Kosh.Notifications do
   """
 
   import Ecto.Query
+  alias Kosh.Annotations.AgentAnnotation
   alias Kosh.Annotations
   alias Kosh.Workers.AppNotificationWorker
   alias Kosh.Notifications.{Notification, Delivery}
@@ -266,6 +267,7 @@ defmodule Kosh.Notifications do
       case resource do
         %DescriptionAnnotation{} -> :description_annotation
         %SubjectsAnnotation{} -> :subjects_annotation
+        %AgentAnnotation{} -> :agents_annotation
         _ -> "unknown"
       end
 
@@ -276,9 +278,18 @@ defmodule Kosh.Notifications do
 
         %SubjectsAnnotation{} ->
           resource = repo().preload(resource, :subjects)
+
           %{
             all_subjs:
-              resource.new_subjects ++ Enum.map(resource.subjects || [], fn sub -> sub.content end)
+              resource.new_subjects ++
+                Enum.map(resource.subjects || [], fn sub -> sub.content end)
+          }
+        %AgentAnnotation{} ->
+          resource = repo().preload(resource, :agents)
+
+          %{
+            all_subjs:
+              (Enum.map(resource.agents, fn a -> a.name end)) ++ (Enum.map(resource.new_agents || [], fn a-> a.name end))
           }
 
         _ ->
@@ -316,12 +327,16 @@ defmodule Kosh.Notifications do
         {"New Subjects Annotation",
          "#{actor.email} created a new subjects annotation. New Subjects Annotation ID: #{resource_id}."}
 
+      {:annotation_created, :agents_annotation} ->
+        {"New Agents Annotation",
+         "#{actor.email} created a new agents annotation. New Agent Annotation ID: #{resource_id}."}
+
       {:annotation_approved, _} ->
-        {"Annotation Approved", "Your annotation (ID: #{resource_id}) has been approved."}
+        {"Annotation Approved", "Your #{format_anno_type(resource_type)} annotation (ID: #{resource_id}) has been approved."}
 
       {:annotation_deleted, _} ->
         {"Annotation discarded",
-         "Your annotation has been discarded. Content: #{if resource_type == :description_annotation do
+         "Your#{format_anno_type(resource_type)} annotation has been discarded. Content: #{if resource_type == :description_annotation do
            resource_data["description"]
          else
            Enum.join(resource_data["all_subjs"], "; ")
@@ -329,6 +344,15 @@ defmodule Kosh.Notifications do
 
       _ ->
         {"New Notification", "You have a new notification"}
+    end
+  end
+
+  defp format_anno_type(annotation_type) do
+    case annotation_type do
+      :description_annotation -> "Description"
+      :subjects_annotation -> "Subject"
+      :agents_annotation -> "Agents"
+      _ -> ""
     end
   end
 end

@@ -10,11 +10,26 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
   def mount(socket) do
     form = to_form(%{}, as: "annotation_form")
 
+    # agents_types_raw = EAD.get_all_lcnaf_types()
+    agents_types_raw = :persistent_term.get(:lcnaf_types_raw)
+
+    agent_types_map =
+      agents_types_raw
+      |> Enum.reduce(%{}, fn type, acc -> Map.put(acc, type.id, type.type) end)
+
+    agent_types_options = agents_types_raw |> Enum.map(fn t -> {t.type, to_string(t.id)} end)
+
     socket =
       assign(socket,
         form: form,
         subjects_options: [],
-        curr_text: ""
+        curr_text: "",
+        agents_curr_text: "",
+        agents_no_suggestions: false,
+        agents_custom_form_options: [],
+        agents_submitted_customs: nil,
+        agent_types: agent_types_options,
+        agent_types_map: agent_types_map
       )
 
     {:ok, socket}
@@ -29,11 +44,33 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
   end
 
   @impl true
-  def handle_event("live_select_change", %{"text" => text, "id" => live_select_id}, socket) do
+  def handle_event("live_select_change", %{"text" => text, "id" => "annotation_agents"}, socket) do
+    results = EAD.search_agents(text)
+
+    display_option =
+      results
+      |> Enum.map(fn o ->
+        {"#{o.name} - #{Enum.map(o.type_ids, fn id -> socket.assigns.agent_types_map[id] end) |> Enum.join(", ")}",
+         o.id}
+      end)
+
+    send_update(LiveSelect.Component, id: "annotation_agents", options: display_option)
+
+    no_suggestions =
+      if length(results) > 0 do
+        false
+      else
+        true
+      end
+
+    socket = assign(socket, agents_curr_text: text, agents_no_suggestions: no_suggestions)
+    {:noreply, socket}
+  end
+
+  def handle_event("live_select_change", %{"text" => text, "id" => "annotation_subjects"}, socket) do
     subjects = EAD.search_subjects(text)
     options = Enum.map(subjects, fn subject -> {subject.content, subject.id} end)
 
-    # Store the original options in socket assigns
     socket = assign(socket, subjects_options: options, curr_text: text)
 
     display_options =
@@ -42,8 +79,30 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
         _ -> options ++ [{"Show more for #{text}", "__SHOW_MORE__"}]
       end
 
-    send_update(LiveSelect.Component, id: live_select_id, options: display_options)
+    send_update(LiveSelect.Component, id: "annotation_subjects", options: display_options)
     {:noreply, socket}
+  end
+
+  def handle_event("live_select_change", %{"text" => text, "id" => live_select_id}, socket)
+      when is_binary(live_select_id) do
+    if String.starts_with?(live_select_id, "custom-types") do
+      all_types = socket.assigns.agent_types
+
+      case String.trim(text) do
+        "" ->
+          send_update(LiveSelect.Component, id: live_select_id, options: all_types)
+
+        _ ->
+          filtered_types =
+            all_types |> Enum.filter(fn {type, _id} -> String.contains?(type, text) end)
+
+          send_update(LiveSelect.Component, id: live_select_id, options: filtered_types)
+      end
+
+      {:noreply, socket}
+    else
+      {:noreply, socket}
+    end
   end
 
   @impl true
@@ -106,11 +165,84 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
   end
 
   @impl true
+  def handle_event("add-custom", %{"name" => name}, socket) do
+    trimmed = String.trim(name || "")
+    curr_customs = socket.assigns.agents_custom_form_options || []
+
+    exists =
+      curr_customs
+      |> Enum.any?(fn n -> String.downcase(n) == String.downcase(trimmed) end)
+
+    if trimmed != "" and not exists do
+      new_list = curr_customs ++ [trimmed]
+      {:noreply, assign(socket, :agents_custom_form_options, new_list)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_event("remove-custom", %{"index" => idx_str}, socket) do
+    idx = String.to_integer(idx_str)
+    new_agents = List.delete_at(socket.assigns.agents_custom_form_options || [], idx)
+    {:noreply, assign(socket, :agents_custom_form_options, new_agents)}
+  end
+
   def handle_event("submit", params, socket) do
+    IO.inspect(params, label: "GOT PARAMS: ")
     %{"annotation_form" => form_data} = params
     subjects = form_data["subjects"] || []
-    description = form_data["description"] || ""
+    description = String.trim(form_data["description"] || "")
+    agents = form_data["agents"] || []
 
+    customs_param = Map.get(form_data, "customs", %{})
+
+    custom_types =
+      form_data
+      |> Enum.filter(fn {key, _} -> String.starts_with?(key, "custom-types-") end)
+      |> Enum.into(%{}, fn {"custom-types-" <> idx, val} -> {idx, normalize_types(val)} end)
+
+    parsed_customs =
+      customs_param
+      |> Enum.map(fn {idx, row_map} ->
+        name = row_map |> Map.get("name", "") |> String.trim()
+        types = Map.get(custom_types, idx, [])
+        %{index: idx, name: name, types: types}
+      end)
+      |> Enum.sort_by(fn %{index: idx} ->
+        case Integer.parse(idx) do
+          {val, _} -> val
+          _ -> 0
+        end
+      end)
+      |> Enum.map(fn %{name: name, types: types} -> %{name: name, types: types} end)
+
+      IO.inspect(parsed_customs, label: "PARSED CUSTOMS: ")
+
+    missing_types_custom =
+      parsed_customs
+      |> Enum.find(fn %{name: name, types: types} -> name != "" and types == [] end)
+
+    if missing_types_custom do
+      send(self(), {:flash, :error,
+        "Please select at least one type for custom agent \"#{missing_types_custom.name}\""})
+
+      {:noreply, socket}
+    else
+      has_description? = description != ""
+      has_subjects? = subjects != nil and subjects != []
+      has_custom_agents? = parsed_customs |> Enum.any?(fn %{name: name} -> name != "" end)
+      has_agents? = (agents != nil and agents != []) or has_custom_agents?
+
+      unless has_description? or has_subjects? or has_agents? do
+        send(self(), {:flash, :error, "Add a description, subject, or agent before submitting"})
+        {:noreply, socket}
+      else
+        proceed_submit(socket, subjects, description, agents, parsed_customs)
+      end
+    end
+  end
+
+  defp proceed_submit(socket, subjects, description, agents, parsed_customs) do
     # Get the current user and file from socket assigns
     current_user = socket.assigns.current_user
     file = socket.assigns.file
@@ -190,147 +322,242 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
       send(self(), {:flash, :error, error_message})
       {:noreply, socket}
     else
-      # Create both annotations and collect results
-      {subjects_result, subjects_annotation} =
-        if subjects != nil and subjects != [] do
-          subjects_params = %{
-            "file_id" => file.id,
-            "user_id" => current_user.id,
-            "subjects" => Enum.map(existing_subjects_ids, &%{id: &1}),
-            "new_subjects" => new_subjects
-          }
+      existing_agent_map =
+        (file.accepted_agent_annotations || [])
+        |> Enum.flat_map(fn ann -> ann.agents || [] end)
+        |> Enum.reduce(%{}, fn agent, acc -> Map.put(acc, agent.id, agent.name) end)
 
-          case Annotations.create_subject_annotation(subjects_params) do
-            # Subjects annotations are created after using transactions, and transaction returns
-            # everything with {ok, whatever_inside_transaction_returns}
-            {:ok, {:ok, annotation}} ->
-              # IO.inspect(annotation, label: "NEWLY CREATED SUBJ ANNOTATION IS: ")
-              {{:ok, "Subjects annotation created successfully"}, annotation}
+      existing_agent_ids = Map.keys(existing_agent_map)
 
-            {:error, changeset} ->
-              {{:error, "Failed to create subjects annotation: #{inspect(changeset.errors)}"},
-               nil}
+      existing_custom_agent_names =
+        (file.accepted_agent_annotations || [])
+        |> Enum.flat_map(fn ann -> ann.new_agents || [] end)
+        |> Enum.map(fn m -> m["name"] || m[:name] || "" end)
+        |> Enum.map(&String.trim/1)
+        |> Enum.map(&String.downcase/1)
+        |> Enum.reject(&(&1 == ""))
+
+      duplicate_agent_ids =
+        agents
+        |> Enum.map(fn id ->
+          case Integer.parse(to_string(id)) do
+            {val, _} -> val
+            _ -> nil
           end
-        else
-          {nil, nil}
-        end
+        end)
+        |> Enum.reject(&is_nil/1)
+        |> Enum.filter(&(&1 in existing_agent_ids))
 
-      {description_result, description_annotation} =
-        if description != nil and description != "" and String.trim(description) != "" do
-          description_params = %{
-            "file_id" => file.id,
-            "user_id" => current_user.id,
-            "description" => String.trim(description)
-          }
+      duplicate_custom_agents =
+        parsed_customs
+        |> Enum.filter(fn %{name: name} -> name != "" end)
+        |> Enum.map(fn %{name: name} -> name |> String.trim() |> String.downcase() end)
+        |> Enum.filter(&(&1 in existing_custom_agent_names))
 
-          case Annotations.create_description_annotation(description_params) do
-            {:ok, annotation} ->
-              {{:ok, "Description annotation created successfully"}, annotation}
+      if duplicate_agent_ids != [] or duplicate_custom_agents != [] do
+        dup_agents_msg =
+          if duplicate_agent_ids != [] do
+            labels =
+              duplicate_agent_ids
+              |> Enum.uniq()
+              |> Enum.map(fn id ->
+                name = Map.get(existing_agent_map, id)
+                display_agent_label_flash(name, id)
+              end)
+              |> Enum.join(", ")
 
-            {:error, changeset} ->
-              {{:error, "Failed to create description annotation: #{inspect(changeset.errors)}"},
-               nil}
+            "Agent(s) #{labels}"
           end
-        else
-          {nil, nil}
-        end
 
-      # Send email notifications if annotations were created successfully
-      cond do
-        subjects_annotation != nil and description_annotation != nil ->
-          Kosh.EmailNotifications.deliver_admin_notifications(
+        dup_customs_msg =
+          if duplicate_custom_agents != [] do
+            names_str = duplicate_custom_agents |> Enum.uniq() |> Enum.join(", ")
+            "Custom agent(s) \"#{names_str}\""
+          end
+
+        parts =
+          [dup_agents_msg, dup_customs_msg]
+          |> Enum.reject(&is_nil/1)
+          |> Enum.join(" and ")
+
+        send(self(), {:flash, :error, "#{parts} already exist in approved annotations"})
+        {:noreply, socket}
+      else
+        agent_presence? =
+          (agents != nil and agents != []) or
+            Enum.any?(parsed_customs, fn %{name: name} -> name != "" end)
+
+        agent_result =
+          if agent_presence? do
+            agent_params = %{
+              "file_id" => file.id,
+              "user_id" => current_user.id,
+              "agents" => Enum.map(agents || [], &%{id: &1}),
+              "new_agents" =>
+                parsed_customs
+                |> Enum.filter(fn %{name: name} -> name != "" end)
+                |> Enum.map(fn %{name: name, types: types} ->
+                  %{
+                    "name" => name,
+                    "types" =>
+                      Enum.map(types, fn t ->
+                        case Integer.parse(to_string(t)) do
+                          {val, _} -> val
+                          _ -> t
+                        end
+                      end)
+                  }
+                end)
+            }
+
+            case Annotations.create_agent_annotation(agent_params) do
+              {:ok, annotation} ->
+                {{:ok, "Agent annotation created successfully"}, annotation}
+
+              {:error, changeset} ->
+                {{:error, "Failed to create agent annotation: #{inspect(changeset.errors)}"}, nil}
+            end
+          else
+            nil
+          end
+
+        agent_annotation =
+          case agent_result do
+            {{:ok, _}, ann} -> ann
+            _ -> nil
+          end
+
+        {subjects_result, subjects_annotation} =
+          if subjects != nil and subjects != [] do
+            subjects_params = %{
+              "file_id" => file.id,
+              "user_id" => current_user.id,
+              "subjects" => Enum.map(existing_subjects_ids, &%{id: &1}),
+              "new_subjects" => new_subjects
+            }
+
+            case Annotations.create_subject_annotation(subjects_params) do
+              {:ok, {:ok, annotation}} ->
+                {{:ok, "Subjects annotation created successfully"}, annotation}
+
+              {:error, changeset} ->
+                {{:error, "Failed to create subjects annotation: #{inspect(changeset.errors)}"}, nil}
+            end
+          else
+            {nil, nil}
+          end
+
+        {description_result, description_annotation} =
+          if description != nil and description != "" and String.trim(description) != "" do
+            description_params = %{
+              "file_id" => file.id,
+              "user_id" => current_user.id,
+              "description" => String.trim(description)
+            }
+
+            case Annotations.create_description_annotation(description_params) do
+              {:ok, annotation} ->
+                {{:ok, "Description annotation created successfully"}, annotation}
+
+              {:error, changeset} ->
+                {{:error, "Failed to create description annotation: #{inspect(changeset.errors)}"},
+                 nil}
+            end
+          else
+            {nil, nil}
+          end
+
+        created_annotations =
+          [description_annotation, subjects_annotation, agent_annotation]
+          |> Enum.reject(&is_nil/1)
+
+        if created_annotations != [] do
+          Kosh.EmailNotifications.deliver_admin_bundle_notifications(
             current_user,
-            description_annotation,
-            subjects_annotation
+            created_annotations
           )
 
-          Kosh.Notifications.notify_admins_about_annotation(
-            description_annotation,
-            current_user.id
-          )
-
-          Kosh.Notifications.notify_admins_about_annotation(subjects_annotation, current_user.id)
-
-        subjects_annotation != nil ->
-          Kosh.EmailNotifications.deliver_admin_notifications(
-            current_user,
-            subjects_annotation
-          )
-
-          Kosh.Notifications.notify_admins_about_annotation(subjects_annotation, current_user.id)
-
-        description_annotation != nil ->
-          Kosh.EmailNotifications.deliver_admin_notifications(
-            current_user,
-            description_annotation
-          )
-
-          Kosh.Notifications.notify_admins_about_annotation(
-            description_annotation,
-            current_user.id
-          )
-
-        true ->
-          :noop
-      end
-
-      # Reset form and handle results
-      message =
-        case {subjects_result, description_result} do
-          {{:ok, _}, {:ok, _}} ->
-            {:info, "Annotations created successfully"}
-
-          {{:ok, _}, nil} ->
-            {:info, "Annotations created successfully"}
-
-          {nil, {:ok, _}} ->
-            {:info, "Annotations created successfully"}
-
-          {{:error, subjects_error}, {:error, desc_error}} ->
-            {:error, "Failed to create annotations: #{subjects_error}, #{desc_error}"}
-
-          {{:error, error}, nil} ->
-            {:error, error}
-
-          {nil, {:error, error}} ->
-            {:error, error}
-
-          _ ->
-            {:error, "No annotations were created"}
-        end
-
-      socket =
-        if elem(message, 0) == :info do
-          socket
-          |> assign(
-            :form,
-            to_form(
-              %{
-                "subjects" => [],
-                "subjects_text_input" => "",
-                "description" => nil
-              },
-              as: "annotation_form"
-            )
-          )
-          |> then(fn socket ->
-            send_update(LiveSelect.Component,
-              id: "annotation_subjects",
-              options: [],
-              value: nil,
-              current_text: ""
-            )
-
-            socket
+          Enum.each(created_annotations, fn ann ->
+            Kosh.Notifications.notify_admins_about_annotation(ann, current_user.id)
           end)
-        else
-          socket
         end
 
-      send(self(), {:flash, elem(message, 0), elem(message, 1)})
-      {:noreply, socket}
+        normalized_results =
+          [subjects_result, description_result, agent_result]
+          |> Enum.map(fn
+            {{:ok, msg}, _ann} -> {:ok, msg}
+            {{:error, msg}, _ann} -> {:error, msg}
+            nil -> nil
+            other -> other
+          end)
+
+        success_msgs =
+          normalized_results
+          |> Enum.filter(&match?({:ok, _}, &1))
+          |> Enum.map(fn {:ok, msg} -> msg end)
+
+        error_msgs =
+          normalized_results
+          |> Enum.filter(&match?({:error, _}, &1))
+          |> Enum.map(fn {:error, msg} -> msg end)
+
+        message =
+          cond do
+            error_msgs != [] -> {:error, Enum.join(error_msgs, "; ")}
+            success_msgs != [] -> {:info, Enum.join(success_msgs, " | ")}
+            true -> {:error, "No annotations were created"}
+          end
+
+        socket =
+          if elem(message, 0) == :info do
+            socket
+            |> assign(
+              :form,
+              to_form(
+                %{
+                  "subjects" => [],
+                  "subjects_text_input" => "",
+                  "description" => nil,
+                  "agents" => [],
+                  "agents_text_input" => ""
+                },
+                as: "annotation_form"
+              )
+            )
+            |> assign(:agents_custom_form_options, [])
+            |> assign(:agents_curr_text, "")
+            |> assign(:agents_no_suggestions, false)
+            |> then(fn socket ->
+              send_update(LiveSelect.Component,
+                id: "annotation_subjects",
+                options: [],
+                value: nil,
+                current_text: ""
+              )
+
+              send_update(LiveSelect.Component,
+                id: "annotation_agents",
+                options: [],
+                value: nil,
+                current_text: ""
+              )
+
+              socket
+            end)
+          else
+            socket
+          end
+
+        send(self(), {:flash, elem(message, 0), elem(message, 1)})
+        {:noreply, socket}
+      end
     end
   end
+
+  defp normalize_types(nil), do: []
+  defp normalize_types([]), do: []
+  defp normalize_types(val) when is_binary(val), do: [val]
+  defp normalize_types(val) when is_list(val), do: val
 
   # Splits a list of strings into {numbers, words}, where numbers are
   # those strings which are valid integers with no extra chars.
@@ -348,6 +575,19 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
       _ -> false
     end
   end
+
+  defp display_agent_label_flash(nil, id), do: "##{id}"
+
+  defp display_agent_label_flash(name, _id) do
+    trimmed = String.trim(name || "")
+
+    if String.length(trimmed) > 5 do
+      String.slice(trimmed, 0, 5) <> "…"
+    else
+      trimmed
+    end
+  end
+
 
   @impl true
   def render(assigns) do
@@ -386,28 +626,119 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
               active_option_class="!bg-secondary-lilac"
               dropdown_extra_class="max-h-40 sm:max-h-56 overflow-y-auto"
             >
-            <:option :let={option}>
-              <%= if option.value == "__SHOW_MORE__" do %>
-               <a
-                 href="#"
-                 class="block w-full h-full p-2 text-primary-purple font-bold hover:text-secondary-purple cursor-pointer"
-                 onmousedown={"
+              <:option :let={option}>
+                <%= if option.value == "__SHOW_MORE__" do %>
+                  <a
+                    href="#"
+                    class="block w-full h-full p-2 text-primary-purple font-bold hover:text-secondary-purple cursor-pointer"
+                    onmousedown={"
                  event.preventDefault();
                  window.open('/search-subjects?q=#{@curr_text}', '_blank');
                  "}
-               >
-                 <%= option.label %>
-               </a>
-              <% else %>
-                <div class="p-2">
-                  <%= option.label %>
-                </div>
-              <% end %>
-            </:option>
+                  >
+                    <%= option.label %>
+                  </a>
+                <% else %>
+                  <div class="p-2">
+                    <%= option.label %>
+                  </div>
+                <% end %>
+              </:option>
             </.live_select>
           </div>
         </div>
-        <div class="w-full flex justify-end">
+
+        <div class="flex flex-col mt-4">
+          <p class="text-secondary-purple font-bold text-body-md-18 mb-2">Agents</p>
+
+          <.live_select
+            id="annotation_agents"
+            field={@form[:agents]}
+            phx-target={@myself}
+            update_min_len={1}
+            options={[]}
+            debounce={1000}
+            mode={:quick_tags}
+            placeholder="Search Agents..."
+            text_input_class="w-full p-3 text-secondary-purple border-2 border-primary-purple border-dotted rounded-[4px] focus:border-secondary-purple active:border-primary-purple focus:ring-0 focus:outline-none focus:border-solid focus:rounded-none active:outline-none outline-none ring-0"
+            container_extra_class="gap-5 flex flex-col"
+            tags_container_class="w-full flex flex-col gap-5 [&:not(:has(*))]:hidden"
+            tag_class="border-2 border-primary-purple text-primary-grey p-3 relative"
+            clear_tag_button_class="absolute -top-3 -right-3 bg-secondary-pale-grey rounded-full text-primary-purple cursor-pointer"
+            option_class="!text-primary-grey !p-2 sm:!p-3 hover:bg-secondary-lilac"
+            active_option_class="!bg-secondary-lilac"
+            dropdown_extra_class="max-h-40 sm:max-h-56 overflow-y-auto"
+          />
+
+          <button
+            :if={String.length(@agents_curr_text) > 3 && @agents_no_suggestions}
+            type="button"
+            phx-click="add-custom"
+            phx-value-name={@agents_curr_text}
+            phx-target={@myself}
+            class="text-sm text-secondary-purple mr-auto mt-1"
+          >
+            No Results Found. Add Custom Agent: <b>"<%= @agents_curr_text %>"</b>
+          </button>
+
+          <div class="mt-4 space-y-3">
+            <%= for {agent, idx} <- Enum.with_index(@agents_custom_form_options || []) do %>
+              <div id={"custom-agent-#{idx}"} class="flex items-end gap-2">
+                <input
+                  type="text"
+                  name={"annotation_form[customs][#{idx}][name]"}
+                  value={agent}
+                  readonly
+                  class="p-2 h-10 border rounded w-1/3 flex-1 min-w-0 text-secondary-purple border-2 border-primary-purple rounded-[4px] focus:border-secondary-purple active:border-primary-purple focus:ring-0 focus:outline-none focus:border-solid focus:rounded-none active:outline-none outline-none ring-0"
+                />
+
+                <.live_select
+                  id={"custom-types-#{idx}"}
+                  field={@form["custom-types-#{idx}"]}
+                  phx-target={@myself}
+                  update_min_len={0}
+                  options={@agent_types}
+                  debounce={1000}
+                  max_selectable={3}
+                  mode={:quick_tags}
+                  placeholder="Select Agent Types..."
+                  text_input_class="w-full h-10 p-3 text-secondary-purple border-2 border-primary-purple rounded-[4px] focus:border-secondary-purple active:border-primary-purple focus:ring-0 focus:outline-none focus:border-solid focus:rounded-none active:outline-none outline-none ring-0 flex-1 min-w-0"
+                  container_extra_class="flex-1 min-w-0"
+                  tag_extra_class="bg-primary-purple text-white"
+                  option_class="!text-primary-grey !p-2 sm:!p-3 hover:bg-secondary-lilac"
+                  active_option_class="!bg-secondary-lilac"
+                  dropdown_extra_class="max-h-40 sm:max-h-56 overflow-y-auto"
+                />
+
+                <button
+                  type="button"
+                  phx-click="remove-custom"
+                  phx-value-index={idx}
+                  phx-target={@myself}
+                  class="p-1 mt-1 rounded-full bg-gray-200 hover:bg-gray-300 flex-none self-center transition-colors"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="12" cy="12" r="10" class="stroke-transparent" stroke-width="2" />
+                    <path
+                      d="M8 8L16 16M16 8L8 16"
+                      class="stroke-primary-purple"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="w-full flex justify-end mt-2">
           <button type="submit" class="btn-primary-purple">
             Save
           </button>

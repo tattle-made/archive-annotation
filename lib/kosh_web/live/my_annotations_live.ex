@@ -2,18 +2,21 @@ defmodule KoshWeb.MyAnnotationsLive do
   use KoshWeb, :live_view
   import KoshWeb.Components.DescriptionAnnotationCard
   import KoshWeb.Components.SubjectAnnotationCard
+  import KoshWeb.Components.AgentAnnotationCard
 
   alias Kosh.Annotations
 
   def mount(_params, _session, socket) do
-    {submitted_subjects, submitted_descriptions} = {
+    {submitted_subjects, submitted_descriptions, submitted_agents} = {
       Annotations.list_subject_annotations_of_user(socket.assigns.current_user.id, :pending),
-      Annotations.list_description_annotations_of_user(socket.assigns.current_user.id, :pending)
+      Annotations.list_description_annotations_of_user(socket.assigns.current_user.id, :pending),
+      Annotations.list_agent_annotations_of_user(socket.assigns.current_user.id, :pending)
     }
 
-    {approved_subjects, approved_descriptions} = {
+    {approved_subjects, approved_descriptions, approved_agents} = {
       Annotations.list_subject_annotations_of_user(socket.assigns.current_user.id, :accepted),
-      Annotations.list_description_annotations_of_user(socket.assigns.current_user.id, :accepted)
+      Annotations.list_description_annotations_of_user(socket.assigns.current_user.id, :accepted),
+      Annotations.list_agent_annotations_of_user(socket.assigns.current_user.id, :accepted)
     }
 
     # IO.inspect(submitted_subjects, label: "submitted_subjects")
@@ -23,8 +26,10 @@ defmodule KoshWeb.MyAnnotationsLive do
       socket
       |> assign(:submitted_subjects, submitted_subjects)
       |> assign(:submitted_descriptions, submitted_descriptions)
+      |> assign(:submitted_agents, submitted_agents)
       |> assign(:approved_subjects, approved_subjects)
       |> assign(:approved_descriptions, approved_descriptions)
+      |> assign(:approved_agents, approved_agents)
 
     {:ok, socket}
   end
@@ -82,6 +87,38 @@ defmodule KoshWeb.MyAnnotationsLive do
       _ ->
         socket =
           socket |> put_flash(:info, "Something went wrong while deleting subject annotation")
+
+        {:noreply, socket}
+    end
+  end
+
+  def handle_event("delete_agent", %{"id" => id}, socket) do
+    case Annotations.delete_agent_annotation(id) do
+      {:ok, _} ->
+        socket =
+          socket
+          |> put_flash(:info, "Agent annotation deleted")
+          |> push_navigate(to: "/annotation/my-annotations")
+
+        {:noreply, socket}
+
+      {:error, :not_found} ->
+        socket = socket |> put_flash(:error, "Agent annotation not found")
+        {:noreply, socket}
+
+      {:error, changeset} ->
+        socket =
+          socket
+          |> put_flash(
+            :error,
+            "Failed to delete agent annotation: #{inspect(changeset.errors)}"
+          )
+
+        {:noreply, socket}
+
+      _ ->
+        socket =
+          socket |> put_flash(:info, "Something went wrong while deleting agent annotation")
 
         {:noreply, socket}
     end

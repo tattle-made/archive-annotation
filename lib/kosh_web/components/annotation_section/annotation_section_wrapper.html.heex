@@ -11,16 +11,16 @@
         phx-click="show_featured"
         phx-target={@myself}
         class={[
-          "w-full flex items-center justify-start space-x-1 text-caption-14 2xl:text-base py-[14px] px-3",
-          if @render_annotation_form do
-            "text-primary-grey hover:text-secondary-purple"
-          else
+          "w-full flex items-center justify-start space-x-1 text-caption-14 2xl:text-base py-[14px] px-2",
+          if @render_index == 0 do
             "rounded-lg text-secondary-purple bg-gradient-to-r from-[#EEEFF5] to-[#FFFFFF]"
+          else
+            "text-primary-grey hover:text-secondary-purple"
           end
         ]}
       >
         <image src={
-          if !@render_annotation_form do
+          if @render_index == 0 do
             "/images/featured-annotations-icon-colored.svg"
           else
             "/images/featured-annotations-icon.svg"
@@ -33,16 +33,16 @@
           phx-click="show_form"
           phx-target={@myself}
           class={[
-            "w-full flex items-center justify-start space-x-1 text-caption-14 2xl:text-base py-[14px] px-3",
-            if !@render_annotation_form do
-              "text-primary-grey hover:text-secondary-purple"
-            else
+            "w-full flex items-center justify-start space-x-1 text-caption-14 2xl:text-base py-[14px] px-2",
+            if @render_index == 1 do
               "rounded-lg text-secondary-purple bg-gradient-to-r from-[#EEEFF5] to-[#FFFFFF]"
+            else
+              "text-primary-grey hover:text-secondary-purple"
             end
           ]}
         >
           <image src={
-            if @render_annotation_form do
+            if @render_index == 1 do
               "/images/add-annotation-icon-colored.svg"
             else
               "/images/add-annotation-icon.svg"
@@ -50,6 +50,27 @@
           } />
           <span>Add Annotations</span>
         </button>
+        <%!-- <button
+          phx-click="show_agents_form"
+          phx-target={@myself}
+          class={[
+            "w-full flex items-center justify-start space-x-1 text-caption-14 2xl:text-base py-[14px] px-1 2xl:px-2",
+            if @render_index == 2 do
+              "rounded-lg text-secondary-purple bg-gradient-to-r from-[#EEEFF5] to-[#FFFFFF]"
+            else
+              "text-primary-grey hover:text-secondary-purple"
+            end
+          ]}
+        >
+          <image src={
+            if @render_index == 2 do
+              "/images/add-annotation-icon-colored.svg"
+            else
+              "/images/add-annotation-icon.svg"
+            end
+          } />
+          <span>Add Agent Annotations</span>
+        </button> --%>
       <% end %>
       <%= if @current_user do %>
         <div class="space-y-2 pt-8 2xl:text-body-md-18">
@@ -75,11 +96,15 @@
       <%= if @total_annotations > 0 do %>
         <hr class="border-t border-secondary-pale-grey my-5" />
         <div class="space-y-2 2xl:text-body-md-18">
-          <p >
+          <p>
             We have collected <br />
-            <span class="font-bold"><%= @total_annotations %></span> user annotations for this file
+            <span class="font-bold"><%= @total_annotations %></span>
+            user annotations for this file
           </p>
-          <.link navigate={"/annotation/file-annotations?uri=#{@file.uri}"} class="flex items-center">
+          <.link
+            navigate={"/annotation/file-annotations?uri=#{@file.uri}"}
+            class="flex items-center"
+          >
             <span class=" underline font-semibold">View all</span>
             <img src="/images/redirect-black.svg" alt="icon" />
           </.link>
@@ -87,22 +112,24 @@
       <% end %>
     </div>
 
-    <%= if @render_annotation_form do %>
-      <.live_component
-        module={KoshWeb.Components.AnnotationSection.AnnotationForm}
-        id="annotation-form"
-        file={@file}
-        current_user={@current_user}
-      />
-    <% else %>
-      <.live_component
-        module={KoshWeb.Components.AnnotationSection.FeaturedAnnotations}
-        id="featured-annotations"
-        file={@file}
-        current_user={@current_user}
-        featured_description_annotations={@latest_accepted_description_annotations}
-        featured_subjects_annotations={@latest_accepted_subjects_annotations}
-      />
+    <%= case @render_index do %>
+      <% 0 -> %>
+        <.live_component
+          module={KoshWeb.Components.AnnotationSection.FeaturedAnnotations}
+          id="featured-annotations"
+          file={@file}
+          current_user={@current_user}
+          featured_description_annotations={@latest_accepted_description_annotations}
+          featured_subjects_annotations={@latest_accepted_subjects_annotations}
+        />
+      <% 1-> %>
+        <.live_component
+          module={KoshWeb.Components.AnnotationSection.AnnotationForm}
+          id="annotation-form"
+          file={@file}
+          current_user={@current_user}
+        />
+
     <% end %>
   </div>
 </div>

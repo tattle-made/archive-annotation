@@ -66,8 +66,7 @@ defmodule Kosh.Annotations.AgentAnnotation do
                     inserted_at: now,
                     updated_at: now
                   }
-                end),
-                returning: true
+                end)
               )
 
             Logger.debug("Inserted #{count} agent associations")
