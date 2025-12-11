@@ -1,5 +1,6 @@
 defmodule Kosh.EmailNotifications do
   import Swoosh.Email
+  alias Kosh.Annotations.AgentAnnotation
   alias Kosh.Annotations.SubjectsAnnotation
   alias Kosh.Annotations.DescriptionAnnotation
   alias Kosh.Accounts
@@ -15,6 +16,149 @@ defmodule Kosh.EmailNotifications do
     subjects
     |> Enum.map(fn sub -> "• #{content_fn.(sub)}" end)
     |> Enum.join("\n        ")
+  end
+
+  defp format_agents(list) do
+    list
+    |> Enum.map(fn
+      %Kosh.EAD.Agent{} = agent ->
+        "• #{agent.name || "Unknown agent"}"
+
+      %{} = map ->
+        "• #{map[:name] || map["name"] || "Unknown agent"}"
+
+      other ->
+        "• #{inspect(other)}"
+    end)
+    |> Enum.join("\n        ")
+  end
+
+  # Bundle notification for any mix of description/subject/agent annotations
+  def deliver_admin_bundle_notifications(%User{} = actor, annotations)
+      when is_list(annotations) do
+    IO.inspect(annotations, label: "RECEIVED ANNOTATIONS INSIDE EMAIL: ")
+
+    anns =
+      annotations
+      |> Enum.reject(&is_nil/1)
+      |> Enum.map(&preload_for_bundle/1)
+
+    if anns != [] do
+      subject = "New Annotation Submission - Anno-Milli"
+      body = build_bundle_body(actor, anns)
+
+      accounts().list_users_by_role(:admin)
+      |> Enum.each(fn admin ->
+        deliver(admin.email, subject, body)
+      end)
+    end
+  end
+
+  defp preload_for_bundle(%DescriptionAnnotation{} = ann),
+    do: repo().preload(ann, file: :collection)
+
+  defp preload_for_bundle(%SubjectsAnnotation{} = ann),
+    do: repo().preload(ann, [:subjects, file: :collection])
+
+  defp preload_for_bundle(%AgentAnnotation{} = ann),
+    do: repo().preload(ann, [:agents, file: :collection])
+
+  defp build_bundle_body(actor, annotations) do
+    file = annotations |> List.first() |> Map.get(:file)
+
+    description_text =
+      annotations
+      |> Enum.find_value(fn
+        %DescriptionAnnotation{} = ann -> ann.description
+        _ -> nil
+      end)
+
+    {subjects, new_subjects} =
+      annotations
+      |> Enum.find(&match?(%SubjectsAnnotation{}, &1))
+      |> case do
+        %SubjectsAnnotation{subjects: s, new_subjects: ns} ->
+          {
+            if(Enum.empty?(s), do: nil, else: s),
+            if(Enum.empty?(ns), do: nil, else: ns)
+          }
+
+        _ ->
+          {nil, nil}
+      end
+
+    agents =
+      annotations
+      |> Enum.find_value(fn
+        %AgentAnnotation{} = ann -> %{existing: ann.agents || [], custom: ann.new_agents || []}
+        _ -> nil
+      end)
+
+    description_section =
+      if description_text && String.trim(description_text) != "" do
+        """
+        Description:
+        #{description_text}
+
+        """
+      else
+        ""
+      end
+
+    subjects_section =
+      if subjects || new_subjects do
+        """
+        Subjects:
+        #{format_subjects(subjects, & &1.content)}\n #{format_subjects(new_subjects)}
+
+        """
+      else
+        ""
+      end
+
+    agents_section =
+      if agents do
+        existing =
+          agents.existing
+          |> Enum.map(&(&1.name || "Unknown agent"))
+
+        custom =
+          agents.custom
+          |> Enum.map(fn
+            %{} = m -> m[:name] || m["name"] || "Unknown agent"
+            other -> to_string(other)
+          end)
+
+        combined = (existing ++ custom) |> Enum.reject(&(&1 == "")) |> Enum.uniq()
+
+        if combined != [] do
+          """
+          Agents:
+          #{Enum.map(combined, fn a -> "• #{a}" end) |> Enum.join("\n        ")}
+
+          """
+        else
+          ""
+        end
+      else
+        ""
+      end
+
+    """
+    Hello Admin,
+
+    A new annotation submission was created on Anno-Milli.
+
+    Collection: #{file.collection.title}
+    File: #{file.title}
+    Created By: #{actor.email}
+
+    #{description_section}#{subjects_section}#{agents_section}Review page: #{base_url()}/admin/all-annotations
+
+    Best regards,
+    The Anno-Milli Team
+
+    """
   end
 
   @doc false
@@ -194,6 +338,33 @@ defmodule Kosh.EmailNotifications do
     """)
   end
 
+  def deliver_rejected_annotation_notification(
+        %User{} = recipient,
+        %AgentAnnotation{} = annotation
+      ) do
+    annotation = repo().preload(annotation, [:agents, file: :collection])
+
+    deliver(recipient.email, "Annotation Discarded - Anno-Milli", """
+    Hello #{recipient.email},
+
+    We're writing to inform you that your agents-annotation has been reviewed and discarded by our moderation team. Here are the details of the affected annotation:
+
+    Collection: #{annotation.file.collection.title}
+    File: #{annotation.file.title}
+    Annotation ID: #{annotation.id}
+    Annotation Content:
+    #{format_agents((annotation.new_agents || []) ++ (annotation.agents || []))}
+
+    Please note that this annotation is no longer visible on the platform.
+
+    View your other annotation contributions: #{base_url()}/annotation/my-annotations
+
+    Best regards,
+    The Anno-Milli Team
+
+    """)
+  end
+
   @doc """
   Delivers the Annotation Approval Email Notification to the user (annotation's creator)
   """
@@ -239,6 +410,32 @@ defmodule Kosh.EmailNotifications do
     Annotation ID: #{annotation.id}
     Annotation Content:
     #{format_subjects(annotation.new_subjects)}\n#{format_subjects(annotation.subjects, & &1.content)}
+
+    This annotation is now visible on the File display page.
+
+    View your contribution: #{base_url()}/annotation/display?uri=#{annotation.file.uri}
+
+    Best regards,
+    The Anno-Milli Team
+    """)
+  end
+
+  def deliver_approved_annotation_notification(
+        %User{} = recipient,
+        %AgentAnnotation{} = annotation
+      ) do
+    annotation = repo().preload(annotation, [:agents, file: :collection])
+
+    deliver(recipient.email, "Annotation Approved - Anno-Milli", """
+    Hello #{recipient.email},
+
+    Your agents-annotation has been approved by the moderation team. Approved annotation details:
+
+    Collection: #{annotation.file.collection.title}
+    File: #{annotation.file.title}
+    Annotation ID: #{annotation.id}
+    Annotation Content:
+    #{format_agents((annotation.new_agents || []) ++ (annotation.agents || []))}
 
     This annotation is now visible on the File display page.
 

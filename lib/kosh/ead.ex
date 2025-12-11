@@ -1,5 +1,5 @@
 defmodule Kosh.EAD do
-  alias Kosh.EAD.{Subject, XML.Saxmap, Collection, Series, SubSeries, File}
+  alias Kosh.EAD.{Subject, XML.Saxmap, Collection, Series, SubSeries, File, Agent, LcnafType}
   alias Kosh.Repo
   import Ecto.Query
   alias Kosh.EAD.XML.SaxyUpdateEadHandler
@@ -184,7 +184,8 @@ defmodule Kosh.EAD do
       :series,
       :sub_series,
       accepted_description_annotations: [:file, :user],
-      accepted_subjects_annotations: [:subjects, :file, :user]
+      accepted_subjects_annotations: [:subjects, :file, :user],
+      accepted_agent_annotations: [:agents, :file, :user]
     ])
     |> Repo.get_by(uri: uri)
   end
@@ -260,7 +261,11 @@ defmodule Kosh.EAD do
               |> Enum.flat_map(fn sa ->
                 (sa.subjects || [])
                 |> Enum.map(fn s ->
-                  Map.merge(s, %{anno_id: sa.id, user_id: sa.user_id, anno_inserted_at: sa.inserted_at})
+                  Map.merge(s, %{
+                    anno_id: sa.id,
+                    user_id: sa.user_id,
+                    anno_inserted_at: sa.inserted_at
+                  })
                 end)
               end)
               |> Enum.map(fn s ->
@@ -330,6 +335,16 @@ defmodule Kosh.EAD do
     |> Repo.all()
   end
 
+  def search_agents(name) when is_binary(name) do
+    Agent
+    |> where([s], ilike(s.normalized_name, ^"%#{Agent.normalize_name(name)}%"))
+    |> limit(100)
+    |> Repo.all()
+  end
+
+  def get_all_lcnaf_types() do
+    LcnafType |> Repo.all()
+  end
 
   @fmt "%Y-%m-%d %H:%M:%S.%3f"
 

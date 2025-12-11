@@ -42,6 +42,11 @@ defmodule Kosh.EAD.File do
              where: [status: :accepted],
              foreign_key: :file_id
 
+    has_many :accepted_agent_annotations,
+             Kosh.Annotations.AgentAnnotation,
+             where: [status: :accepted],
+             foreign_key: :file_id
+
     # many_to_many :annotated_subjects, Kosh.EAD.Subject,
     #   join_through: "files_subjects",
     #   on_delete: :nothing,

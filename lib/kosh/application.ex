@@ -24,7 +24,17 @@ defmodule Kosh.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Kosh.Supervisor]
-    Supervisor.start_link(children, opts)
+    {:ok, sup} = Supervisor.start_link(children, opts)
+
+    agents_types_raw = Kosh.EAD.get_all_lcnaf_types()
+
+    agent_types_map =
+      agents_types_raw
+      |> Enum.reduce(%{}, fn type, acc -> Map.put(acc, type.id, type.type) end)
+
+    :persistent_term.put(:lcnaf_types_map, agent_types_map)
+    :persistent_term.put(:lcnaf_types_raw, agents_types_raw)
+    {:ok, sup}
   end
 
   # Tell Phoenix to update the endpoint configuration

@@ -7,7 +7,7 @@
     <h2 class="text-xl font-bold text-primary-purple mb-4">Submitted</h2>
     <%!-- <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 space-y-4"> For columns layout, like masonry layout--%>
     <div class="flex flex-wrap gap-6">
-      <%= if Enum.empty?(@submitted_descriptions) and Enum.empty?(@submitted_subjects) do %>
+      <%= if Enum.empty?(@submitted_descriptions) and Enum.empty?(@submitted_subjects) and Enum.empty?(@submitted_agents) do %>
         <p class="text-gray-500 text-sm">No entries to display</p>
       <% else %>
         <%= for annotation <- @submitted_descriptions do %>
@@ -28,6 +28,15 @@
             on_delete="delete_subject"
           />
         <% end %>
+        <%= for annotation <- @submitted_agents do %>
+          <.agent_annotation_card
+            annotation={annotation}
+            type="submitted"
+            current_user={@current_user}
+            on_approve="approve_agent_annotation"
+            on_delete="delete_agent"
+          />
+        <% end %>
       <% end %>
     </div>
   </div>
@@ -35,7 +44,7 @@
   <div>
     <h2 class="text-xl font-bold text-primary-purple mb-4">Approved</h2>
     <div class="flex flex-wrap gap-6">
-      <%= if Enum.empty?(@approved_descriptions) and Enum.empty?(@approved_subjects) do %>
+      <%= if Enum.empty?(@approved_descriptions) and Enum.empty?(@approved_subjects) and Enum.empty?(@approved_agents) do %>
         <p class="text-gray-500 text-sm">No entries to display</p>
       <% else %>
         <%= for annotation <- @approved_descriptions do %>
@@ -52,6 +61,14 @@
             type="approved"
             current_user={@current_user}
             on_delete="delete_subject"
+          />
+        <% end %>
+        <%= for annotation <- @approved_agents do %>
+          <.agent_annotation_card
+            annotation={annotation}
+            type="approved"
+            current_user={@current_user}
+            on_delete="delete_agent"
           />
         <% end %>
       <% end %>

@@ -3,10 +3,18 @@ defmodule KoshWeb.PublicDisplayAllAnnotationsLive do
   use KoshWeb, :live_view
   import KoshWeb.Components.DescriptionAnnotationCard
   import KoshWeb.Components.SubjectAnnotationCard
+  import KoshWeb.Components.AgentAnnotationCard
 
   def mount(_params, _session, socket) do
-    {subjects, descriptions} = Annotations.list_all_annotations(:accepted)
-    socket = assign(socket, approved_descriptions: descriptions, approved_subjects: subjects)
+    {subjects, descriptions, agents} = Annotations.list_all_annotations(:accepted)
+
+    socket =
+      assign(socket,
+        approved_descriptions: descriptions,
+        approved_subjects: subjects,
+        approved_agents: agents
+      )
+
     {:ok, socket}
   end
 
@@ -19,7 +27,7 @@ defmodule KoshWeb.PublicDisplayAllAnnotationsLive do
       </div>
 
       <div class="flex flex-wrap gap-6">
-        <%= if Enum.empty?(@approved_descriptions) and Enum.empty?(@approved_subjects) do %>
+        <%= if Enum.empty?(@approved_descriptions) and Enum.empty?(@approved_subjects) and Enum.empty?(@approved_agents) do %>
           <p class="text-gray-500 text-sm">No entries to display</p>
         <% else %>
           <%= for annotation <- @approved_descriptions do %>
@@ -31,6 +39,9 @@ defmodule KoshWeb.PublicDisplayAllAnnotationsLive do
           <% end %>
           <%= for annotation <- @approved_subjects do %>
             <.subject_annotation_card annotation={annotation} type="approved" display_only?={true} />
+          <% end %>
+          <%= for annotation <- @approved_agents do %>
+            <.agent_annotation_card annotation={annotation} type="approved" display_only?={true} />
           <% end %>
         <% end %>
       </div>

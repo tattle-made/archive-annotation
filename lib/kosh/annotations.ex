@@ -1,6 +1,8 @@
 defmodule Kosh.Annotations do
   alias Kosh.Annotations.SubjectsAnnotation
   alias Kosh.Annotations.DescriptionAnnotation
+  alias Kosh.Annotations.AgentAnnotation
+  alias Kosh.EAD.Agent
   alias Kosh.Repo
   import Ecto.Query
 
@@ -14,6 +16,10 @@ defmodule Kosh.Annotations do
     |> Repo.insert()
   end
 
+  def create_agent_annotation(params) do
+    AgentAnnotation.create_with_agents(params)
+  end
+
   def approve_description_annotation(annotation_id, admin_id) do
     case Repo.get(DescriptionAnnotation, annotation_id) do
       nil ->
@@ -23,6 +29,88 @@ defmodule Kosh.Annotations do
         annotation
         |> DescriptionAnnotation.changeset(%{status: :accepted, admin_id: admin_id})
         |> Repo.update()
+    end
+  end
+
+  def approve_agent_annotation(annotation_id, admin_id) do
+    case Repo.transaction(fn ->
+           annotation =
+             Repo.get(AgentAnnotation, annotation_id)
+             |> Repo.preload([
+               :agents,
+               file: [accepted_agent_annotations: [:agents]]
+             ])
+
+           if annotation == nil do
+             Repo.rollback({:error, :not_found})
+           end
+
+           existing_file_agents =
+             (annotation.file.accepted_agent_annotations || [])
+             |> Enum.flat_map(& &1.agents)
+             |> Enum.uniq_by(& &1.id)
+
+           new_agents_created =
+             (annotation.new_agents || [])
+             |> Enum.flat_map(fn attrs ->
+               cond do
+                 is_map(attrs) ->
+                  name =
+                    attrs["name"] || attrs[:name] || ""
+                    |> case do
+                      v when is_binary(v) -> String.trim(v)
+                      v -> v |> to_string() |> String.trim()
+                    end
+
+                   types =
+                     (attrs["types"] || attrs[:types] || [])
+                     |> Enum.map(fn t ->
+                       case Integer.parse(to_string(t)) do
+                         {v, _} -> v
+                         _ -> nil
+                       end
+                     end)
+                     |> Enum.reject(&is_nil/1)
+
+                   if name == "" do
+                     []
+                   else
+                     normalized = Agent.normalize_name(name)
+
+                     [
+                       Repo.get_by(Agent, normalized_name: normalized) ||
+                         Repo.insert!(Agent.changeset(%Agent{}, %{
+                           name: name,
+                           source: "mlk",
+                           type_ids: types
+                         }))
+                     ]
+                   end
+
+                 true ->
+                   []
+               end
+             end)
+
+           all_agents =
+             (annotation.agents ++ new_agents_created)
+             |> Enum.uniq_by(& &1.id)
+             |> Enum.reject(fn agent -> Enum.any?(existing_file_agents, &(&1.id == agent.id)) end)
+
+           if Enum.empty?(all_agents) do
+             Repo.rollback({:error, :all_agents_already_present})
+           else
+             {:ok, updated_annotation} =
+               annotation
+               |> AgentAnnotation.changeset(%{status: :accepted, admin_id: admin_id, new_agents: []})
+               |> Ecto.Changeset.put_assoc(:agents, all_agents)
+               |> Repo.update()
+
+             {:ok, updated_annotation}
+           end
+         end) do
+      {:ok, result} -> result
+      {:error, error} -> error
     end
   end
 
@@ -144,6 +232,13 @@ defmodule Kosh.Annotations do
     end
   end
 
+  def delete_agent_annotation(id) do
+    case Repo.get(AgentAnnotation, id) do
+      nil -> {:error, :not_found}
+      annotation -> Repo.delete(annotation)
+    end
+  end
+
   @doc """
   Lists subject annotations filtered by status.
   Status can be :pending, :accepted, or :rejected.
@@ -162,6 +257,28 @@ defmodule Kosh.Annotations do
     |> maybe_filter_by_status(status)
     |> preload([:file, :user, :admin, :subjects])
     |> Repo.all()
+  end
+
+  def list_agent_annotations(status \\ nil) do
+    AgentAnnotation
+    |> maybe_filter_by_status(status)
+    |> preload([:file, :user, :admin, :agents])
+    |> Repo.all()
+  end
+
+  def list_agent_annotations_of_user(user_id, status \\ nil) do
+    AgentAnnotation
+    |> where([a], a.user_id == ^user_id)
+    |> maybe_filter_by_status(status)
+    |> preload([:file, :user, :admin, :agents])
+    |> Repo.all()
+  end
+
+  def get_agent_annotation(id) do
+    case Repo.get(AgentAnnotation, id) do
+      nil -> {:error, :not_found}
+      annotation -> {:ok, Repo.preload(annotation, [:user, :agents, file: :collection])}
+    end
   end
 
   @doc """
@@ -192,7 +309,8 @@ defmodule Kosh.Annotations do
   def list_all_annotations(status \\ nil) do
     subjects = list_subject_annotations(status)
     descriptions = list_description_annotations(status)
-    {subjects, descriptions}
+    agents = list_agent_annotations(status)
+    {subjects, descriptions, agents}
   end
 
   # Helper function to filter by status if provided
@@ -216,7 +334,13 @@ defmodule Kosh.Annotations do
       |> select([a], count(a.id))
       |> Repo.one()
 
-    subject_count + description_count
+    agents_count =
+      AgentAnnotation
+      |> where([a], a.user_id == ^user_id)
+      |> select([a], count(a.id))
+      |> Repo.one()
+
+    subject_count + description_count + agents_count
   end
 
   def count_total_approved_annotations do
