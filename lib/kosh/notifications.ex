@@ -289,7 +289,7 @@ defmodule Kosh.Notifications do
 
           %{
             all_subjs:
-              (Enum.map(resource.agents, fn a -> a.name end)) ++ (Enum.map(resource.new_agents || [], fn a-> a.name end))
+              (Enum.map(resource.agents, fn a -> a.name end)) ++ (Enum.map(resource.new_agents || [], fn a-> a["name"] end))
           }
 
         _ ->

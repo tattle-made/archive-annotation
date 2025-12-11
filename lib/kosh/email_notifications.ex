@@ -34,7 +34,10 @@ defmodule Kosh.EmailNotifications do
   end
 
   # Bundle notification for any mix of description/subject/agent annotations
-  def deliver_admin_bundle_notifications(%User{} = actor, annotations) when is_list(annotations) do
+  def deliver_admin_bundle_notifications(%User{} = actor, annotations)
+      when is_list(annotations) do
+    IO.inspect(annotations, label: "RECEIVED ANNOTATIONS INSIDE EMAIL: ")
+
     anns =
       annotations
       |> Enum.reject(&is_nil/1)
@@ -72,11 +75,17 @@ defmodule Kosh.EmailNotifications do
 
     {subjects, new_subjects} =
       annotations
-      |> Enum.find_value(fn
-        %SubjectsAnnotation{} = ann -> {ann.subjects, ann.new_subjects}
-        _ -> {nil, nil}
-      end)
+      |> Enum.find(&match?(%SubjectsAnnotation{}, &1))
+      |> case do
+        %SubjectsAnnotation{subjects: s, new_subjects: ns} ->
+          {
+            if(Enum.empty?(s), do: nil, else: s),
+            if(Enum.empty?(ns), do: nil, else: ns)
+          }
 
+        _ ->
+          {nil, nil}
+      end
 
     agents =
       annotations
@@ -97,7 +106,7 @@ defmodule Kosh.EmailNotifications do
       end
 
     subjects_section =
-      if subjects do
+      if subjects || new_subjects do
         """
         Subjects:
         #{format_subjects(subjects, & &1.content)}\n #{format_subjects(new_subjects)}

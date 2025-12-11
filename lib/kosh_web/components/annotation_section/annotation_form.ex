@@ -10,6 +10,13 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
   def mount(socket) do
     form = to_form(%{}, as: "annotation_form")
 
+    ignore_type = [
+      "http://www.loc.gov/standards/mads/rdf/v1#Geographic",
+      "http://xmlns.com/foaf/0.1/Group",
+      "http://xmlns.com/foaf/0.1/Organization",
+      "http://xmlns.com/foaf/0.1/Person"
+    ]
+
     # agents_types_raw = EAD.get_all_lcnaf_types()
     agents_types_raw = :persistent_term.get(:lcnaf_types_raw)
 
@@ -17,7 +24,10 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
       agents_types_raw
       |> Enum.reduce(%{}, fn type, acc -> Map.put(acc, type.id, type.type) end)
 
-    agent_types_options = agents_types_raw |> Enum.map(fn t -> {t.type, to_string(t.id)} end)
+    agent_types_options =
+      agents_types_raw
+      |> Enum.filter(fn t -> not Enum.member?(ignore_type, t.type) end)
+      |> Enum.map(fn t -> {t.type, to_string(t.id)} end)
 
     socket =
       assign(socket,
@@ -706,7 +716,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
                   update_min_len={0}
                   options={@agent_types}
                   debounce={1000}
-                  max_selectable={3}
+                  max_selectable={1}
                   mode={:quick_tags}
                   placeholder="Select Agent Types..."
                   text_input_class="w-full h-10 p-3 text-secondary-purple border-2 border-primary-purple rounded-[4px] focus:border-secondary-purple active:border-primary-purple focus:ring-0 focus:outline-none focus:border-solid focus:rounded-none active:outline-none outline-none ring-0 flex-1 min-w-0"
