@@ -309,7 +309,8 @@ defmodule Kosh.Annotations do
   def list_all_annotations(status \\ nil) do
     subjects = list_subject_annotations(status)
     descriptions = list_description_annotations(status)
-    {subjects, descriptions}
+    agents = list_agent_annotations(status)
+    {subjects, descriptions, agents}
   end
 
   # Helper function to filter by status if provided
@@ -333,7 +334,13 @@ defmodule Kosh.Annotations do
       |> select([a], count(a.id))
       |> Repo.one()
 
-    subject_count + description_count
+    agents_count =
+      AgentAnnotation
+      |> where([a], a.user_id == ^user_id)
+      |> select([a], count(a.id))
+      |> Repo.one()
+
+    subject_count + description_count + agents_count
   end
 
   def count_total_approved_annotations do

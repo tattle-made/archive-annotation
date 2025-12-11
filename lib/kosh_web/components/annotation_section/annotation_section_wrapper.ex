@@ -3,7 +3,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationSectionWrapper do
   use Phoenix.LiveComponent
   @impl true
   def mount(socket) do
-    socket = assign(socket, render_annotation_form: false, render_index: 1)
+    socket = assign(socket, render_annotation_form: false, render_index: 0)
     # IO.inspect(socket, label: "Socket inside wrapper: ")
     {:ok, socket}
   end
@@ -22,7 +22,8 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationSectionWrapper do
     # total_annotations = Annotations.count_total_approved_annotations()
     total_annotations =
       length(socket.assigns.file.accepted_description_annotations) +
-        length(socket.assigns.file.accepted_subjects_annotations)
+        length(socket.assigns.file.accepted_subjects_annotations) +
+        length(socket.assigns.file.accepted_agent_annotations)
 
     socket =
       assign(socket,

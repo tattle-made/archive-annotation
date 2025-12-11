@@ -6,7 +6,7 @@ defmodule KoshWeb.DisplayLive do
 
   def mount(%{"uri" => uri}, _session, socket) do
     # IO.inspect(socket, label: "id")
-    case EAD.get_file_from_uri( URI.decode(uri)) do
+    case EAD.get_file_from_uri(URI.decode(uri)) do
       nil ->
         {:ok,
          socket
@@ -34,6 +34,7 @@ defmodule KoshWeb.DisplayLive do
           else
             nil
           end
+
         # IO.inspect(file, label: "Display File")
         {:ok, assign(socket, file: file, manifest_url: manifest_url)}
     end
@@ -42,9 +43,11 @@ defmodule KoshWeb.DisplayLive do
   defp fetch_item_uuid(handle_url) do
     require Logger
     Logger.debug("fetch_item_uuid called with handle_url: #{inspect(handle_url)}")
+
     case HTTPoison.get(handle_url, [], follow_redirect: false) do
       {:ok, %HTTPoison.Response{status_code: code, headers: headers}} when code in [301, 302] ->
         Logger.debug("Received redirect response with status code: #{code}")
+
         case List.keyfind(headers, "Location", 0) do
           {"Location", location} ->
             Logger.debug("Found Location header: #{inspect(location)}")
@@ -63,22 +66,28 @@ defmodule KoshWeb.DisplayLive do
               [uuid] ->
                 Logger.debug("Extracted UUID: #{uuid}")
                 uuid
+
               _ ->
                 Logger.error("Could not extract UUID from redirect_url: #{inspect(redirect_url)}")
                 nil
             end
 
           _ ->
-            Logger.error("Location header not found in redirect response headers: #{inspect(headers)}")
+            Logger.error(
+              "Location header not found in redirect response headers: #{inspect(headers)}"
+            )
+
             nil
         end
 
       {:ok, %HTTPoison.Response{status_code: code}} ->
         Logger.error("Unexpected status code received: #{code}")
         nil
+
       {:error, reason} ->
         Logger.error("HTTPoison.get failed: #{inspect(reason)}")
         nil
+
       other ->
         Logger.error("Unexpected response from HTTPoison.get: #{inspect(other)}")
         nil
@@ -133,6 +142,57 @@ defmodule KoshWeb.DisplayLive do
               <p class="text-secondary-purple"><%= @file.title %></p>
             </div>
           </div>
+          <!-- Collection Section -->
+          <div>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Collection</h2>
+            <div class="bg-gray-100 rounded p-4">
+              <p class="text-secondary-purple"><%= @file.collection.title %></p>
+            </div>
+          </div>
+          <!-- Identifier Section -->
+          <div>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Identifier</h2>
+            <div class="bg-gray-100 rounded p-4">
+              <%= if @file.unitid && @file.unitid.id do %>
+                <p class="text-secondary-purple"><%= @file.unitid.id %></p>
+              <% else %>
+                <p class="text-gray-500">No identifier available</p>
+              <% end %>
+            </div>
+          </div>
+          <!-- Series Section -->
+          <div>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Series</h2>
+            <div class="bg-gray-100 rounded p-4">
+              <%= if @file.series do %>
+                <p class="text-secondary-purple"><%= @file.series.title %></p>
+              <% else %>
+                <p class="text-gray-500">No series</p>
+              <% end %>
+            </div>
+          </div>
+          <!-- Sub-series Section -->
+          <div>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Sub-series</h2>
+            <div class="bg-gray-100 rounded p-4">
+              <%= if @file.sub_series do %>
+                <p class="text-secondary-purple"><%= @file.sub_series.title %></p>
+              <% else %>
+                <p class="text-gray-500">No sub-series</p>
+              <% end %>
+            </div>
+          </div>
+          <!-- Date(s) Section -->
+          <div>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Date(s)</h2>
+            <div class="bg-gray-100 rounded p-4">
+              <%= if @file.unitdate && @file.unitdate.content do %>
+                <p class="text-secondary-purple"><%= @file.unitdate.content %></p>
+              <% else %>
+                <p class="text-gray-500">No date available</p>
+              <% end %>
+            </div>
+          </div>
           <!-- Subject(s) Section -->
           <div>
             <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Subject(s)</h2>
@@ -180,54 +240,22 @@ defmodule KoshWeb.DisplayLive do
               <% end %>
             </div>
           </div>
-          <!-- Collection Section -->
+          <!-- Agent(s) Section -->
           <div>
-            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Collection</h2>
-            <div class="bg-gray-100 rounded p-4">
-              <p class="text-secondary-purple"><%= @file.collection.title %></p>
-            </div>
-          </div>
-          <!-- Series Section -->
-          <div>
-            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Series</h2>
-            <div class="bg-gray-100 rounded p-4">
-              <%= if @file.series do %>
-                <p class="text-secondary-purple"><%= @file.series.title %></p>
-              <% else %>
-                <p class="text-gray-500">No series</p>
-              <% end %>
-            </div>
-          </div>
-          <!-- Sub-series Section -->
-          <div>
-            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Sub-series</h2>
-            <div class="bg-gray-100 rounded p-4">
-              <%= if @file.sub_series do %>
-                <p class="text-secondary-purple"><%= @file.sub_series.title %></p>
-              <% else %>
-                <p class="text-gray-500">No sub-series</p>
-              <% end %>
-            </div>
-          </div>
-          <!-- Date(s) Section -->
-          <div>
-            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Date(s)</h2>
-            <div class="bg-gray-100 rounded p-4">
-              <%= if @file.unitdate && @file.unitdate.content do %>
-                <p class="text-secondary-purple"><%= @file.unitdate.content %></p>
-              <% else %>
-                <p class="text-gray-500">No date available</p>
-              <% end %>
-            </div>
-          </div>
-          <!-- Identifier Section -->
-          <div>
-            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Identifier</h2>
-            <div class="bg-gray-100 rounded p-4">
-              <%= if @file.unitid && @file.unitid.id do %>
-                <p class="text-secondary-purple"><%= @file.unitid.id %></p>
-              <% else %>
-                <p class="text-gray-500">No identifier available</p>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Agents Annotations</h2>
+            <div class="space-y-2 max-h-60 overflow-y-auto">
+              <%= if length(@file.accepted_agent_annotations) > 0 do %>
+                <%= for annotation <- @file.accepted_agent_annotations do %>
+                  <%= for agent <- annotation.agents do %>
+                    <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
+                      <%= agent.name %>
+                    </p>
+                  <% end %>
+                <% end %>
+                <% else %>
+                <div class="bg-gray-100 rounded p-4">
+                  <p class="text-gray-500">No Agents</p>
+                </div>
               <% end %>
             </div>
           </div>
