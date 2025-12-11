@@ -23,7 +23,6 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
       assign(socket,
         form: form,
         subjects_options: [],
-        curr_text: "",
         agents_curr_text: "",
         agents_no_suggestions: false,
         agents_custom_form_options: [],
@@ -71,7 +70,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
     subjects = EAD.search_subjects(text)
     options = Enum.map(subjects, fn subject -> {subject.content, subject.id} end)
 
-    socket = assign(socket, subjects_options: options, curr_text: text)
+    socket = assign(socket, subjects_options: options)
 
     display_options =
       case options do
@@ -216,15 +215,18 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
       end)
       |> Enum.map(fn %{name: name, types: types} -> %{name: name, types: types} end)
 
-      IO.inspect(parsed_customs, label: "PARSED CUSTOMS: ")
+    IO.inspect(parsed_customs, label: "PARSED CUSTOMS: ")
 
     missing_types_custom =
       parsed_customs
       |> Enum.find(fn %{name: name, types: types} -> name != "" and types == [] end)
 
     if missing_types_custom do
-      send(self(), {:flash, :error,
-        "Please select at least one type for custom agent \"#{missing_types_custom.name}\""})
+      send(
+        self(),
+        {:flash, :error,
+         "Please select at least one type for custom agent \"#{missing_types_custom.name}\""}
+      )
 
       {:noreply, socket}
     else
@@ -441,7 +443,8 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
                 {{:ok, "Subjects annotation created successfully"}, annotation}
 
               {:error, changeset} ->
-                {{:error, "Failed to create subjects annotation: #{inspect(changeset.errors)}"}, nil}
+                {{:error, "Failed to create subjects annotation: #{inspect(changeset.errors)}"},
+                 nil}
             end
           else
             {nil, nil}
@@ -460,8 +463,8 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
                 {{:ok, "Description annotation created successfully"}, annotation}
 
               {:error, changeset} ->
-                {{:error, "Failed to create description annotation: #{inspect(changeset.errors)}"},
-                 nil}
+                {{:error,
+                  "Failed to create description annotation: #{inspect(changeset.errors)}"}, nil}
             end
           else
             {nil, nil}
@@ -588,6 +591,10 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
     end
   end
 
+  defp extract_label_from_extra_option(option) do
+    "Show more for " <> text = option
+    text
+  end
 
   @impl true
   def render(assigns) do
@@ -633,7 +640,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
                     class="block w-full h-full p-2 text-primary-purple font-bold hover:text-secondary-purple cursor-pointer"
                     onmousedown={"
                  event.preventDefault();
-                 window.open('/search-subjects?q=#{@curr_text}', '_blank');
+                 window.open('/search-subjects?q=#{extract_label_from_extra_option(option.label)}', '_blank');
                  "}
                   >
                     <%= option.label %>
