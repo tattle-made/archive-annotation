@@ -15,6 +15,7 @@ kosh-*.tar
 /priv/static/uploads
 /priv/static/subjects_seed/
 /priv/static/lcnaf_seed/
+/priv/static/emotions_seed/
 npm-debug.log
 /assets/node_modules/
 env.prod

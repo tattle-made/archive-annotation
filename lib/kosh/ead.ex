@@ -1,5 +1,5 @@
 defmodule Kosh.EAD do
-  alias Kosh.EAD.{Subject, XML.Saxmap, Collection, Series, SubSeries, File, Agent, LcnafType}
+  alias Kosh.EAD.{Subject, XML.Saxmap, Collection, Series, SubSeries, File, Agent, LcnafType, DefinedEmotion}
   alias Kosh.Repo
   import Ecto.Query
   alias Kosh.EAD.XML.SaxyUpdateEadHandler
@@ -8,6 +8,21 @@ defmodule Kosh.EAD do
   @moduledoc """
   Context for handling EAD documents
   """
+
+  # DefinedEmotion functions
+  @doc """
+  Lists all defined emotions in the system.
+
+  ## Examples
+      iex> list_defined_emotions()
+      [%Kosh.EAD.DefinedEmotion{}, ...]
+  """
+  @spec list_defined_emotions() :: [%Kosh.EAD.DefinedEmotion{}]
+  def list_defined_emotions do
+    emotions = Repo.all(DefinedEmotion)
+    IO.inspect(emotions, label: "Loaded emotions:")
+    emotions
+  end
 
   # Collection functions
   @spec create_collection(map()) :: {:ok, struct()} | {:error, Ecto.Changeset.t()}

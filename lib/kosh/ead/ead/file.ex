@@ -47,6 +47,9 @@ defmodule Kosh.EAD.File do
              where: [status: :accepted],
              foreign_key: :file_id
 
+    has_many :emotion_annotations, Kosh.Annotations.EmotionAnnotation,
+             foreign_key: :file_id
+
     # many_to_many :annotated_subjects, Kosh.EAD.Subject,
     #   join_through: "files_subjects",
     #   on_delete: :nothing,
