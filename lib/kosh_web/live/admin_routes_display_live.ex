@@ -36,6 +36,13 @@ defmodule KoshWeb.AdminRoutesDisplayLive do
           <img src="/images/redirect-color-primary.svg" alt="logo">
         </.link>
         <.link
+          navigate={~p"/admin/sync"}
+          class="flex items-center text-secondary-purple font-semibold hover:underline"
+        >
+          <span>Sync the existing Collection from OAI Endpoint</span>
+          <img src="/images/redirect-color-primary.svg" alt="logo">
+        </.link>
+        <.link
           navigate={~p"/admin/export-ead"}
           class="flex items-center text-secondary-purple font-semibold hover:underline"
         >
