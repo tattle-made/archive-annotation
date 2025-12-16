@@ -82,7 +82,7 @@ defmodule Kosh.EAD do
   end
 
   @doc """
-  Ouputs a collection with pre-loaded files, and each file has all the accepted annotations lists, and
+  Outputs a collection with pre-loaded files, and each file has all the accepted annotations lists, and
   each annotation is also preloaded with subjects and agents depending on the annotation.
 
   Collection can be get through the id (postgres table id), or the uri.
@@ -112,7 +112,10 @@ defmodule Kosh.EAD do
   end
 
   def get_collection_with_detailed_files(:id, id) when is_binary(id) do
-    get_collection_with_detailed_files(:id, String.to_integer(id))
+    case Integer.parse(id) do
+      {parsed_id, _} -> get_collection_with_detailed_files(:id, parsed_id)
+      :error -> nil
+    end
   end
 
   def get_collection_with_detailed_files(:id, id) do
