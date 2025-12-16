@@ -56,12 +56,13 @@ defmodule Kosh.Annotations do
              |> Enum.flat_map(fn attrs ->
                cond do
                  is_map(attrs) ->
-                  name =
-                    attrs["name"] || attrs[:name] || ""
-                    |> case do
-                      v when is_binary(v) -> String.trim(v)
-                      v -> v |> to_string() |> String.trim()
-                    end
+                   name =
+                     attrs["name"] || attrs[:name] ||
+                       ""
+                       |> case do
+                         v when is_binary(v) -> String.trim(v)
+                         v -> v |> to_string() |> String.trim()
+                       end
 
                    types =
                      (attrs["types"] || attrs[:types] || [])
@@ -80,11 +81,13 @@ defmodule Kosh.Annotations do
 
                      [
                        Repo.get_by(Agent, normalized_name: normalized) ||
-                         Repo.insert!(Agent.changeset(%Agent{}, %{
-                           name: name,
-                           source: "mlk",
-                           type_ids: types
-                         }))
+                         Repo.insert!(
+                           Agent.changeset(%Agent{}, %{
+                             name: name,
+                             source: "mlk",
+                             type_ids: types
+                           })
+                         )
                      ]
                    end
 
@@ -103,7 +106,11 @@ defmodule Kosh.Annotations do
            else
              {:ok, updated_annotation} =
                annotation
-               |> AgentAnnotation.changeset(%{status: :accepted, admin_id: admin_id, new_agents: []})
+               |> AgentAnnotation.changeset(%{
+                 status: :accepted,
+                 admin_id: admin_id,
+                 new_agents: []
+               })
                |> Ecto.Changeset.put_assoc(:agents, all_agents)
                |> Repo.update()
 
@@ -321,10 +328,11 @@ defmodule Kosh.Annotations do
   Returns a map of emotion_id to %{high: count, low: count, total: count}
   """
   def get_emotion_counts(file_id) do
-    query = from ea in EmotionAnnotation,
-      where: ea.file_id == ^file_id,
-      group_by: [ea.defined_emotion_id, ea.weight],
-      select: {ea.defined_emotion_id, ea.weight, count(ea.id)}
+    query =
+      from ea in EmotionAnnotation,
+        where: ea.file_id == ^file_id,
+        group_by: [ea.defined_emotion_id, ea.weight],
+        select: {ea.defined_emotion_id, ea.weight, count(ea.id)}
 
     Repo.all(query)
     |> Enum.reduce(%{}, fn {emotion_id, weight, count}, acc ->
@@ -340,36 +348,40 @@ defmodule Kosh.Annotations do
   If the user already has a vote for this emotion, it will be updated or removed.
   Returns {:ok, annotation} or {:error, changeset}
   """
-  def toggle_emotion_annotation(file_id, user_id, emotion_id, weight) when is_binary(emotion_id) do
+  def toggle_emotion_annotation(file_id, user_id, emotion_id, weight)
+      when is_binary(emotion_id) do
     toggle_emotion_annotation(file_id, user_id, String.to_integer(emotion_id), weight)
   end
 
   def toggle_emotion_annotation(file_id, user_id, emotion_id, weight) do
-    Repo.transaction(fn ->
-      case get_emotion_annotation(file_id, user_id, emotion_id) do
-        nil ->
-          # Create new annotation
-          %EmotionAnnotation{}
-          |> EmotionAnnotation.changeset(%{
-            file_id: file_id,
-            user_id: user_id,
-            defined_emotion_id: emotion_id,
-            weight: weight
-          })
-          |> Repo.insert()
+    case Repo.transaction(fn ->
+           case get_emotion_annotation(file_id, user_id, emotion_id) do
+             nil ->
+               # Create new annotation
+               %EmotionAnnotation{}
+               |> EmotionAnnotation.changeset(%{
+                 file_id: file_id,
+                 user_id: user_id,
+                 defined_emotion_id: emotion_id,
+                 weight: weight
+               })
+               |> Repo.insert()
 
-        annotation ->
-          if annotation.weight == weight do
-            # Toggle off if clicking the same weight
-            Repo.delete(annotation)
-          else
-            # Update to new weight
-            annotation
-            |> EmotionAnnotation.changeset(%{weight: weight})
-            |> Repo.update()
-          end
-      end
-    end)
+             annotation ->
+               if annotation.weight == weight do
+                 # Toggle off if clicking the same weight
+                 Repo.delete(annotation)
+               else
+                 # Update to new weight
+                 annotation
+                 |> EmotionAnnotation.changeset(%{weight: weight})
+                 |> Repo.update()
+               end
+           end
+         end) do
+      {:ok, result} -> result
+      {:error, error} -> {:error, error}
+    end
   end
 
   @doc """
@@ -378,9 +390,10 @@ defmodule Kosh.Annotations do
   def get_emotion_annotation(file_id, user_id, emotion_id) do
     Repo.one(
       from ea in EmotionAnnotation,
-      where: ea.file_id == ^file_id and
-             ea.user_id == ^user_id and
-             ea.defined_emotion_id == ^emotion_id
+        where:
+          ea.file_id == ^file_id and
+            ea.user_id == ^user_id and
+            ea.defined_emotion_id == ^emotion_id
     )
   end
 
@@ -390,8 +403,8 @@ defmodule Kosh.Annotations do
   def list_user_emotion_annotations(file_id, user_id) do
     Repo.all(
       from ea in EmotionAnnotation,
-      where: ea.file_id == ^file_id and ea.user_id == ^user_id,
-      preload: :defined_emotion
+        where: ea.file_id == ^file_id and ea.user_id == ^user_id,
+        preload: :defined_emotion
     )
     |> Enum.reduce(%{}, fn annotation, acc ->
       Map.put(acc, annotation.defined_emotion_id, annotation)

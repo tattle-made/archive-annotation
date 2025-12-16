@@ -20,7 +20,6 @@ defmodule Kosh.EAD do
   @spec list_defined_emotions() :: [%Kosh.EAD.DefinedEmotion{}]
   def list_defined_emotions do
     emotions = Repo.all(DefinedEmotion)
-    IO.inspect(emotions, label: "Loaded emotions:")
     emotions
   end
 

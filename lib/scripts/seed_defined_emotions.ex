@@ -13,11 +13,19 @@ defmodule Scripts.SeedDefinedEmotions do
 
     with raw_data <- File.read!(file_path),
          {:ok, emotions} <- Jason.decode(raw_data) do
-      for emotion <- emotions do
-        %DefinedEmotion{}
-        |> DefinedEmotion.changeset(%{name: emotion["emotion"], lcsh_url: emotion["source"]})
-        |> Repo.insert()
-      end
+      Enum.map(emotions, fn emotion ->
+        attrs = %{name: emotion["emotion"], lcsh_url: emotion["source"]}
+
+        case Repo.get_by(DefinedEmotion, name: DefinedEmotion.normalize_name(attrs.name)) do
+          nil ->
+            %DefinedEmotion{}
+            |> DefinedEmotion.changeset(attrs)
+            |> Repo.insert()
+
+          existing ->
+            {:ok, existing}
+        end
+      end)
     else
       error -> IO.inspect(error, label: "Something went wrong while inserting defined emotions")
     end
