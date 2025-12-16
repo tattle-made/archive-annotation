@@ -50,28 +50,28 @@
           } />
           <span>Add Annotations</span>
         </button>
-        <%!-- <button
-          phx-click="show_agents_form"
-          phx-target={@myself}
-          class={[
-            "w-full flex items-center justify-start space-x-1 text-caption-14 2xl:text-base py-[14px] px-1 2xl:px-2",
-            if @render_index == 2 do
-              "rounded-lg text-secondary-purple bg-gradient-to-r from-[#EEEFF5] to-[#FFFFFF]"
-            else
-              "text-primary-grey hover:text-secondary-purple"
-            end
-          ]}
-        >
-          <image src={
-            if @render_index == 2 do
-              "/images/add-annotation-icon-colored.svg"
-            else
-              "/images/add-annotation-icon.svg"
-            end
-          } />
-          <span>Add Agent Annotations</span>
-        </button> --%>
       <% end %>
+      <button
+        phx-click="show_emotion_section"
+        phx-target={@myself}
+        class={[
+          "w-full flex items-center justify-start space-x-1 text-caption-14 2xl:text-base py-[14px] px-2",
+          if @render_index == 2 do
+            "rounded-lg text-secondary-purple bg-gradient-to-r from-[#EEEFF5] to-[#FFFFFF]"
+          else
+            "text-primary-grey hover:text-secondary-purple"
+          end
+        ]}
+      >
+        <image src={
+          if @render_index == 2 do
+            "/images/add-annotation-icon-colored.svg"
+          else
+            "/images/add-annotation-icon.svg"
+          end
+        } />
+        <span>Emotion Annotations</span>
+      </button>
       <%= if @current_user do %>
         <div class="space-y-2 pt-8 2xl:text-body-md-18">
           <%= if @total_user_annotations == 0 do %>
@@ -129,7 +129,13 @@
           file={@file}
           current_user={@current_user}
         />
-
+      <% 2-> %>
+        <.live_component
+          module={KoshWeb.Components.AnnotationSection.EmotionAnnotationSection}
+          id="emotion-annotations"
+          file={@file}
+          current_user={@current_user}
+        />
     <% end %>
   </div>
 </div>

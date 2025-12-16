@@ -62,9 +62,18 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationSectionWrapper do
 
   @impl true
   def handle_event("show_form", _unsigned_params, socket) do
-    socket = assign(socket, render_annotation_form: true, render_index: 1)
-    {:noreply, socket}
+    if socket.assigns.current_user do
+      socket = assign(socket, render_annotation_form: true, render_index: 1)
+      {:noreply, socket}
+    else
+      {:noreply, redirect(socket, to: "/users/log_in")}
+    end
   end
 
+  @impl true
+  def handle_event("show_emotion_section", _unsigned_params, socket) do
+    socket = assign(socket, render_annotation_form: false, render_index: 2)
+    {:noreply, socket}
+  end
 
 end
