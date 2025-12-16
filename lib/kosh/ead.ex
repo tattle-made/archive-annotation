@@ -82,6 +82,57 @@ defmodule Kosh.EAD do
   end
 
   @doc """
+  Outputs a collection with pre-loaded files, and each file has all the accepted annotations lists, and
+  each annotation is also preloaded with subjects and agents depending on the annotation.
+
+  Collection can be get through the id (postgres table id), or the uri.
+
+  Example:
+  - To get with ID:
+  get_collection_with_detailed_files(:id, 16)
+
+  - To get with uri
+  get_collection_with_detailed_files(:uri, "/repositories/2/resources/28")
+
+  """
+  def get_collection_with_detailed_files(:uri, uri) do
+    from(c in Collection,
+      where: c.unitid["uri"] == ^uri
+    )
+    |> Repo.one()
+    |> Repo.preload([
+      :subjects,
+      files: [
+        :accepted_description_annotations,
+        [accepted_subjects_annotations: [:subjects]],
+        [accepted_agent_annotations: [:agents]],
+        :emotion_annotations
+      ]
+    ])
+  end
+
+  def get_collection_with_detailed_files(:id, id) when is_binary(id) do
+    case Integer.parse(id) do
+      {parsed_id, _} -> get_collection_with_detailed_files(:id, parsed_id)
+      :error -> nil
+    end
+  end
+
+  def get_collection_with_detailed_files(:id, id) do
+    Collection
+    |> Repo.get(id)
+    |> Repo.preload([
+      :subjects,
+      files: [
+        :accepted_description_annotations,
+        [accepted_subjects_annotations: [:subjects]],
+        [accepted_agent_annotations: [:agents]],
+        :emotion_annotations
+      ]
+    ])
+  end
+
+  @doc """
   Exports a collection with its approved annotations.
 
   ## Parameters
