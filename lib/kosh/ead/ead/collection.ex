@@ -16,7 +16,7 @@ defmodule Kosh.EAD.Collection do
 
     has_many :series, Kosh.EAD.Series
     has_many :files, Kosh.EAD.File
-    embeds_one :unitdate, Kosh.EAD.UnitDate, on_replace: :update
+    embeds_one :unitdate, Kosh.EAD.UnitDate, on_replace: :delete
     embeds_one :unitid, Kosh.EAD.UnitId, on_replace: :update
 
     timestamps()
