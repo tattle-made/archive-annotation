@@ -3,7 +3,6 @@ defmodule Kosh.EAD.XML.Saxmap do
   Parse xml file into Elixir map using saxmap
   """
   alias SAXMap
-  alias Kosh.EAD.XML.LeslieMap
 
   def parse(doc) do
     SAXMap.from_string(doc, ignore_attribute: false)
@@ -152,6 +151,7 @@ defmodule Kosh.EAD.XML.Saxmap do
         "xlink:title" => title,
         "xlink:type" => type
       } ->
+        daolocs = List.wrap(daolocs)
         %{
           xlink_title: title,
           xlink_type: type,
@@ -182,9 +182,4 @@ defmodule Kosh.EAD.XML.Saxmap do
     end
   end
 
-  def getmap() do
-    map = LeslieMap.get_map()
-    ans = extract_contents_from_processed_map(map)
-    IO.inspect(ans, label: "ans", limit: :infinity)
-  end
 end

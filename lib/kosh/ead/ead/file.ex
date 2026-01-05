@@ -16,9 +16,13 @@ defmodule Kosh.EAD.File do
     #     p: ""
     #   }
 
-    embeds_one :unitdate, Kosh.EAD.UnitDate, on_replace: :update
+    # On replace: delete would replace the entire existing value with the new one. On replace: update would try to find the difference between old and new values and update the existing value.
+    # In case of updating the fields like dao and unitdate, everything works as expected with :update on doing Repo.update(changeset), expect for the case when the object is not present (or deleted)
+    # in the new attributes. The on_replace: :update doesn't make any changes to the existing value. Therefore, using on_replace: :delete makes more sense, as it completely replaces the old value with new, so i fthere is
+    # empty object or nil, it just resets the value.
+    embeds_one :unitdate, Kosh.EAD.UnitDate, on_replace: :delete
     embeds_one :unitid, Kosh.EAD.UnitId, on_replace: :update
-    embeds_one :dao, Kosh.EAD.Dao, on_replace: :update
+    embeds_one :dao, Kosh.EAD.Dao, on_replace: :delete
 
     belongs_to :collection, Kosh.EAD.Collection
     belongs_to :series, Kosh.EAD.Series
@@ -47,8 +51,7 @@ defmodule Kosh.EAD.File do
              where: [status: :accepted],
              foreign_key: :file_id
 
-    has_many :emotion_annotations, Kosh.Annotations.EmotionAnnotation,
-             foreign_key: :file_id
+    has_many :emotion_annotations, Kosh.Annotations.EmotionAnnotation, foreign_key: :file_id
 
     # many_to_many :annotated_subjects, Kosh.EAD.Subject,
     #   join_through: "files_subjects",
