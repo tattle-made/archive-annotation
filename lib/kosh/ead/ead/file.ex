@@ -76,7 +76,6 @@ defmodule Kosh.EAD.File do
     |> cast_embed(:unitdate)
     |> cast_embed(:unitid)
     |> cast_embed(:dao)
-    # |> ensure_dao_not_empty(attrs)
     |> cast_assoc(:subjects, with: &Kosh.EAD.Subject.changeset/2)
     |> validate_required([:title, :collection_id, :uri])
     |> then(fn cs ->
@@ -89,11 +88,4 @@ defmodule Kosh.EAD.File do
       end)
     end)
   end
-
-  defp ensure_dao_not_empty(changeset, %{dao: dao_params}) when dao_params == %{} do
-    # This forces Ecto to overwrite the existing DAO with an "empty" struct
-    put_embed(changeset, :dao, %Kosh.EAD.Dao{})
-  end
-
-  defp ensure_dao_not_empty(changeset, _attrs), do: changeset
 end
