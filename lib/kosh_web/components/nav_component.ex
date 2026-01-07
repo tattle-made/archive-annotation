@@ -21,12 +21,12 @@ defmodule KoshWeb.NavComponent do
     <div>
       <% nav_items = [
         {"About", ~p"/about"},
-        {"Ethics-Law", ~p"/ethics-law"},
-        {"Milli Sessions", ~p"/milli-sessions"},
+        # {"Ethics-Law", ~p"/ethics-law"},
+        # {"Milli Sessions", ~p"/milli-sessions"},
         {"Annotation Tool", ~p"/"},
-        {"Support", ~p"/support"},
-        {"Contact", ~p"/contact"},
-        {"Join Us", ~p"/join-us"}
+        # {"Support", ~p"/support"},
+        # {"Contact", ~p"/contact"},
+        # {"Join Us", ~p"/join-us"}
       ] %>
       <% nav_items_account_loggedin = [
         {"MY ACCOUNT", ~p"/users/settings"},

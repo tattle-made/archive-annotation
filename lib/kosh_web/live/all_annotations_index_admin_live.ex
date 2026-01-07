@@ -1,37 +1,63 @@
 defmodule KoshWeb.AllAnnotationsIndexAdminLive do
   alias Kosh.Notifications
-  alias Kosh.Notifications.Notification
   use KoshWeb, :live_view
   import KoshWeb.Components.DescriptionAnnotationCard
   import KoshWeb.Components.SubjectAnnotationCard
   import KoshWeb.Components.AgentAnnotationCard
+  alias Kosh.Annotations.DescriptionAnnotation
+  alias Kosh.Annotations.SubjectsAnnotation
+  alias Kosh.Annotations.AgentAnnotation
 
   alias Kosh.Annotations
 
   def mount(_params, _session, socket) do
-    {submitted_subjects, submitted_descriptions, submitted_agents} = {
-      Annotations.list_subject_annotations(:pending),
-      Annotations.list_description_annotations(:pending),
-      Annotations.list_agent_annotations(:pending)
-    }
+    {submitted_subjects, submitted_descriptions, submitted_agents} =
+      Annotations.list_all_annotations(:pending)
 
-    {approved_subjects, approved_descriptions, approved_agents} = {
-      Annotations.list_subject_annotations(:accepted),
-      Annotations.list_description_annotations(:accepted),
-      Annotations.list_agent_annotations(:accepted)
-    }
+    combined_submitted_sorted = submitted_subjects ++ submitted_descriptions ++ submitted_agents
 
-    # IO.inspect(submitted_subjects, label: "submitted_subjects")
-    # IO.inspect(submitted_descriptions)
+    combined_submitted_sorted =
+      if length(combined_submitted_sorted) > 0 do
+        combined_submitted_sorted
+        |> Enum.sort_by(
+          fn item ->
+            case item.inserted_at do
+              %DateTime{} = dt -> dt
+              %NaiveDateTime{} = ndt -> DateTime.from_naive!(ndt, "Etc/UTC")
+            end
+          end,
+          {:desc, DateTime}
+        )
+      else
+        combined_submitted_sorted
+      end
+
+    {approved_subjects, approved_descriptions, approved_agents} =
+      Annotations.list_all_annotations(:accepted)
+
+    combined_approved_sorted = approved_subjects ++ approved_descriptions ++ approved_agents
+
+    # Sort according to "updated_at", so the recently approved annotation appears first
+    combined_approved_sorted =
+      if length(combined_approved_sorted) > 0 do
+        combined_approved_sorted
+        |> Enum.sort_by(
+          fn item ->
+            case item.updated_at do
+              %DateTime{} = dt -> dt
+              %NaiveDateTime{} = ndt -> DateTime.from_naive!(ndt, "Etc/UTC")
+            end
+          end,
+          {:desc, DateTime}
+        )
+      else
+        combined_approved_sorted
+      end
 
     socket =
       socket
-      |> assign(:submitted_subjects, submitted_subjects)
-      |> assign(:submitted_descriptions, submitted_descriptions)
-      |> assign(:submitted_agents, submitted_agents)
-      |> assign(:approved_subjects, approved_subjects)
-      |> assign(:approved_descriptions, approved_descriptions)
-      |> assign(:approved_agents, approved_agents)
+      |> assign(:combined_submitted_sorted, combined_submitted_sorted)
+      |> assign(:combined_approved_sorted, combined_approved_sorted)
 
     {:ok, socket}
   end
@@ -219,6 +245,7 @@ defmodule KoshWeb.AllAnnotationsIndexAdminLive do
          {:ok, _} <- Annotations.approve_agent_annotation(id, socket.assigns.current_user.id) do
       Task.start(fn ->
         EmailNotifications.deliver_approved_annotation_notification(annotation.user, annotation)
+
         Notifications.notify_user_about_annotation_status(
           annotation,
           socket.assigns.current_user.id,
@@ -264,6 +291,7 @@ defmodule KoshWeb.AllAnnotationsIndexAdminLive do
          {:ok, _} <- Annotations.delete_agent_annotation(id) do
       Task.start(fn ->
         EmailNotifications.deliver_rejected_annotation_notification(annotation.user, annotation)
+
         Notifications.notify_user_about_annotation_status(
           annotation,
           socket.assigns.current_user.id,

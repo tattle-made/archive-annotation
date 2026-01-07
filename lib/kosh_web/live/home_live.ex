@@ -87,7 +87,7 @@ defmodule KoshWeb.HomeLive do
           </p>
         </div>
       </div>
-
+      <!--
       <div class="bg-secondary-purple py-8 sm:py-10 xl:py-14">
         <p class="text-white text-body-md-18 sm:text-body-lg-24">An object has many lives.</p>
         <p class="text-[#E9FFB1] text-body-lg-24 sm:text-heading-28 xl:text-display-40 sm:w-full xl:w-[60%] mt-2">
@@ -109,8 +109,8 @@ defmodule KoshWeb.HomeLive do
               Shripad and Nandini’s Papers of Narmada Struggle
             </p>
           </div>
-        </div>
-      </div>
+          </div>
+          </div> -->
     </div>
     """
   end
