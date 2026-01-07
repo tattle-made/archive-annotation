@@ -216,6 +216,11 @@ defmodule KoshWeb.Router do
     end
   end
 
+  scope "/", KoshWeb do
+    pipe_through [:api]
+    get "/oai", OaiController, :index
+  end
+
   def route_info(method, path, host) do
     Phoenix.Router.route_info(__MODULE__, method, path, host)
   end

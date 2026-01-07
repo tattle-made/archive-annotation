@@ -199,6 +199,60 @@ defmodule Kosh.EAD do
   def export_collection(_invalid) do
     {:error, "Invalid collection ID type"}
   end
+@doc """
+To generate export XML for the OAI endpoint. Similar to the above function, but this does not throw any errors
+even if there are 0 annotations for a collection.
+"""
+  @spec export_collection_oai(integer() | String.t()) :: {:ok, any()} | {:error, String.t()}
+  def export_collection_oai(collection_id) when is_binary(collection_id) do
+    case Integer.parse(collection_id) do
+      {id, _} -> export_collection_oai(id)
+      :error -> {:error, "Invalid collection ID"}
+    end
+  end
+
+  def export_collection_oai(collection_id) when is_integer(collection_id) do
+    try do
+      collection = get_collection(collection_id)
+
+      if is_nil(collection) do
+        {:error, "Collection not found"}
+      else
+        case list_files_with_approved_annotations(collection_id) do
+          # {:ok, []} ->
+          #   {:error, "The Collection has no annotations"}
+
+          {:ok, files_with_annotations} ->
+            file_path = Path.join([:code.priv_dir(:kosh), "static", collection.upload_path])
+
+            if not Elixir.File.exists?(file_path) do
+              {:error, "Collection file not found at path: #{file_path}"}
+            else
+              SaxyUpdateEadHandler.run_stream_read(file_path, files_with_annotations, include_xml_declaration: false)
+            end
+
+          {:error, reason} ->
+            {:error, "Failed to get files with annotations: #{reason}"}
+        end
+      end
+    rescue
+      e in Ecto.QueryError ->
+        {:error, "Database query error: #{inspect(e)}"}
+
+      e in Postgrex.Error ->
+        {:error, "Database error: #{inspect(e)}"}
+
+      e in ArgumentError ->
+        {:error, "Invalid argument: #{inspect(e)}"}
+
+      e ->
+        {:error, "Unexpected error: #{inspect(e)}"}
+    end
+  end
+
+  def export_collection_oai(_invalid) do
+    {:error, "Invalid collection ID type"}
+  end
 
   # Series functions
   @spec create_series(map()) :: {:ok, struct()} | {:error, Ecto.Changeset.t()}
