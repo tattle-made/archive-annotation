@@ -37,11 +37,32 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
             in_file_unitid: false,
             in_scopecontent: false,
             in_controlaccess: false,
-            in_subject_tag: false
+            in_subject_tag: false,
+            include_xml_declaration: true,
+            in_ead?: false
 
   @impl true
   def handle_event(:start_document, prolog, state) do
-    write(state, "<?xml#{format_attrs(Enum.reverse(prolog))}?>\n")
+    if state.include_xml_declaration do
+      write(state, "<?xml#{format_attrs(Enum.reverse(prolog))}?>\n")
+    end
+
+    {:ok, state}
+  end
+
+  # If any new elemet comes before ead, ignore it
+  @impl true
+  def handle_event(:start_element, {name, attrs}, state)
+      when name != "ead" and not state.in_ead? do
+    {:ok, state}
+  end
+
+  # When ead starts, set the in_ead? flag to true
+  @impl true
+  def handle_event(:start_element, {name, attrs}, state)
+      when name == "ead" do
+    state = %{state | in_ead?: true}
+    write(state, "<#{name}#{format_attrs(attrs)}>")
     {:ok, state}
   end
 
@@ -131,6 +152,12 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     {:ok, state}
   end
 
+  # When not inside EAD, ignore writing characters
+  @impl true
+  def handle_event(:characters, _chars, state) when not state.in_ead? do
+    {:ok, state}
+  end
+
   # On character data inside unitid INSIDE a file
   @impl true
   def handle_event(
@@ -188,6 +215,12 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     {:ok, state}
   end
 
+  # On CDATA: IGNORE when not inside ead
+  @impl true
+  def handle_event(:cdata, _data, state) when not state.in_ead? do
+    {:ok, state}
+  end
+
   # On CDATA: wrap and write
   @impl true
   def handle_event(:cdata, data, state) do
@@ -195,23 +228,40 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     {:ok, state}
   end
 
+  # If the end element is outside ead, ignore it
+  @impl true
+  def handle_event(:end_element, name, state)
+      when name != "ead" and not state.in_ead? do
+    {:ok, state}
+  end
+
+  # When the EAD is finished, set in_ead? to false to ignore all the tags after it
+  @impl true
+  def handle_event(:end_element, name, state)
+      when name == "ead" do
+    state = %{state | in_ead?: false}
+    write(state, "</#{name}>")
+    {:ok, state}
+  end
+
   # Reset everything when the file ends.
   @impl true
   def handle_event(:end_element, name, %{current_file: current_file} = state)
       when name == "c" do
-
     if not is_nil(current_file) do
       new_descs = get_in(state.current_file, [:description_annotations]) || []
 
       if(new_descs != []) do
-
         Enum.each(new_descs, fn desc ->
-          write(state, ~s(<scopecontent id="annnomilli-id_#{desc.id}_user_id_#{desc.user_id}_timestamp_#{desc.inserted_at}">))
+          write(
+            state,
+            ~s(<scopecontent id="annnomilli-id_#{desc.id}_user_id_#{desc.user_id}_timestamp_#{desc.inserted_at}">)
+          )
+
           write(state, "<head>annomilli-annotation</head>")
           write(state, "<p>#{xml_escape(desc.description)}</p>")
           write(state, "</scopecontent>")
         end)
-
       end
     end
 
@@ -416,16 +466,22 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
       iex> run_stream_read("/nonexistent.xml", [])
       {:error, "File not found: /nonexistent.xml"}
   """
-  @spec run_stream_read(Path.t(), list(map())) :: {:ok, String.t()} | {:error, String.t()}
-  def run_stream_read(xml_path, input) when is_binary(xml_path) do
+  @spec run_stream_read(Path.t(), list(map()), keyword()) ::
+          {:ok, String.t()} | {:error, String.t()}
+  def run_stream_read(path, input, opts \\ [])
+
+  def run_stream_read(xml_path, input, opts) when is_binary(xml_path) do
+    include = Keyword.get(opts, :include_xml_declaration, true)
+
     try do
       # Open a StringIO to capture output
       input_stream = File.stream!(xml_path, 2048)
       {:ok, out_device} = StringIO.open("")
-      initial_state = %__MODULE__{io: out_device, files: input}
+      initial_state = %__MODULE__{io: out_device, files: input, include_xml_declaration: include}
 
       # Parse the string in SAX mode, streaming events to this module
-      {:ok, final_state} = Saxy.parse_stream(input_stream, __MODULE__, initial_state, expand_entity: :never)
+      {:ok, final_state} =
+        Saxy.parse_stream(input_stream, __MODULE__, initial_state, expand_entity: :never)
 
       # Retrieve the accumulated output
       {_input, output} = StringIO.contents(final_state.io)
@@ -442,7 +498,7 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     end
   end
 
-  def run_stream_read(_invalid_path, _input) do
+  def run_stream_read(_invalid_path, _input, _opts) do
     {:error, "Invalid file path"}
   end
 end
