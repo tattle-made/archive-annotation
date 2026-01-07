@@ -103,8 +103,8 @@ defmodule KoshWeb.OaiController do
       <GetRecord>
         <record>
           <header>
-            <identifier>#{identifier}</identifier>
-            <datestamp>#{datestamp}</datestamp>
+            <identifier>#{escape_text(identifier)}</identifier>
+            <datestamp>#{escape_text(datestamp)}</datestamp>
           </header>
           <metadata>#{ead_xml}</metadata>
         </record>
