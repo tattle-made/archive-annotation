@@ -142,22 +142,40 @@ defmodule KoshWeb.DisplayLive do
               <p class="text-secondary-purple"><%= @file.title %></p>
             </div>
           </div>
+           <!-- Subject(s) Section -->
+          <div>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Subject(s)</h2>
+            <div class="space-y-2 max-h-60 overflow-y-auto">
+              <%= for subject <- @file.subjects do %>
+                <div class="bg-gray-100 rounded p-4">
+                  <p class="text-secondary-purple"><%= subject.content %></p>
+                </div>
+              <% end %>
+              <%= if Enum.empty?(@file.subjects) do %>
+                <div class="bg-gray-100 rounded p-4">
+                  <p class="text-gray-500">No subjects</p>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <!-- Description Section -->
+          <div class="">
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Description</h2>
+            <div class="max-h-60 overflow-y-auto">
+              <div class="bg-gray-100 rounded p-4 mb-1">
+                <%= if @file.description && length(@file.description) > 0 do %>
+                  <p class="text-secondary-purple"><%= Enum.join(@file.description, " ") %></p>
+                <% else %>
+                  <p class="text-gray-500">No description available</p>
+                <% end %>
+              </div>
+            </div>
+          </div>
           <!-- Collection Section -->
           <div>
             <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Collection</h2>
             <div class="bg-gray-100 rounded p-4">
               <p class="text-secondary-purple"><%= @file.collection.title %></p>
-            </div>
-          </div>
-          <!-- Identifier Section -->
-          <div>
-            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Identifier</h2>
-            <div class="bg-gray-100 rounded p-4">
-              <%= if @file.unitid && @file.unitid.id do %>
-                <p class="text-secondary-purple"><%= @file.unitid.id %></p>
-              <% else %>
-                <p class="text-gray-500">No identifier available</p>
-              <% end %>
             </div>
           </div>
           <!-- Series Section -->
@@ -193,69 +211,14 @@ defmodule KoshWeb.DisplayLive do
               <% end %>
             </div>
           </div>
-          <!-- Subject(s) Section -->
+         <!-- Identifier Section -->
           <div>
-            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Subject(s)</h2>
-            <div class="space-y-2 max-h-60 overflow-y-auto">
-              <%= for subject <- @file.subjects do %>
-                <div class="bg-gray-100 rounded p-4">
-                  <p class="text-secondary-purple"><%= subject.content %></p>
-                </div>
-              <% end %>
-              <%= if Enum.empty?(@file.subjects) do %>
-                <div class="bg-gray-100 rounded p-4">
-                  <p class="text-gray-500">No subjects</p>
-                </div>
-              <% end %>
-              <%= if length(@file.accepted_subjects_annotations) > 0 do %>
-                <h3 class="text-primary-purple text-md font-bold mb-2 px-2">Annotations</h3>
-                <%= for annotation <- @file.accepted_subjects_annotations do %>
-                  <%= for sub <- annotation.subjects do %>
-                    <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
-                      <%= sub.content %>
-                    </p>
-                  <% end %>
-                <% end %>
-              <% end %>
-            </div>
-          </div>
-          <!-- Description Section -->
-          <div class="">
-            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Description</h2>
-            <div class="max-h-60 overflow-y-auto">
-              <div class="bg-gray-100 rounded p-4 mb-1">
-                <%= if @file.description && length(@file.description) > 0 do %>
-                  <p class="text-secondary-purple"><%= Enum.join(@file.description, " ") %></p>
-                <% else %>
-                  <p class="text-gray-500">No description available</p>
-                <% end %>
-              </div>
-              <%= if length(@file.accepted_description_annotations) > 0 do %>
-                <h3 class="text-primary-purple text-md font-bold mb-2 px-2">Annotations</h3>
-                <%= for annotation <- @file.accepted_description_annotations do %>
-                  <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
-                    <%= annotation.description %>
-                  </p>
-                <% end %>
-              <% end %>
-            </div>
-          </div>
-          <!-- Agent(s) Section -->
-          <div>
-            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Agents Annotations</h2>
-            <div class="space-y-2 max-h-60 overflow-y-auto">
-              <%= if length(@file.accepted_agent_annotations) > 0 do %>
-                <%= for annotation <- @file.accepted_agent_annotations do %>
-                  <%= for agent <- annotation.agents do %>
-                    <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
-                      <%= agent.name %>
-                    </p>
-                  <% end %>
-                <% end %>
-                <% else %>
-                <div class="bg-gray-100 rounded p-4">
-                  <p class="text-gray-500">No Agents</p>
-                </div>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Identifier</h2>
+            <div class="bg-gray-100 rounded p-4">
+              <%= if @file.unitid && @file.unitid.id do %>
+                <p class="text-secondary-purple"><%= @file.unitid.id %></p>
+              <% else %>
+                <p class="text-gray-500">No identifier available</p>
               <% end %>
             </div>
           </div>
@@ -288,7 +251,66 @@ defmodule KoshWeb.DisplayLive do
               </div>
             <% end %>
           </div>
-        </div>
+          </div>
+
+          <h2 class="text-primary-purple font-bold mb-4 mt-8 text-2xl">Annotations for this File</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Subject(s) Annotations Section -->
+          <div>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Subject Annotations</h2>
+            <div class="space-y-2 max-h-60 overflow-y-auto">
+              <%= if length(@file.accepted_subjects_annotations) > 0 do %>
+                <%= for annotation <- @file.accepted_subjects_annotations do %>
+                  <%= for sub <- annotation.subjects do %>
+                    <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
+                      <%= sub.content %>
+                    </p>
+                  <% end %>
+                <% end %>
+                <% else %>
+                <div class="bg-gray-100 rounded p-4">
+                    <p class="text-gray-500">No subject annotations to display</p>
+                  </div>
+              <% end %>
+            </div>
+          </div>
+          <!-- Description Annotations Section -->
+          <div class="">
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Description Annotations</h2>
+            <div class="max-h-60 overflow-y-auto">
+              <%= if length(@file.accepted_description_annotations) > 0 do %>
+                <%= for annotation <- @file.accepted_description_annotations do %>
+                  <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
+                    <%= annotation.description %>
+                  </p>
+                <% end %>
+                <% else %>
+                <div class="bg-gray-100 rounded p-4">
+                    <p class="text-gray-500">No description annotations to display</p>
+                  </div>
+              <% end %>
+            </div>
+          </div>
+            <!-- Agent(s) Section -->
+            <div>
+              <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Agents Annotations</h2>
+              <div class="space-y-2 max-h-60 overflow-y-auto">
+                <%= if length(@file.accepted_agent_annotations) > 0 do %>
+                  <%= for annotation <- @file.accepted_agent_annotations do %>
+                    <%= for agent <- annotation.agents do %>
+                      <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
+                        <%= agent.name %>
+                      </p>
+                    <% end %>
+                  <% end %>
+                  <% else %>
+                  <div class="bg-gray-100 rounded p-4">
+                    <p class="text-gray-500">No Agents</p>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
 
         <%!-- <div class="flex justify-between mt-8">
           <.link

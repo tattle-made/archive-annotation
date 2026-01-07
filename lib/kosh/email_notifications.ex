@@ -12,7 +12,11 @@ defmodule Kosh.EmailNotifications do
   defp repo, do: Application.get_env(:kosh, :repo, Kosh.Repo)
   defp accounts, do: Application.get_env(:kosh, :accounts, Kosh.Accounts)
 
-  defp format_subjects(subjects, content_fn \\ & &1) do
+  defp format_subjects(subjects, content_fn \\ & &1)
+
+  defp format_subjects(nil, _content_fn), do: ""
+
+  defp format_subjects(subjects, content_fn) do
     subjects
     |> Enum.map(fn sub -> "• #{content_fn.(sub)}" end)
     |> Enum.join("\n        ")
@@ -36,7 +40,7 @@ defmodule Kosh.EmailNotifications do
   # Bundle notification for any mix of description/subject/agent annotations
   def deliver_admin_bundle_notifications(%User{} = actor, annotations)
       when is_list(annotations) do
-    IO.inspect(annotations, label: "RECEIVED ANNOTATIONS INSIDE EMAIL: ")
+    # IO.inspect(annotations, label: "RECEIVED ANNOTATIONS INSIDE EMAIL: ")
 
     anns =
       annotations
