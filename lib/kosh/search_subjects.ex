@@ -16,35 +16,60 @@ defmodule Kosh.SearchSubjects do
     - :total_pages: Total number of pages
   """
   def search_subjects(search_term, page \\ 1, page_size \\ @default_page_size) do
-    search_term =
-      if is_binary(search_term) && String.trim(search_term) != "", do: "%#{search_term}%"
+    normalized =
+      if is_binary(search_term) && String.trim(search_term) != "" do
+        String.downcase(String.trim(search_term))
+      end
 
-    # Base query for counting
-    base_count_query = from(s in Subject)
+    like_term = if normalized, do: "%#{normalized}%"
+    starts_with = if normalized, do: "#{normalized}%"
 
-    # Get total count first
+    base = from(s in Subject)
+
+    # Total count
     total_entries =
-      if search_term do
-        from(s in base_count_query, where: ilike(s.content, ^search_term))
+      if normalized do
+        from(s in base,
+          # Include words that includes the term itself (using ILIKE) or similar to the term (using similarity from the pg_trgm postgres extension)
+          where:
+            fragment(
+              "lower(?) LIKE ? OR similarity(lower(?), ?) > 0.3",
+              s.content,
+              ^like_term,
+              s.content,
+              ^normalized
+            )
+        )
       else
-        base_count_query
+        base
       end
       |> select([s], count(s.id))
       |> Repo.one()
 
-    # Calculate pagination values
     total_pages = div(total_entries + page_size - 1, page_size)
     offset = (max(1, page) - 1) * page_size
 
-    # Base query for results
-    base_query = from(s in Subject, order_by: [desc: s.id])
-
-    # Get paginated results
+    # Results query with ranking
     entries =
-      if search_term do
-        from(s in base_query, where: ilike(s.content, ^search_term))
+      if normalized do
+        from(s in base,
+          where:
+            fragment(
+              "lower(?) LIKE ? OR similarity(lower(?), ?) > 0.3",
+              s.content,
+              ^like_term,
+              s.content,
+              ^normalized
+            ),
+          order_by: [
+            desc: fragment("lower(?) = ?", s.content, ^normalized),
+            desc: fragment("lower(?) LIKE ?", s.content, ^starts_with),
+            desc: fragment("similarity(lower(?), ?)", s.content, ^normalized),
+            asc: fragment("lower(?)", s.content)
+          ]
+        )
       else
-        base_query
+        from(s in base, order_by: [desc: s.id])
       end
       |> offset(^offset)
       |> limit(^page_size)
