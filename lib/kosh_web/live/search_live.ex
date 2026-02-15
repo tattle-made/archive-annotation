@@ -247,6 +247,34 @@ defmodule KoshWeb.SearchLive do
                         </ul>
                       </div>
                     <% end %>
+                    <%= if result.matched_agent_annotations && length(result.matched_agent_annotations) > 0 do %>
+                      <div>
+                        <span class="font-bold text-primary-purple">
+                          Matched Agents Annotations:
+                        </span>
+                        <ul class="list-disc ml-6">
+                          <%= for ann <- result.matched_agent_annotations do %>
+                            <li class="text-secondary-purple">
+                              <%= Phoenix.HTML.raw(highlight(ann, @query)) %>
+                            </li>
+                          <% end %>
+                        </ul>
+                      </div>
+                    <% end %>
+                    <%= if result.matched_emotions && length(result.matched_emotions) > 0 do %>
+                      <div>
+                        <span class="font-bold text-primary-purple">
+                          Matched Emotion Annotations:
+                        </span>
+                        <ul class="list-disc ml-6">
+                          <%= for ann <- result.matched_emotions do %>
+                            <li class="text-secondary-purple">
+                              <%= Phoenix.HTML.raw(highlight(ann, @query)) %>
+                            </li>
+                          <% end %>
+                        </ul>
+                      </div>
+                    <% end %>
                   </div>
                 </div>
               <% end %>
