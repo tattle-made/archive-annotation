@@ -425,7 +425,8 @@ defmodule Kosh.EAD do
       :sub_series,
       accepted_description_annotations: [:file, :user],
       accepted_subjects_annotations: [:subjects, :file, :user],
-      accepted_agent_annotations: [:agents, :file, :user]
+      accepted_agent_annotations: [:agents, :file, :user],
+      emotion_annotations: [:defined_emotion]
     ])
     |> Repo.get_by(uri: uri)
   end

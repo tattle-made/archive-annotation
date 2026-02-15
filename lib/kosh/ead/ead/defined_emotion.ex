@@ -9,7 +9,8 @@ defmodule Kosh.EAD.DefinedEmotion do
     timestamps(type: :utc_datetime)
   end
 
-  @required_fields [:name, :lcsh_url]
+  # @required_fields [:name, :lcsh_url]
+  @required_fields [:name]
 
   def changeset(defined_emotion, attrs) do
     # Normalize name using the normalize_name/1 function if present in attrs

@@ -3,6 +3,16 @@ defmodule KoshWeb.Components.AnnotationSection.EmotionAnnotationSection do
   alias Kosh.EAD
   alias Kosh.Annotations
 
+  @moduledoc """
+  Emotion Annotation Section.
+
+  A migration file "20260214151639_add_emotions_annotation_trigger.exs" is created to enable
+  a trigger on emotion_annotations table while inserting and updating.
+
+  This trigger makes sure that the "no_response" emotion_annotation does not exist with any
+  other emotion_annotation(s), and vice-versa.
+  """
+
   @impl true
   def update(assigns, socket) do
     socket = assign(socket, assigns)
@@ -19,7 +29,7 @@ defmodule KoshWeb.Components.AnnotationSection.EmotionAnnotationSection do
         %{}
       end
 
-    # IO.inspect(user_votes)
+    # IO.inspect(user_votes, label: "user votes: ")
     emotion_counts = Annotations.get_emotion_counts(socket.assigns.file.id)
 
     socket =
@@ -87,11 +97,18 @@ defmodule KoshWeb.Components.AnnotationSection.EmotionAnnotationSection do
             <!-- Emotion Name -->
             <div class="w-full sm:w-1/4 mb-2 sm:mb-0">
               <span class="font-bold text-primary-purple">
-                <%= String.capitalize(emotion.name) %>
+              <%= if emotion.name == "no_response" do %>
+              No Response
+              <% else %>
+              <%= String.capitalize(emotion.name) %>
+              <% end %>
               </span>
             </div>
             <!-- Middle: Toggle Buttons -->
-            <div class="w-full sm:w-1/2 flex flex-wrap gap-2 sm:gap-3">
+            <div
+              :if={emotion.name != "no_response"}
+              class="w-full sm:w-1/2 flex flex-wrap gap-2 sm:gap-3"
+            >
               <button
                 phx-click="toggle_vote"
                 phx-value-emotion_id={emotion.id}
@@ -147,6 +164,38 @@ defmodule KoshWeb.Components.AnnotationSection.EmotionAnnotationSection do
                     <%= (@emotion_counts[emotion.id] && @emotion_counts[emotion.id][:low]) || 0 %>
                   </span>
                   <%= if @user_votes[emotion.id] && @user_votes[emotion.id].weight == :low do %>
+                    <span class="ml-1 text-xs text-primary-purple whitespace-nowrap">• You</span>
+                  <% end %>
+                </div>
+              </button>
+            </div>
+            <!-- Middle-Section, When No-Response -->
+            <div
+              :if={emotion.name == "no_response"}
+              class="w-full sm:w-1/2 flex flex-wrap gap-2 sm:gap-3"
+            >
+              <button
+                phx-click="toggle_vote"
+                phx-value-emotion_id={emotion.id}
+                phx-value-weight="high"
+                phx-target={@myself}
+                class={
+                  [
+                    "flex-1 flex items-center justify-center px-4 py-2 rounded-full text-sm font-medium transition-colors border",
+                    if(@user_votes[emotion.id] && @user_votes[emotion.id].weight == :high,
+                      do:
+                        "bg-primary-purple/10 border-primary-purple text-primary-purple font-semibold",
+                      else:
+                        "border-secondary-grey/30 bg-secondary-lilac/20 text-secondary-grey hover:bg-secondary-lilac/30"
+                    )
+                  ]
+                  |> Enum.join(" ")
+                }
+                disabled={!@current_user}
+              >
+                <div class="flex items-center">
+                  <span><%= if(@user_votes[emotion.id] && @user_votes[emotion.id].weight == :high, do: "Selected", else: "Select" ) %></span>
+                  <%= if @user_votes[emotion.id] do %>
                     <span class="ml-1 text-xs text-primary-purple whitespace-nowrap">• You</span>
                   <% end %>
                 </div>
