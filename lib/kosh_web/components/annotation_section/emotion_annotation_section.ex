@@ -31,6 +31,7 @@ defmodule KoshWeb.Components.AnnotationSection.EmotionAnnotationSection do
 
     # IO.inspect(user_votes, label: "user votes: ")
     emotion_counts = Annotations.get_emotion_counts(socket.assigns.file.id)
+    # IO.inspect(emotion_counts, label: "counts: ")
 
     socket =
       assign(socket,
