@@ -100,19 +100,19 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
       cond do
         # If no options found, show "Add new Subject" option
         options == [] ->
-          [{"Add new Subject \"#{text}\"", text}]
+          [{"Add new Subject \"#{text}\"", "new:#{text}"}]
 
         # If no exact match and options >= 100, show both "Add new" and "Show more"
         not has_exact_match and length(options) >= 100 ->
           options ++
             [
-              {"No exact match found, Add new Subject \"#{text}\"", text},
+              {"No exact match found, Add new Subject \"#{text}\"", "new:#{text}"},
               {"Show more for #{text}", "__SHOW_MORE__"}
             ]
 
         # If no exact match, show "Add new" option
         not has_exact_match ->
-          options ++ [{"No exact match found, Add new Subject \"#{text}\"", text}]
+          options ++ [{"No exact match found, Add new Subject \"#{text}\"", "new:#{text}"}]
 
         # If options >= 100, show "Show more" option
         length(options) >= 100 ->
@@ -296,6 +296,14 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
 
     # Check for existing subjects
     {existing_subjects_ids, new_subjects} = split_number_words(subjects)
+# The new: is added to all the new subjects in the annotation form in case there is an pure integer entry, it won't be treated as a Subject ID.
+    new_subjects =
+      Enum.map(new_subjects, fn sub ->
+        case sub do
+          "new:" <> rest -> rest
+          _ -> sub
+        end
+      end)
 
     # Get all existing subjects from accepted annotations
     existing_subjects =

@@ -155,6 +155,7 @@ defmodule Kosh.Search do
         end),
       matched_emotions:
         (file.emotion_annotations || [])
+        |> Enum.reject(fn ea -> is_nil(ea.defined_emotion) end)
         |> Enum.map(& &1.defined_emotion.name)
         |> Enum.uniq()
         |> Enum.filter(&String.contains?(String.downcase(&1), String.downcase(q)))

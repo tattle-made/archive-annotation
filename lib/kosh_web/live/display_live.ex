@@ -323,7 +323,7 @@ defmodule KoshWeb.DisplayLive do
               <%= if length(@file_emotions) > 0 do %>
                 <%= for annotation <- @file_emotions do %>
                   <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
-                    <%= annotation.name %> - <span class="font-bold"><%= annotation.count%></span>
+                    <%= if(annotation.name == "no_response", do: "No Response", else: String.capitalize(annotation.name)) %> - <span class="font-bold"><%= annotation.count%></span>
                   </p>
                 <% end %>
               <% else %>
