@@ -691,7 +691,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
                   <a
                     href="#"
                     class="block w-full h-full p-2 text-primary-purple font-bold hover:text-secondary-purple cursor-pointer"
-                    onmousedown={"
+                    phx-click={"
                  event.preventDefault();
                  window.open('/search-subjects?q=#{extract_label_from_extra_option(option.label)}', '_blank');
                  "}
