@@ -15,7 +15,8 @@ defmodule Kosh.Search do
     - Accepted annotations: DescriptionAnnotation.description, SubjectsAnnotation.new_subjects and associated Subjects.content
   Returns a list of maps, each including only the matching annotation texts.
   """
-  def search_files(q, page, page_size) when is_binary(q) and q != "" and is_integer(page) and is_integer(page_size) do
+  def search_files(q, page, page_size)
+      when is_binary(q) and q != "" and is_integer(page) and is_integer(page_size) do
     pattern = "%#{q}%"
     offset = (page - 1) * page_size
 
@@ -50,7 +51,9 @@ defmodule Kosh.Search do
         :sub_series,
         :subjects,
         :accepted_description_annotations,
-        accepted_subjects_annotations: [:subjects]
+        accepted_subjects_annotations: [:subjects],
+        accepted_agent_annotations: [:agents],
+        emotion_annotations: [:defined_emotion]
       ])
 
     results =
@@ -67,7 +70,22 @@ defmodule Kosh.Search do
 
   defp match_any(pattern) do
     dynamic(
-      [f, c, s, ss, subj, desc_ann, subj_ann, ann_subj],
+      [
+        f,
+        c,
+        s,
+        ss,
+        subj,
+        desc_ann,
+        subj_ann,
+        ann_subj,
+        agent_ann,
+        ann_agent,
+        emotion_ann,
+        ann_defined_emotion
+      ],
+      # file's direct subjects
+      # subjects of each annotation
       ilike(f.title, ^pattern) or
         ilike(f.uri, ^pattern) or
         fragment("array_to_string(?, ' ') ILIKE ?", f.description, ^pattern) or
@@ -92,9 +110,11 @@ defmodule Kosh.Search do
         ilike(c.title, ^pattern) or
         ilike(s.title, ^pattern) or
         ilike(ss.title, ^pattern) or
-        ilike(subj.content, ^pattern) or  # file's direct subjects
+        ilike(subj.content, ^pattern) or
         ilike(desc_ann.description, ^pattern) or
-        ilike(ann_subj.content, ^pattern) # subjects of each annotation
+        ilike(ann_subj.content, ^pattern) or
+        ilike(ann_agent.name, ^pattern) or
+        ilike(ann_defined_emotion.name, ^pattern)
     )
   end
 
@@ -108,11 +128,12 @@ defmodule Kosh.Search do
       uri: file.uri,
       unitid: file.unitid && file.unitid.id,
       dao_links:
-        (file.dao
+        file.dao
         |> Map.get(:daolocs, [])
         |> Kernel.||([])
         |> Enum.map(&Map.get(&1, "xlink_href"))
-        |> Enum.filter(& &1)), # remove nils
+        # remove nils
+        |> Enum.filter(& &1),
       subjects: Enum.map(file.subjects || [], & &1.content),
       matched_description_annotations:
         (file.accepted_description_annotations || [])
@@ -124,7 +145,20 @@ defmodule Kosh.Search do
           (ann.subjects || [])
           |> Enum.map(& &1.content)
           |> Enum.filter(&String.contains?(String.downcase(&1), String.downcase(q)))
-        end)
+        end),
+      matched_agent_annotations:
+        (file.accepted_agent_annotations || [])
+        |> Enum.flat_map(fn ann ->
+          (ann.agents || [])
+          |> Enum.map(& &1.name)
+          |> Enum.filter(&String.contains?(String.downcase(&1), String.downcase(q)))
+        end),
+      matched_emotions:
+        (file.emotion_annotations || [])
+        |> Enum.reject(fn ea -> is_nil(ea.defined_emotion) end)
+        |> Enum.map(& &1.defined_emotion.name)
+        |> Enum.uniq()
+        |> Enum.filter(&String.contains?(String.downcase(&1), String.downcase(q)))
     }
   end
 
@@ -135,8 +169,36 @@ defmodule Kosh.Search do
     |> join(:left, [f, c, s], ss in assoc(f, :sub_series))
     |> join(:left, [f, c, s, ss], subj in assoc(f, :subjects))
     |> join(:left, [f, c, s, ss, subj], desc_ann in assoc(f, :accepted_description_annotations))
-    |> join(:left, [f, c, s, ss, subj, desc_ann], subj_ann in assoc(f, :accepted_subjects_annotations))
-    |> join(:left, [f, c, s, ss, subj, desc_ann, subj_ann], ann_subj in assoc(subj_ann, :subjects))
+    |> join(
+      :left,
+      [f, c, s, ss, subj, desc_ann],
+      subj_ann in assoc(f, :accepted_subjects_annotations)
+    )
+    |> join(
+      :left,
+      [f, c, s, ss, subj, desc_ann, subj_ann],
+      ann_subj in assoc(subj_ann, :subjects)
+    )
+    |> join(
+      :left,
+      [f, c, s, ss, subj, desc_ann, subj_ann, ann_subj],
+      agent_ann in assoc(f, :accepted_agent_annotations)
+    )
+    |> join(
+      :left,
+      [f, c, s, ss, subj, desc_ann, subj_ann, ann_subj, agent_ann],
+      ann_agent in assoc(agent_ann, :agents)
+    )
+    |> join(
+      :left,
+      [f, c, s, ss, subj, desc_ann, subj_ann, ann_subj, agent_ann, ann_agent],
+      emotion_ann in assoc(f, :emotion_annotations)
+    )
+    |> join(
+      :left,
+      [f, c, s, ss, subj, desc_ann, subj_ann, ann_subj, agent_ann, ann_agent, emotion_ann],
+      ann_defined_emotion in assoc(emotion_ann, :defined_emotion)
+    )
     |> where(^match_any(pattern))
   end
 end

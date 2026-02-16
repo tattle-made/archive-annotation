@@ -59,9 +59,17 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
     display_option =
       results
       |> Enum.map(fn o ->
-        {"#{o.name} - #{Enum.map(o.type_ids, fn id -> socket.assigns.agent_types_map[id] end) |> Enum.join(", ")}",
-         o.id}
+        {"#{o.name}", o.id}
       end)
+
+    # To Display the options with Types:
+
+    # display_option =
+    #   results
+    #   |> Enum.map(fn o ->
+    #     {"#{o.name} - #{Enum.map(o.type_ids, fn id -> socket.assigns.agent_types_map[id] end) |> Enum.join(", ")}",
+    #      o.id}
+    #   end)
 
     send_update(LiveSelect.Component, id: "annotation_agents", options: display_option)
 
@@ -77,15 +85,42 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
   end
 
   def handle_event("live_select_change", %{"text" => text, "id" => "annotation_subjects"}, socket) do
+    normalized_text = String.downcase(String.trim(text))
     subjects = EAD.search_subjects(text)
     options = Enum.map(subjects, fn subject -> {subject.content, subject.id} end)
 
     socket = assign(socket, subjects_options: options)
 
+    has_exact_match =
+      Enum.any?(options, fn {opt_text, _} ->
+        String.downcase(String.trim(opt_text)) == normalized_text
+      end)
+
     display_options =
-      case options do
-        [] -> [{"Add new Subject \"#{text}\"", text}]
-        _ -> options ++ [{"Show more for #{text}", "__SHOW_MORE__"}]
+      cond do
+        # If no options found, show "Add new Subject" option
+        options == [] ->
+          [{"Add new Subject \"#{text}\"", "new:#{text}"}]
+
+        # If no exact match and options >= 100, show both "Add new" and "Show more"
+        not has_exact_match and length(options) >= 100 ->
+          options ++
+            [
+              {"No exact match found, Add new Subject \"#{text}\"", "new:#{text}"},
+              {"Show more for #{text}", "__SHOW_MORE__"}
+            ]
+
+        # If no exact match, show "Add new" option
+        not has_exact_match ->
+          options ++ [{"No exact match found, Add new Subject \"#{text}\"", "new:#{text}"}]
+
+        # If options >= 100, show "Show more" option
+        length(options) >= 100 ->
+          options ++ [{"Show more for #{text}", "__SHOW_MORE__"}]
+
+        # Otherwise just show the options
+        true ->
+          options
       end
 
     send_update(LiveSelect.Component, id: "annotation_subjects", options: display_options)
@@ -261,6 +296,14 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
 
     # Check for existing subjects
     {existing_subjects_ids, new_subjects} = split_number_words(subjects)
+# The new: is added to all the new subjects in the annotation form in case there is an pure integer entry, it won't be treated as a Subject ID.
+    new_subjects =
+      Enum.map(new_subjects, fn sub ->
+        case sub do
+          "new:" <> rest -> rest
+          _ -> sub
+        end
+      end)
 
     # Get all existing subjects from accepted annotations
     existing_subjects =
@@ -648,7 +691,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
                   <a
                     href="#"
                     class="block w-full h-full p-2 text-primary-purple font-bold hover:text-secondary-purple cursor-pointer"
-                    onmousedown={"
+                    phx-click={"
                  event.preventDefault();
                  window.open('/search-subjects?q=#{extract_label_from_extra_option(option.label)}', '_blank');
                  "}

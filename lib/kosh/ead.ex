@@ -199,10 +199,11 @@ defmodule Kosh.EAD do
   def export_collection(_invalid) do
     {:error, "Invalid collection ID type"}
   end
-@doc """
-To generate export XML for the OAI endpoint. Similar to the above function, but this does not throw any errors
-even if there are 0 annotations for a collection.
-"""
+
+  @doc """
+  To generate export XML for the OAI endpoint. Similar to the above function, but this does not throw any errors
+  even if there are 0 annotations for a collection.
+  """
   @spec export_collection_oai(integer() | String.t()) :: {:ok, any()} | {:error, String.t()}
   def export_collection_oai(collection_id) when is_binary(collection_id) do
     case Integer.parse(collection_id) do
@@ -228,7 +229,9 @@ even if there are 0 annotations for a collection.
             if not Elixir.File.exists?(file_path) do
               {:error, "Collection file not found at path: #{file_path}"}
             else
-              SaxyUpdateEadHandler.run_stream_read(file_path, files_with_annotations, include_xml_declaration: false)
+              SaxyUpdateEadHandler.run_stream_read(file_path, files_with_annotations,
+                include_xml_declaration: false
+              )
             end
 
           {:error, reason} ->
@@ -422,7 +425,8 @@ even if there are 0 annotations for a collection.
       :sub_series,
       accepted_description_annotations: [:file, :user],
       accepted_subjects_annotations: [:subjects, :file, :user],
-      accepted_agent_annotations: [:agents, :file, :user]
+      accepted_agent_annotations: [:agents, :file, :user],
+      emotion_annotations: [:defined_emotion]
     ])
     |> Repo.get_by(uri: uri)
   end
@@ -566,18 +570,78 @@ even if there are 0 annotations for a collection.
   end
 
   def search_subjects(name) when is_binary(name) do
+    normalized = String.downcase(name)
+    search_term = "%#{normalized}%"
+    starts_with = "#{normalized}%"
+
+    # Include words that includes the term itself (using ILIKE) or similar to the term (using similarity from the pg_trgm postgres extension)
     Subject
-    |> where([s], ilike(s.content, ^"%#{name}%"))
+    |> where(
+      [s],
+      fragment(
+        "lower(?) LIKE ? OR similarity(lower(?), ?) > 0.3",
+        s.content,
+        ^search_term,
+        s.content,
+        ^normalized
+      )
+    )
+    |> order_by(
+      [s],
+      # exact match first
+      desc: fragment("lower(?) = ?", s.content, ^normalized),
+
+      # then prefix matches
+      desc: fragment("lower(?) LIKE ?", s.content, ^starts_with),
+
+      # then trigram similarity
+      desc: fragment("similarity(lower(?), ?)", s.content, ^normalized),
+
+      # stable alphabetical order
+      asc: fragment("lower(?)", s.content)
+    )
     |> limit(100)
     |> Repo.all()
   end
 
   def search_agents(name) when is_binary(name) do
+    normalized = Agent.normalize_name(name)
+    search_term = "%#{normalized}%"
+    starts_with = "#{normalized}%"
+
     Agent
-    |> where([s], ilike(s.normalized_name, ^"%#{Agent.normalize_name(name)}%"))
+    |> where(
+      [s],
+      fragment(
+        "? LIKE ?",
+        s.normalized_name,
+        ^search_term
+      )
+    )
+    |> order_by(
+      [s],
+      # exact match first
+      desc: fragment("? = ?", s.normalized_name, ^normalized),
+
+      # then prefix matches
+      desc: fragment("? LIKE ?", s.normalized_name, ^starts_with),
+
+      # then trigram similarity
+      desc: fragment("similarity(?, ?)", s.normalized_name, ^normalized),
+
+      # stable alphabetical order
+      asc: fragment("?", s.normalized_name)
+    )
     |> limit(100)
     |> Repo.all()
   end
+
+  # def search_agents(name) when is_binary(name) do
+  #   Agent
+  #   |> where([s], ilike(s.normalized_name, ^"%#{Agent.normalize_name(name)}%"))
+  #   |> limit(100)
+  #   |> Repo.all()
+  # end
 
   def get_all_lcnaf_types() do
     LcnafType |> Repo.all()

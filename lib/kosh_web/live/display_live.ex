@@ -1,4 +1,5 @@
 defmodule KoshWeb.DisplayLive do
+  alias Kosh.Annotations
   use KoshWeb, :live_view
   alias Kosh.EAD
 
@@ -36,7 +37,10 @@ defmodule KoshWeb.DisplayLive do
           end
 
         # IO.inspect(file, label: "Display File")
-        {:ok, assign(socket, file: file, manifest_url: manifest_url)}
+        file_emotions = Annotations.list_emotion_counts_by_file(file.id)
+        # IO.inspect(file_emotions)
+        {:ok,
+         assign(socket, file: file, file_emotions: file_emotions, manifest_url: manifest_url)}
     end
   end
 
@@ -142,7 +146,7 @@ defmodule KoshWeb.DisplayLive do
               <p class="text-secondary-purple"><%= @file.title %></p>
             </div>
           </div>
-           <!-- Subject(s) Section -->
+          <!-- Subject(s) Section -->
           <div>
             <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Subject(s)</h2>
             <div class="space-y-2 max-h-60 overflow-y-auto">
@@ -211,7 +215,7 @@ defmodule KoshWeb.DisplayLive do
               <% end %>
             </div>
           </div>
-         <!-- Identifier Section -->
+          <!-- Identifier Section -->
           <div>
             <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Identifier</h2>
             <div class="bg-gray-100 rounded p-4">
@@ -251,10 +255,10 @@ defmodule KoshWeb.DisplayLive do
               </div>
             <% end %>
           </div>
-          </div>
+        </div>
 
-          <h2 class="text-primary-purple font-bold mb-4 mt-8 text-2xl">Annotations for this File</h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <h2 class="text-primary-purple font-bold mb-4 mt-8 text-2xl">Annotations for this File</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- Subject(s) Annotations Section -->
           <div>
             <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Subject Annotations</h2>
@@ -267,16 +271,18 @@ defmodule KoshWeb.DisplayLive do
                     </p>
                   <% end %>
                 <% end %>
-                <% else %>
+              <% else %>
                 <div class="bg-gray-100 rounded p-4">
-                    <p class="text-gray-500">No subject annotations to display</p>
-                  </div>
+                  <p class="text-gray-500">No subject annotations to display</p>
+                </div>
               <% end %>
             </div>
           </div>
           <!-- Description Annotations Section -->
           <div class="">
-            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Description Annotations</h2>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">
+              Description Annotations
+            </h2>
             <div class="max-h-60 overflow-y-auto">
               <%= if length(@file.accepted_description_annotations) > 0 do %>
                 <%= for annotation <- @file.accepted_description_annotations do %>
@@ -284,33 +290,50 @@ defmodule KoshWeb.DisplayLive do
                     <%= annotation.description %>
                   </p>
                 <% end %>
-                <% else %>
+              <% else %>
                 <div class="bg-gray-100 rounded p-4">
-                    <p class="text-gray-500">No description annotations to display</p>
-                  </div>
+                  <p class="text-gray-500">No description annotations to display</p>
+                </div>
               <% end %>
             </div>
           </div>
-            <!-- Agent(s) Section -->
-            <div>
-              <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Agents Annotations</h2>
-              <div class="space-y-2 max-h-60 overflow-y-auto">
-                <%= if length(@file.accepted_agent_annotations) > 0 do %>
-                  <%= for annotation <- @file.accepted_agent_annotations do %>
-                    <%= for agent <- annotation.agents do %>
-                      <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
-                        <%= agent.name %>
-                      </p>
-                    <% end %>
+          <!-- Agent(s) Section -->
+          <div>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Agents Annotations</h2>
+            <div class="space-y-2 max-h-60 overflow-y-auto">
+              <%= if length(@file.accepted_agent_annotations) > 0 do %>
+                <%= for annotation <- @file.accepted_agent_annotations do %>
+                  <%= for agent <- annotation.agents do %>
+                    <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
+                      <%= agent.name %>
+                    </p>
                   <% end %>
-                  <% else %>
-                  <div class="bg-gray-100 rounded p-4">
-                    <p class="text-gray-500">No Agents</p>
-                  </div>
                 <% end %>
-              </div>
+              <% else %>
+                <div class="bg-gray-100 rounded p-4">
+                  <p class="text-gray-500">No Agents</p>
+                </div>
+              <% end %>
             </div>
           </div>
+          <!-- Emotions Annotations Section -->
+          <div>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Emotion Annotations</h2>
+            <div class="space-y-2 max-h-60 overflow-y-auto">
+              <%= if length(@file_emotions) > 0 do %>
+                <%= for annotation <- @file_emotions do %>
+                  <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
+                    <%= if(annotation.name == "no_response", do: "No Response", else: String.capitalize(annotation.name)) %> - <span class="font-bold"><%= annotation.count%></span>
+                  </p>
+                <% end %>
+              <% else %>
+                <div class="bg-gray-100 rounded p-4">
+                  <p class="text-gray-500">No Emotion Annotations</p>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
 
         <%!-- <div class="flex justify-between mt-8">
           <.link

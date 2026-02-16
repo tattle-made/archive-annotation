@@ -320,6 +320,25 @@ defmodule Kosh.Annotations do
     agents = list_agent_annotations(status)
     {subjects, descriptions, agents}
   end
+  @doc """
+  Gets a list of emotions with their counts for a specific file.
+
+  Returns a list of maps with `:name` and `:count` keys.
+  """
+  def list_emotion_counts_by_file(file_id) do
+    query = from(ea in EmotionAnnotation,
+      where: ea.file_id == ^file_id,
+      join: de in assoc(ea, :defined_emotion),
+      group_by: de.name,
+      select: %{
+        name: de.name,
+        count: count(ea.id)
+      },
+      order_by: [desc: count(ea.id)]
+    )
+
+    Repo.all(query)
+  end
 
   # Emotion Annotation Functions
 
