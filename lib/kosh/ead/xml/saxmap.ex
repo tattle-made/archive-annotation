@@ -174,6 +174,7 @@ defmodule Kosh.EAD.XML.Saxmap do
         %{
           xlink_title: title,
           xlink_type: type,
+          #Storing in DAOlocs as it is being used to render dao objects in the file display
           daolocs:
             Enum.map(List.wrap(dao), fn loc ->
               %{
