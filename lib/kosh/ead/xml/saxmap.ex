@@ -62,10 +62,13 @@ defmodule Kosh.EAD.XML.Saxmap do
 
   def extract_contents_from_processed_map(map) when is_map(map) do
     # When get a direct map from uploading OR when get EAD content after fetching from OAI endpoint.
-    with ead when not is_nil(ead) <- get_in(map, ["ead"]) || get_in(map, ["OAI-PMH", "GetRecord", "record", "metadata", "ead"]),
+    with ead when not is_nil(ead) <-
+           get_in(map, ["ead"]) ||
+             get_in(map, ["OAI-PMH", "GetRecord", "record", "metadata", "ead"]),
          archdesc when not is_nil(archdesc) <- get_in(ead, ["archdesc"]),
          collection_did when not is_nil(collection_did) <- get_in(archdesc, ["did"]),
-         collection_title when not is_nil(collection_title) <- get_in(collection_did, ["unittitle"]) do
+         collection_title when not is_nil(collection_title) <-
+           get_in(collection_did, ["unittitle"]) do
       collection_scopecontent = get_in(archdesc, ["scopecontent"]) || %{}
       collection_subjects = get_in(archdesc, ["controlaccess", "subject"]) || []
       collection_unitdate = get_in(collection_did, ["unitdate"]) || %{}
@@ -132,7 +135,7 @@ defmodule Kosh.EAD.XML.Saxmap do
               |> get_in(["scopecontent", "p"])
               |> List.wrap(),
             unitdate: node["did"]["unitdate"] || %{},
-            dao: node["did"]["daogrp"] |> extract_dao(),
+            dao: node |> extract_dao(),
             subjects: node["controlaccess"]["subject"] |> List.wrap()
           }
         else
@@ -144,7 +147,42 @@ defmodule Kosh.EAD.XML.Saxmap do
     end
   end
 
-  defp extract_dao(daogrp) do
+  defp extract_dao(node) do
+    if node["did"]["dao"] do
+      extract_single_dao(node["did"]["dao"])
+    else
+      extract_daogrp(node["did"]["daogrp"])
+    end
+  end
+
+  defp extract_single_dao(dao) do
+    case dao do
+      %{
+        "xlink:href" => _xlink,
+        "xlink:title" => title,
+        "xlink:type" => type
+      } ->
+        # wrapping in daolocs because on file display, we are using this property to render dao docs.
+        daolocs = [dao]
+
+        %{
+          xlink_title: title,
+          xlink_type: type,
+          daolocs:
+            Enum.map(daolocs, fn loc ->
+              %{
+                xlink_href: loc["xlink:href"],
+                xlink_type: loc["xlink:type"]
+              }
+            end)
+        }
+
+      _ ->
+        %{}
+    end
+  end
+
+  defp extract_daogrp(daogrp) do
     case daogrp do
       %{
         "daoloc" => daolocs,
@@ -152,6 +190,7 @@ defmodule Kosh.EAD.XML.Saxmap do
         "xlink:type" => type
       } ->
         daolocs = List.wrap(daolocs)
+
         %{
           xlink_title: title,
           xlink_type: type,
@@ -181,5 +220,4 @@ defmodule Kosh.EAD.XML.Saxmap do
         {%{}, nil}
     end
   end
-
 end
