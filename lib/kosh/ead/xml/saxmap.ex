@@ -155,21 +155,27 @@ defmodule Kosh.EAD.XML.Saxmap do
     end
   end
 
+  # Also handles in case dao is a list (multiple dao tags present)
   defp extract_single_dao(dao) do
-    case dao do
-      %{
-        "xlink:href" => _xlink,
-        "xlink:title" => title,
-        "xlink:type" => type
-      } ->
-        # wrapping in daolocs because on file display, we are using this property to render dao docs.
-        daolocs = [dao]
-
+    dao
+    |> List.wrap()
+    |> Enum.find(
+      &match?(
+        %{
+          "xlink:href" => _,
+          "xlink:title" => _,
+          "xlink:type" => _
+        },
+        &1
+      )
+    )
+    |> case do
+      %{"xlink:title" => title, "xlink:type" => type} ->
         %{
           xlink_title: title,
           xlink_type: type,
           daolocs:
-            Enum.map(daolocs, fn loc ->
+            Enum.map(List.wrap(dao), fn loc ->
               %{
                 xlink_href: loc["xlink:href"],
                 xlink_type: loc["xlink:type"]
