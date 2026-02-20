@@ -20,7 +20,7 @@ defmodule KoshWeb.NavComponent do
     ~H"""
     <div>
       <% nav_items = [
-        {"About", ~p"/about"},
+        # {"About", ~p"/about"},
         # {"Ethics-Law", ~p"/ethics-law"},
         # {"Milli Sessions", ~p"/milli-sessions"},
         {"Annotation Tool", ~p"/"},
@@ -41,7 +41,7 @@ defmodule KoshWeb.NavComponent do
         class="relative z-10 bg-[#E6E9F5] px-4 py-4 sm:px-6 xl:px-32 xl:py-12 flex items-center justify-between"
       >
         <!-- Logo -->
-        <.link navigate={~p"/"}>
+        <.link href="https://milli.link" target="_blank" >
           <div class="flex-shrink-0">
             <img src={~p"/images/logo.svg"} alt="App Logo" />
           </div>
