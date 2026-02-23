@@ -8,7 +8,7 @@ defmodule KoshWeb.HomeLive do
     <div class="section-gutter w-full">
       <div class="text-secondary-purple font-semibold bg-[#E6E9F5]/50 mt-[2px] flex items-center text-body-md-18 h-12 px-4 sm:text-body-lg-24 sm:h-14 sm:px-6 xl:text-heading-28 xl:h-16 xl:px-8
     ">
-        Miili’s Archives Annotation Tool
+        Milli’s Archives Annotation Tool
       </div>
 
       <%= case @subview do %>
@@ -22,7 +22,7 @@ defmodule KoshWeb.HomeLive do
             <div class="flex flex-col gap-2">
               <p class="text-primary-purple  font-bold">WHAT IS IT?</p>
               <p class="text-secondary-purple text-body-md-18 xl:text-body-lg-24 xl:w-[40%] lg:w-[60%]">
-                Milli’s Annotation Tool allows users to search through and contribute annotations in the archive’s digital repository. It simplifies locating specific comments, notes, or metadata attached to materials like documents and images. By offering quick access to insights and cross-references, it’s a valuable resource for researchers and historians.
+                Milli’s Archives Annotation Tool allows users to search through and contribute annotations in the archive’s digital repository. It simplifies locating specific comments, notes, or metadata attached to materials like documents and images. By offering quick access to insights and cross-references, it’s a valuable resource for researchers and historians.
               </p>
             </div>
             <p>
