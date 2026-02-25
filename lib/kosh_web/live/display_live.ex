@@ -108,7 +108,7 @@ defmodule KoshWeb.DisplayLive do
     ~H"""
     <div class="section-gutter w-full">
       <div class="w-full text-secondary-purple font-semibold bg-[#E6E9F5]/50 mt-[2px] flex items-center text-body-md-18 h-12 px-4 sm:text-body-lg-24 sm:h-14 sm:px-6 xl:text-heading-28 xl:h-16 xl:px-8">
-        <%!-- Miili's Archives Annotation Tool --%>
+        <%!-- Milli's Archives Annotation Tool --%>
         <%= @file.title %>
       </div>
 
@@ -195,7 +195,7 @@ defmodule KoshWeb.DisplayLive do
           </div>
           <!-- Sub-series Section -->
           <div>
-            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Sub-series</h2>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Sub-Series</h2>
             <div class="bg-gray-100 rounded p-4">
               <%= if @file.sub_series do %>
                 <p class="text-secondary-purple"><%= @file.sub_series.title %></p>
