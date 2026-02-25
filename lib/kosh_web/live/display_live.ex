@@ -128,7 +128,7 @@ defmodule KoshWeb.DisplayLive do
           title="Mirador Viewer"
           allowtransparency="true"
           src={"https://collections.archives.ncbs.res.in/iiif/mirador/index.html?manifest=#{@manifest_url}&notMobile=true"}
-          class="w-3/4 h-[60vh] mt-2 mb-4 mx-auto"
+          class="w-full h-[60vh] mt-2 mb-4 mx-auto"
         >
         </iframe>
       <% else %>
