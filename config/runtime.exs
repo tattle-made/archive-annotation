@@ -30,6 +30,7 @@ if config_env() == :prod do
     hostname: System.get_env("DATABASE_HOSTNAME"),
     database: System.get_env("DATABASE_NAME"),
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+    timeout: String.to_integer(System.get_env("DATABASE_TIMEOUT") || "120000"),
     socket_options: maybe_ipv6,
     stacktrace: true
 

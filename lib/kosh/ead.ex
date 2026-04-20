@@ -1083,7 +1083,7 @@ defmodule Kosh.EAD do
         end
 
       {:error, changeset} ->
-        {:error, "Failed to create file: #{inspect(changeset.errors)}"}
+        {:error, "Failed to create file: #{inspect(changeset.errors)}, File Attributes: #{inspect(file_attrs)}"}
     end
   end
 
