@@ -70,12 +70,11 @@ defmodule Kosh.EAD.XML.Saxmap do
          collection_title when not is_nil(collection_title) <-
            get_in(collection_did, ["unittitle"]) do
       collection_scopecontent = get_in(archdesc, ["scopecontent"]) || %{}
-      collection_subjects = get_in(archdesc, ["controlaccess", "subject"]) || []
+      collection_subjects = (get_in(archdesc, ["controlaccess", "subject"]) || []) |> List.wrap()
       collection_unitdate = get_in(collection_did, ["unitdate"]) || %{}
 
       {collection_unitid, collection_unit_code} =
         extract_unitid(collection_did)
-
       collection = %{
         title: collection_title,
         unit_code: collection_unit_code,
