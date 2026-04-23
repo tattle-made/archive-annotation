@@ -69,9 +69,9 @@ defmodule Kosh.EAD.XML.Saxmap do
          collection_did when not is_nil(collection_did) <- get_in(archdesc, ["did"]),
          collection_title when not is_nil(collection_title) <-
            get_in(collection_did, ["unittitle"]) do
-      collection_scopecontent = get_in(archdesc, ["scopecontent"]) || %{}
-      collection_subjects = get_in(archdesc, ["controlaccess", "subject"]) || []
-      collection_unitdate = get_in(collection_did, ["unitdate"]) || %{}
+      collection_scopecontent = get_collection_scopecontent(archdesc)
+      collection_subjects = (get_in(archdesc, ["controlaccess", "subject"]) || []) |> List.wrap()
+      collection_unitdate = extract_unitdate(collection_did)
 
       {collection_unitid, collection_unit_code} =
         extract_unitid(collection_did)
@@ -91,6 +91,16 @@ defmodule Kosh.EAD.XML.Saxmap do
       {:ok, {collection, nested_structure}}
     else
       nil -> {:error, "Invalid EAD structure: missing required fields"}
+    end
+  end
+
+  defp get_collection_scopecontent(archdesc) do
+    scopecontent = get_in(archdesc, ["scopecontent"]) || %{}
+
+    if is_list(scopecontent) do
+      List.first(scopecontent)
+    else
+      scopecontent
     end
   end
 
@@ -134,7 +144,7 @@ defmodule Kosh.EAD.XML.Saxmap do
               node
               |> get_in(["scopecontent", "p"])
               |> List.wrap(),
-            unitdate: node["did"]["unitdate"] || %{},
+            unitdate: extract_unitdate(node["did"]),
             dao: node |> extract_dao(),
             subjects: node["controlaccess"]["subject"] |> List.wrap()
           }
@@ -174,7 +184,7 @@ defmodule Kosh.EAD.XML.Saxmap do
         %{
           xlink_title: title,
           xlink_type: type,
-          #Storing in DAOlocs as it is being used to render dao objects in the file display
+          # Storing in DAOlocs as it is being used to render dao objects in the file display
           daolocs:
             Enum.map(List.wrap(dao), fn loc ->
               %{
@@ -225,6 +235,16 @@ defmodule Kosh.EAD.XML.Saxmap do
 
       _ ->
         {%{}, nil}
+    end
+  end
+
+  defp extract_unitdate(did) do
+    unitdate = get_in(did, ["unitdate"]) || %{}
+
+    if is_list(unitdate) do
+      Enum.at(unitdate, 0)
+    else
+      unitdate
     end
   end
 end
