@@ -718,7 +718,11 @@ defmodule Kosh.EAD do
         titleproper
       end
 
-    get_in(titleproper, ["content"])
+    case titleproper do
+      %{"content" => content} when is_binary(content) -> content
+      content when is_binary(content) -> content
+      _ -> nil
+    end
   end
 
   # Creates a temporary file with the given content and returns its path.
