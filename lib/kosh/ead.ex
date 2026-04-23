@@ -698,18 +698,27 @@ defmodule Kosh.EAD do
   end
 
   defp get_name_from_fetched_ead_content(ead_map) do
-    get_in(ead_map, [
-      "OAI-PMH",
-      "GetRecord",
-      "record",
-      "metadata",
-      "ead",
-      "eadheader",
-      "filedesc",
-      "titlestmt",
-      "titleproper",
-      "content"
-    ])
+    titleproper =
+      get_in(ead_map, [
+        "OAI-PMH",
+        "GetRecord",
+        "record",
+        "metadata",
+        "ead",
+        "eadheader",
+        "filedesc",
+        "titlestmt",
+        "titleproper"
+      ])
+
+    titleproper =
+      if is_list(titleproper) do
+        List.first(titleproper)
+      else
+        titleproper
+      end
+
+    get_in(titleproper, ["content"])
   end
 
   # Creates a temporary file with the given content and returns its path.
@@ -1083,7 +1092,8 @@ defmodule Kosh.EAD do
         end
 
       {:error, changeset} ->
-        {:error, "Failed to create file: #{inspect(changeset.errors)}, File Attributes: #{inspect(file_attrs)}"}
+        {:error,
+         "Failed to create file: #{inspect(changeset.errors)}, File Attributes: #{inspect(file_attrs)}"}
     end
   end
 
