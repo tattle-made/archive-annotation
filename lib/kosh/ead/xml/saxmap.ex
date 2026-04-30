@@ -1,4 +1,6 @@
 defmodule Kosh.EAD.XML.Saxmap do
+  require Logger
+
   @moduledoc """
   Parse xml file into Elixir map using saxmap
   """
@@ -106,6 +108,8 @@ defmodule Kosh.EAD.XML.Saxmap do
 
   defp process_children_nodes(nodes) when is_list(nodes) do
     Enum.map(nodes, &process_node/1)
+    # skip unknown nodes like level = "item"
+    |> Enum.reject(&is_nil/1)
   end
 
   defp process_node(node) do
@@ -136,10 +140,16 @@ defmodule Kosh.EAD.XML.Saxmap do
 
       "file" ->
         with title when not is_nil(title) <- node["did"]["unittitle"] do
+          unitid = extract_unitid(node["did"]) |> elem(0)
+
+          if is_nil(get_in(unitid, [:uri])) do
+            Logger.warning("EAD file node missing unitid.uri title=#{inspect(title)} ")
+          end
+
           %{
             type: :file,
             title: title,
-            unitid: extract_unitid(node["did"]) |> elem(0),
+            unitid: unitid,
             description:
               node
               |> get_in(["scopecontent", "p"])
@@ -226,11 +236,24 @@ defmodule Kosh.EAD.XML.Saxmap do
   end
 
   defp extract_unitid(did) do
-    case get_in(did, ["unitid"]) do
-      [id, %{"content" => uri, "type" => type}] ->
+    unitid = did |> get_in(["unitid"]) |> List.wrap()
+
+    id = Enum.find(unitid, &is_binary/1)
+
+    uri_map =
+      Enum.find(unitid, fn
+        %{"content" => _uri, "type" => "aspace_uri"} -> true
+        _ -> false
+      end)
+
+    case {id, uri_map} do
+      {id, %{"content" => uri, "type" => type}} when is_binary(id) ->
         {%{id: id, uri: uri, type: type}, id}
 
-      id when is_binary(id) ->
+      {nil, %{"content" => uri, "type" => type}} ->
+        {%{id: nil, uri: uri, type: type}, nil}
+
+      {id, _} when is_binary(id) ->
         {%{id: id}, id}
 
       _ ->

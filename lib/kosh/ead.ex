@@ -14,6 +14,7 @@ defmodule Kosh.EAD do
   alias Kosh.Repo
   import Ecto.Query
   alias Kosh.EAD.XML.SaxyUpdateEadHandler
+  require Logger
   # import File, only: [read: 1]
 
   @moduledoc """
@@ -1010,7 +1011,15 @@ defmodule Kosh.EAD do
   defp process_nested_structure(nodes, collection_id, series_id, sub_series_id)
        when is_list(nodes) do
     try do
-      Enum.each(nodes, fn node ->
+      nodes
+      |> Enum.with_index()
+      |> Enum.each(fn {node, idx} ->
+        if match?(%{type: :file}, node) and is_nil(get_in(node, [:unitid, :uri])) do
+          Logger.warning(
+            "EAD missing mandatory file uri at index=#{idx} collection_id=#{collection_id} series_id=#{inspect(series_id)} sub_series_id=#{inspect(sub_series_id)} title=#{inspect(Map.get(node, :title))} unitid=#{inspect(Map.get(node, :unitid))}"
+          )
+        end
+
         case process_node_for_db(node, collection_id, series_id, sub_series_id) do
           {:ok, _} -> :ok
           {:error, reason} -> throw({:error, reason})
