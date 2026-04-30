@@ -1,10 +1,15 @@
 defmodule Kosh.Admin do
+  @moduledoc """
+  Admin-only module for operational maintenance tasks.
+
+  This module is intended to be used from the terminal by project administrators,
+  not through public user-facing routes.
+  """
   alias Kosh.EAD.Collection
   alias Kosh.EAD.File
   alias Kosh.EAD.Series
   alias Kosh.EAD.SubSeries
   alias Kosh.Repo
-
   require Logger
 
   @spec delete_all_ead_entities() :: :ok | {:error, String.t()}
