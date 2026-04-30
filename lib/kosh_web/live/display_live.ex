@@ -5,9 +5,12 @@ defmodule KoshWeb.DisplayLive do
 
   @impl Phoenix.LiveView
 
-  def mount(%{"uri" => uri}, _session, socket) do
+  def mount(%{"archival_space" => archival_space, "uri" => uri}, _session, socket) do
     # IO.inspect(socket, label: "id")
-    case EAD.get_file_from_uri(URI.decode(uri)) do
+    case EAD.get_file_from_archival_space_and_uri(
+           URI.decode(archival_space),
+           URI.decode(uri)
+         ) do
       nil ->
         {:ok,
          socket
@@ -42,6 +45,13 @@ defmodule KoshWeb.DisplayLive do
         {:ok,
          assign(socket, file: file, file_emotions: file_emotions, manifest_url: manifest_url)}
     end
+  end
+
+  def mount(_params, _session, socket) do
+    {:ok,
+     socket
+     |> put_flash(:error, "Invalid file URL. Missing archival_space or uri.")
+     |> redirect(to: ~p"/")}
   end
 
   defp fetch_item_uuid(handle_url) do

@@ -133,7 +133,7 @@ defmodule KoshWeb.SearchLive do
                 <div class="bg-white rounded-lg shadow-milli-1 border border-secondary-pale-grey p-6">
                   <div class="flex flex-col gap-2">
                     <%= if result.file_name do %>
-                      <.link navigate={~p"/annotation/display?uri=#{result.uri}"}>
+                      <.link navigate={~p"/annotation/display?archival_space=#{result.archival_space}&uri=#{result.uri}"}>
                         <span class="text-primary-purple font-bold text-xl hover:underline">
                           <%= Phoenix.HTML.raw(highlight(result.file_name, @query)) %>
                         </span>
@@ -176,6 +176,14 @@ defmodule KoshWeb.SearchLive do
                         <span class="font-bold text-primary-purple">URI:</span>
                         <span class="text-secondary-purple">
                           <%= Phoenix.HTML.raw(highlight(result.uri, @query)) %>
+                        </span>
+                      </div>
+                    <% end %>
+                    <%= if result.archival_space do %>
+                      <div>
+                        <span class="font-bold text-primary-purple">Archival Space:</span>
+                        <span class="text-secondary-purple">
+                          <%= Phoenix.HTML.raw(highlight(result.archival_space, @query)) %>
                         </span>
                       </div>
                     <% end %>
