@@ -14,6 +14,7 @@ defmodule Kosh.EAD do
   alias Kosh.Repo
   import Ecto.Query
   alias Kosh.EAD.XML.SaxyUpdateEadHandler
+  require Logger
   # import File, only: [read: 1]
 
   @moduledoc """
@@ -79,6 +80,11 @@ defmodule Kosh.EAD do
       where: c.unitid["uri"] == ^uri
     )
     |> Repo.one()
+  end
+
+  def get_collection_from_oai_identifier(oai_identifier) do
+    Collection
+    |> Repo.get_by(oai_identifier: oai_identifier)
   end
 
   @doc """
@@ -272,6 +278,13 @@ defmodule Kosh.EAD do
     |> Repo.one()
   end
 
+  def get_series_from_uri_collection_id(uri, collection_id) do
+    from(s in Series,
+      where: s.collection_id == ^collection_id and s.unitid["uri"] == ^uri
+    )
+    |> Repo.one()
+  end
+
   def get_sub_series_from_uri(uri) do
     from(s in SubSeries,
       where: s.unitid["uri"] == ^uri
@@ -279,15 +292,22 @@ defmodule Kosh.EAD do
     |> Repo.one()
   end
 
+  def get_sub_series_from_uri_collection_id(uri, collection_id) do
+    from(s in SubSeries,
+      where: s.collection_id == ^collection_id and s.unitid["uri"] == ^uri
+    )
+    |> Repo.one()
+  end
+
   @doc """
   Searches an existing Sub-Series record from the URI. If not found, then create a new series
   """
-  def update_sub_series(attrs) do
+  def update_sub_series(attrs, collection_id) do
     uri = get_in(attrs, [:unitid, :uri])
 
     if not is_nil(uri) do
       result =
-        case get_sub_series_from_uri(uri) do
+        case get_sub_series_from_uri_collection_id(uri, collection_id) do
           nil ->
             case create_sub_series(attrs) do
               {:ok, inserted_series} ->
@@ -325,12 +345,12 @@ defmodule Kosh.EAD do
   @doc """
   Searches an existing Series record from the URI. If not found, then create a new series
   """
-  def update_series(attrs) do
+  def update_series(attrs, collection_id) do
     uri = get_in(attrs, [:unitid, :uri])
 
     if not is_nil(uri) do
       result =
-        case get_series_from_uri(uri) do
+        case get_series_from_uri_collection_id(uri, collection_id) do
           nil ->
             case create_series(attrs) do
               {:ok, inserted_series} ->
@@ -429,6 +449,21 @@ defmodule Kosh.EAD do
       emotion_annotations: [:defined_emotion]
     ])
     |> Repo.get_by(uri: uri)
+  end
+
+  def get_file_from_archival_space_and_uri(archival_space, uri) do
+    File
+    |> preload([
+      :subjects,
+      :collection,
+      :series,
+      :sub_series,
+      accepted_description_annotations: [:file, :user],
+      accepted_subjects_annotations: [:subjects, :file, :user],
+      accepted_agent_annotations: [:agents, :file, :user],
+      emotion_annotations: [:defined_emotion]
+    ])
+    |> Repo.get_by(archival_space: archival_space, uri: uri)
   end
 
   @spec list_files() :: [struct()]
@@ -782,53 +817,59 @@ defmodule Kosh.EAD do
 
   @spec update_file(any(), any()) :: {:error, any()} | {:ok, any()}
   def update_file(subjects, changeset_attrs) do
-    case get_file_from_uri(changeset_attrs.uri) do
-      nil ->
-        case create_file(changeset_attrs) do
-          {:ok, inserted_file} ->
-            case add_subjects_to_file(inserted_file, subjects) do
-              {:ok, _} -> {:ok, inserted_file}
-              {:error, reason} -> {:error, "Failed to add subjects to file: #{reason}"}
-            end
+    with archival_space when is_binary(archival_space) and archival_space != "" <-
+           changeset_attrs.archival_space,
+         uri when is_binary(uri) and uri != "" <- changeset_attrs.uri do
+      case get_file_from_archival_space_and_uri(archival_space, uri) do
+        nil ->
+          case create_file(changeset_attrs) do
+            {:ok, inserted_file} ->
+              case add_subjects_to_file(inserted_file, subjects) do
+                {:ok, _} -> {:ok, inserted_file}
+                {:error, reason} -> {:error, "Failed to add subjects to file: #{reason}"}
+              end
 
-          {:error, changeset} ->
-            {:error, "Failed to create file: #{inspect(changeset.errors)}"}
-        end
+            {:error, changeset} ->
+              {:error, "Failed to create file: #{inspect(changeset.errors)}"}
+          end
 
-      file ->
-        case Repo.transaction(fn ->
-               file = Repo.preload(file, :subjects)
-               changeset = File.changeset(file, changeset_attrs)
+        file ->
+          case Repo.transaction(fn ->
+                 file = Repo.preload(file, :subjects)
+                 changeset = File.changeset(file, changeset_attrs)
 
-               case Repo.update(changeset) do
-                 {:ok, updated} ->
-                   if subjects in [nil] do
-                     updated
-                   else
-                     case add_subjects_to_file(updated, subjects) do
-                       {:ok, _} ->
-                         Repo.get!(File, updated.id) |> Repo.preload(:subjects)
+                 case Repo.update(changeset) do
+                   {:ok, updated} ->
+                     if subjects in [nil] do
+                       updated
+                     else
+                       case add_subjects_to_file(updated, subjects) do
+                         {:ok, _} ->
+                           Repo.get!(File, updated.id) |> Repo.preload(:subjects)
 
-                       {:error, reason} ->
-                         Repo.rollback(reason)
+                         {:error, reason} ->
+                           Repo.rollback(reason)
+                       end
                      end
-                   end
 
-                 {:error, changeset} ->
-                   Repo.rollback(changeset)
-               end
-             end) do
-          {:ok, file} -> {:ok, file}
-          {:error, reason} -> {:error, reason}
-        end
+                   {:error, changeset} ->
+                     Repo.rollback(changeset)
+                 end
+               end) do
+            {:ok, file} -> {:ok, file}
+            {:error, reason} -> {:error, reason}
+          end
+      end
+    else
+      _ -> {:error, "Missing required archival_space or uri for file update"}
     end
   end
 
-  defp update_nested_structure(nodes, collection_id, series_id, sub_series_id)
+  defp update_nested_structure(nodes, collection_id, series_id, sub_series_id, archival_space)
        when is_list(nodes) do
     try do
       Enum.each(nodes, fn node ->
-        case update_node_for_db(node, collection_id, series_id, sub_series_id) do
+        case update_node_for_db(node, collection_id, series_id, sub_series_id, archival_space) do
           {:ok, _} -> :ok
           {:error, reason} -> throw({:error, reason})
         end
@@ -840,16 +881,28 @@ defmodule Kosh.EAD do
     end
   end
 
-  defp update_node_for_db(%{type: :series} = node, collection_id, _series_id, _sub_series_id) do
+  defp update_node_for_db(
+         %{type: :series} = node,
+         collection_id,
+         _series_id,
+         _sub_series_id,
+         archival_space
+       ) do
     series_attrs =
       node
       |> Map.drop([:type, :children])
       |> Map.put(:collection_id, collection_id)
 
     # Insert series
-    case update_series(series_attrs) do
+    case update_series(series_attrs, collection_id) do
       {:ok, updated_series} ->
-        case update_nested_structure(node.children, collection_id, updated_series.id, nil) do
+        case update_nested_structure(
+               node.children,
+               collection_id,
+               updated_series.id,
+               nil,
+               archival_space
+             ) do
           :ok -> {:ok, updated_series}
           {:error, reason} -> {:error, reason}
         end
@@ -859,7 +912,13 @@ defmodule Kosh.EAD do
     end
   end
 
-  defp update_node_for_db(%{type: :subseries} = node, collection_id, series_id, _sub_series_id) do
+  defp update_node_for_db(
+         %{type: :subseries} = node,
+         collection_id,
+         series_id,
+         _sub_series_id,
+         archival_space
+       ) do
     # Drop non-schema fields and add collection_id and series_id
     sub_series_attrs =
       node
@@ -870,13 +929,14 @@ defmodule Kosh.EAD do
       })
 
     # Insert subseries
-    case update_sub_series(sub_series_attrs) do
+    case update_sub_series(sub_series_attrs, collection_id) do
       {:ok, inserted_sub_series} ->
         case update_nested_structure(
                node.children,
                collection_id,
                series_id,
-               inserted_sub_series.id
+               inserted_sub_series.id,
+               archival_space
              ) do
           :ok -> {:ok, inserted_sub_series}
           {:error, reason} -> {:error, reason}
@@ -887,7 +947,13 @@ defmodule Kosh.EAD do
     end
   end
 
-  defp update_node_for_db(%{type: :file} = node, collection_id, series_id, sub_series_id) do
+  defp update_node_for_db(
+         %{type: :file} = node,
+         collection_id,
+         series_id,
+         sub_series_id,
+         archival_space
+       ) do
     # Drop non-schema fields and add IDs
     file_uri = node.unitid.uri
     file_subjects = get_in(node, [:subjects]) || []
@@ -897,6 +963,7 @@ defmodule Kosh.EAD do
       |> Map.drop([:type, :subjects])
       |> Map.merge(%{
         uri: file_uri,
+        archival_space: archival_space,
         collection_id: collection_id,
         series_id: series_id,
         sub_series_id: sub_series_id
@@ -912,7 +979,7 @@ defmodule Kosh.EAD do
     end
   end
 
-  defp update_node_for_db(node, _collection_id, _series_id, _sub_series_id) do
+  defp update_node_for_db(node, _collection_id, _series_id, _sub_series_id, _archival_space) do
     {:error, "Unknown node type: #{inspect(node)}"}
   end
 
@@ -921,12 +988,19 @@ defmodule Kosh.EAD do
            subjects = collection_map.subjects
            attrs = collection_map |> Map.drop([:subjects]) |> Map.put(:upload_path, upload_path)
 
-           with collection_uri when not is_nil(collection_uri) <- get_in(attrs, [:unitid, :uri]),
+           with collection_oai_identifier when not is_nil(collection_oai_identifier) <-
+                  Map.get(attrs, :oai_identifier),
                 existing_collection when not is_nil(existing_collection) <-
-                  get_collection_from_uri(collection_uri),
+                  get_collection_from_oai_identifier(collection_oai_identifier),
                 {:ok, updated_collection} <-
                   update_collection(existing_collection, subjects, attrs) do
-             case update_nested_structure(nested_structure, updated_collection.id, nil, nil) do
+             case update_nested_structure(
+                    nested_structure,
+                    updated_collection.id,
+                    nil,
+                    nil,
+                    updated_collection.archival_space
+                  ) do
                :ok -> :ok
                {:error, reason} -> Repo.rollback("Failed to process nested structure: #{reason}")
              end
@@ -942,7 +1016,7 @@ defmodule Kosh.EAD do
            else
              nil ->
                Repo.rollback(
-                 "Failed to update collection, either collection does not exist or Collection URI is missing"
+                 "Failed to update collection, either collection does not exist or Collection oai_identifier is missing"
                )
 
              {:error, reason} ->
@@ -982,7 +1056,13 @@ defmodule Kosh.EAD do
              {:error, reason} -> Repo.rollback("Failed to add subjects: #{reason}")
            end
 
-           case process_nested_structure(nested_structure, inserted_collection.id, nil, nil) do
+           case process_nested_structure(
+                  nested_structure,
+                  inserted_collection.id,
+                  nil,
+                  nil,
+                  inserted_collection.archival_space
+                ) do
              :ok -> :ok
              {:error, reason} -> Repo.rollback("Failed to process nested structure: #{reason}")
            end
@@ -1005,13 +1085,27 @@ defmodule Kosh.EAD do
     end
   end
 
-  @spec process_nested_structure(list(), integer(), integer() | nil, integer() | nil) ::
+  @spec process_nested_structure(
+          list(),
+          integer(),
+          integer() | nil,
+          integer() | nil,
+          String.t() | nil
+        ) ::
           :ok | {:error, String.t()}
-  defp process_nested_structure(nodes, collection_id, series_id, sub_series_id)
+  defp process_nested_structure(nodes, collection_id, series_id, sub_series_id, archival_space)
        when is_list(nodes) do
     try do
-      Enum.each(nodes, fn node ->
-        case process_node_for_db(node, collection_id, series_id, sub_series_id) do
+      nodes
+      |> Enum.with_index()
+      |> Enum.each(fn {node, idx} ->
+        if match?(%{type: :file}, node) and is_nil(get_in(node, [:unitid, :uri])) do
+          Logger.warning(
+            "EAD missing mandatory file uri at index=#{idx} collection_id=#{collection_id} series_id=#{inspect(series_id)} sub_series_id=#{inspect(sub_series_id)} title=#{inspect(Map.get(node, :title))} unitid=#{inspect(Map.get(node, :unitid))}"
+          )
+        end
+
+        case process_node_for_db(node, collection_id, series_id, sub_series_id, archival_space) do
           {:ok, _} -> :ok
           {:error, reason} -> throw({:error, reason})
         end
@@ -1023,9 +1117,21 @@ defmodule Kosh.EAD do
     end
   end
 
-  @spec process_node_for_db(map(), integer(), integer() | nil, integer() | nil) ::
+  @spec process_node_for_db(
+          map(),
+          integer(),
+          integer() | nil,
+          integer() | nil,
+          String.t() | nil
+        ) ::
           {:ok, struct()} | {:error, String.t()}
-  defp process_node_for_db(%{type: :series} = node, collection_id, _series_id, _sub_series_id) do
+  defp process_node_for_db(
+         %{type: :series} = node,
+         collection_id,
+         _series_id,
+         _sub_series_id,
+         archival_space
+       ) do
     series_attrs =
       node
       |> Map.drop([:type, :children])
@@ -1034,7 +1140,13 @@ defmodule Kosh.EAD do
     # Insert series
     case create_series(series_attrs) do
       {:ok, inserted_series} ->
-        case process_nested_structure(node.children, collection_id, inserted_series.id, nil) do
+        case process_nested_structure(
+               node.children,
+               collection_id,
+               inserted_series.id,
+               nil,
+               archival_space
+             ) do
           :ok -> {:ok, inserted_series}
           {:error, reason} -> {:error, reason}
         end
@@ -1044,7 +1156,13 @@ defmodule Kosh.EAD do
     end
   end
 
-  defp process_node_for_db(%{type: :subseries} = node, collection_id, series_id, _sub_series_id) do
+  defp process_node_for_db(
+         %{type: :subseries} = node,
+         collection_id,
+         series_id,
+         _sub_series_id,
+         archival_space
+       ) do
     # Drop non-schema fields and add collection_id and series_id
     sub_series_attrs =
       node
@@ -1061,7 +1179,8 @@ defmodule Kosh.EAD do
                node.children,
                collection_id,
                series_id,
-               inserted_sub_series.id
+               inserted_sub_series.id,
+               archival_space
              ) do
           :ok -> {:ok, inserted_sub_series}
           {:error, reason} -> {:error, reason}
@@ -1072,7 +1191,13 @@ defmodule Kosh.EAD do
     end
   end
 
-  defp process_node_for_db(%{type: :file} = node, collection_id, series_id, sub_series_id) do
+  defp process_node_for_db(
+         %{type: :file} = node,
+         collection_id,
+         series_id,
+         sub_series_id,
+         archival_space
+       ) do
     # Drop non-schema fields and add IDs
     file_uri = node.unitid.uri
     file_subjects = get_in(node, [:subjects]) || []
@@ -1082,6 +1207,7 @@ defmodule Kosh.EAD do
       |> Map.drop([:type, :subjects])
       |> Map.merge(%{
         uri: file_uri,
+        archival_space: archival_space,
         collection_id: collection_id,
         series_id: series_id,
         sub_series_id: sub_series_id
@@ -1101,7 +1227,7 @@ defmodule Kosh.EAD do
     end
   end
 
-  defp process_node_for_db(node, _collection_id, _series_id, _sub_series_id) do
+  defp process_node_for_db(node, _collection_id, _series_id, _sub_series_id, _archival_space) do
     {:error, "Unknown node type: #{inspect(node)}"}
   end
 

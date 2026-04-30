@@ -1,4 +1,6 @@
 defmodule Kosh.EAD.XML.Saxmap do
+  require Logger
+
   @moduledoc """
   Parse xml file into Elixir map using saxmap
   """
@@ -63,8 +65,12 @@ defmodule Kosh.EAD.XML.Saxmap do
   def extract_contents_from_processed_map(map) when is_map(map) do
     # When get a direct map from uploading OR when get EAD content after fetching from OAI endpoint.
     with ead when not is_nil(ead) <-
-           get_in(map, ["ead"]) ||
+          #  get_in(map, ["ead"]) ||
              get_in(map, ["OAI-PMH", "GetRecord", "record", "metadata", "ead"]),
+         oai_identifier when not is_nil(oai_identifier) <-
+           get_in(map, ["OAI-PMH", "GetRecord", "record", "header", "identifier"]),
+         archival_space when not is_nil(archival_space) <-
+           extract_archival_space(oai_identifier),
          archdesc when not is_nil(archdesc) <- get_in(ead, ["archdesc"]),
          collection_did when not is_nil(collection_did) <- get_in(archdesc, ["did"]),
          collection_title when not is_nil(collection_title) <-
@@ -82,7 +88,9 @@ defmodule Kosh.EAD.XML.Saxmap do
         scopecontent: collection_scopecontent,
         subjects: collection_subjects,
         unitdate: collection_unitdate,
-        unitid: collection_unitid
+        unitid: collection_unitid,
+        oai_identifier: oai_identifier,
+        archival_space: archival_space
       }
 
       children = archdesc |> get_in(["dsc", "c"]) |> List.wrap()
@@ -93,6 +101,15 @@ defmodule Kosh.EAD.XML.Saxmap do
       nil -> {:error, "Invalid EAD structure: missing required fields"}
     end
   end
+
+  defp extract_archival_space(oai_identifier) when is_binary(oai_identifier) do
+    case String.split(oai_identifier, ":", parts: 3) do
+      ["oai", archival_space, _local_identifier] when archival_space != "" -> archival_space
+      _ -> nil
+    end
+  end
+
+  defp extract_archival_space(_), do: nil
 
   defp get_collection_scopecontent(archdesc) do
     scopecontent = get_in(archdesc, ["scopecontent"]) || %{}
@@ -106,6 +123,8 @@ defmodule Kosh.EAD.XML.Saxmap do
 
   defp process_children_nodes(nodes) when is_list(nodes) do
     Enum.map(nodes, &process_node/1)
+    # skip unknown nodes like level = "item"
+    |> Enum.reject(&is_nil/1)
   end
 
   defp process_node(node) do
@@ -136,10 +155,16 @@ defmodule Kosh.EAD.XML.Saxmap do
 
       "file" ->
         with title when not is_nil(title) <- node["did"]["unittitle"] do
+          unitid = extract_unitid(node["did"]) |> elem(0)
+
+          if is_nil(get_in(unitid, [:uri])) do
+            Logger.warning("EAD file node missing unitid.uri title=#{inspect(title)} ")
+          end
+
           %{
             type: :file,
             title: title,
-            unitid: extract_unitid(node["did"]) |> elem(0),
+            unitid: unitid,
             description:
               node
               |> get_in(["scopecontent", "p"])
@@ -226,11 +251,24 @@ defmodule Kosh.EAD.XML.Saxmap do
   end
 
   defp extract_unitid(did) do
-    case get_in(did, ["unitid"]) do
-      [id, %{"content" => uri, "type" => type}] ->
+    unitid = did |> get_in(["unitid"]) |> List.wrap()
+
+    id = Enum.find(unitid, &is_binary/1)
+
+    uri_map =
+      Enum.find(unitid, fn
+        %{"content" => _uri, "type" => "aspace_uri"} -> true
+        _ -> false
+      end)
+
+    case {id, uri_map} do
+      {id, %{"content" => uri, "type" => type}} when is_binary(id) ->
         {%{id: id, uri: uri, type: type}, id}
 
-      id when is_binary(id) ->
+      {nil, %{"content" => uri, "type" => type}} ->
+        {%{id: nil, uri: uri, type: type}, nil}
+
+      {id, _} when is_binary(id) ->
         {%{id: id}, id}
 
       _ ->
