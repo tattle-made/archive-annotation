@@ -23,28 +23,29 @@ defmodule Kosh.Search do
     # Use a helper to build the base query with all joins and where
     base_query = build_search_base_query(pattern)
 
-    # Step 1: Get matching file URIs (with distinct, pagination)
-    file_uris_query =
+    # Step 1: Get matching file keys (archival_space + uri) with distinct, pagination
+    file_keys_query =
       base_query
-      |> select([f], f.uri)
-      |> distinct([f], f.uri)
+      |> select([f], %{archival_space: f.archival_space, uri: f.uri})
+      |> distinct([f], [f.archival_space, f.uri])
       |> limit(^page_size)
       |> offset(^offset)
 
-    file_uris = Repo.all(file_uris_query)
-
-    # Step 2: Get total count (distinct uris)
+    # Step 2: Get total count (distinct file keys)
     total_count_query =
       base_query
-      |> select([f], f.uri)
-      |> distinct([f], f.uri)
+      |> select([f], %{archival_space: f.archival_space, uri: f.uri})
+      |> distinct([f], [f.archival_space, f.uri])
+      |> subquery()
 
     total_count = Repo.aggregate(total_count_query, :count, :uri)
 
-    # Step 3: Fetch files by URI, with all associations preloaded
+    # Step 3: Fetch files by file keys, with all associations preloaded
     files_query =
-      File
-      |> where([f], f.uri in ^file_uris)
+      from(f in File,
+        join: k in subquery(file_keys_query),
+        on: f.archival_space == k.archival_space and f.uri == k.uri
+      )
       |> preload([
         :collection,
         :series,
@@ -58,7 +59,7 @@ defmodule Kosh.Search do
 
     results =
       Repo.all(files_query)
-      |> Enum.uniq_by(& &1.uri)
+      |> Enum.uniq_by(&{&1.archival_space, &1.uri})
       |> Enum.map(&format_file(&1, q))
 
     %{results: results, total_count: total_count}
@@ -87,6 +88,7 @@ defmodule Kosh.Search do
       # file's direct subjects
       # subjects of each annotation
       ilike(f.title, ^pattern) or
+        ilike(f.archival_space, ^pattern) or
         ilike(f.uri, ^pattern) or
         fragment("array_to_string(?, ' ') ILIKE ?", f.description, ^pattern) or
         fragment("?->>'id' ILIKE ?", f.unitid, ^pattern) or
@@ -125,6 +127,7 @@ defmodule Kosh.Search do
       series_name: file.series && file.series.title,
       sub_series_name: file.sub_series && file.sub_series.title,
       description: Enum.join(file.description || [], " "),
+      archival_space: file.archival_space,
       uri: file.uri,
       unitid: file.unitid && file.unitid.id,
       dao_links:
