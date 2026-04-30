@@ -28,6 +28,7 @@ defmodule Kosh.Search do
       base_query
       |> select([f], %{archival_space: f.archival_space, uri: f.uri})
       |> distinct([f], [f.archival_space, f.uri])
+      |> order_by([f], asc: f.archival_space, asc: f.uri)
       |> limit(^page_size)
       |> offset(^offset)
 
@@ -46,6 +47,7 @@ defmodule Kosh.Search do
         join: k in subquery(file_keys_query),
         on: f.archival_space == k.archival_space and f.uri == k.uri
       )
+      |> order_by([_f, k], asc: k.archival_space, asc: k.uri)
       |> preload([
         :collection,
         :series,

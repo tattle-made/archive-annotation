@@ -70,8 +70,6 @@ defmodule KoshWeb.SearchLive do
         search_data
       end
 
-      IO.inspect(search_data.results, label: "RESULTS: ")
-
     {:noreply,
      assign(socket,
        results: search_data.results,
