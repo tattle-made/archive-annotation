@@ -68,8 +68,6 @@ defmodule KoshWeb.UrlEadUploadLive do
       else
         UploadHelpers.ensure_uploads_dir()
 
-        Elixir.File.write("caltech-processed.ex", inspect(processed_map, pretty: true, depth: :infinite))
-
         case EAD.import_fetched_ead_content(processed_map, temp_path, dest_full) do
           {:ok, _collection} ->
             {:ok, %{import_result: success_result("Successfully processed URL: #{endpoint}")}}
