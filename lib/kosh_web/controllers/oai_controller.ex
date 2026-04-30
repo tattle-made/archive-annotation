@@ -24,10 +24,10 @@ defmodule KoshWeb.OaiController do
 
       true ->
         case parse_oai_identifier(id) do
-          {:ok, local_id} ->
+          {:ok, valid_identifier} ->
 
 
-            case OAI.get_and_export_ead_record(local_id) do
+            case OAI.get_and_export_ead_record(valid_identifier) do
               {:ok, ead_xml} ->
                 datestamp = Date.utc_today() |> Date.to_iso8601()
                 xml = build_getrecord_xml(conn, id, mp, datestamp, ead_xml)
@@ -70,12 +70,12 @@ defmodule KoshWeb.OaiController do
 
   # --- helpers ---
 
-  # parse oai:<authority>:<localid> or oai:<authority>:<path/...>
+  # validate oai:<authority>:<localid> or oai:<authority>:<path/...>
   defp parse_oai_identifier("oai:" <> rest) do
     parts = String.split(rest, ":", parts: 2)
 
     case parts do
-      [_authority, local] when local != "" -> {:ok, local}
+      [authority, local] when authority != "" and local != "" -> {:ok, "oai:" <> rest}
       _ -> {:error, :invalid}
     end
   end

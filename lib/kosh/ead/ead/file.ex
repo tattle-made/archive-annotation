@@ -8,6 +8,8 @@ defmodule Kosh.EAD.File do
     field :title, :string
     field :description, {:array, :string}, default: []
     field :uri, :string
+    field :archival_space, :string
+
 
     # all possible fields: address, arrangement, blockquote, chronlist, dao, daogrp, head, list, note, p, scopecontent, table
     # field :scopecontent, :map,
@@ -71,13 +73,15 @@ defmodule Kosh.EAD.File do
       :collection_id,
       :series_id,
       :sub_series_id,
-      :uri
+      :uri,
+      :archival_space
     ])
     |> cast_embed(:unitdate)
     |> cast_embed(:unitid)
     |> cast_embed(:dao)
     |> cast_assoc(:subjects, with: &Kosh.EAD.Subject.changeset/2)
-    |> validate_required([:title, :collection_id, :uri])
+    |> validate_required([:title, :collection_id, :uri, :archival_space])
+    |> unique_constraint([:archival_space, :uri])
     |> then(fn cs ->
       Ecto.Changeset.validate_change(cs, :sub_series_id, fn :sub_series_id, ss_id ->
         if ss_id && is_nil(get_field(cs, :series_id)) do

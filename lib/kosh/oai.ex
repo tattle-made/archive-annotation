@@ -5,8 +5,8 @@ defmodule Kosh.OAI do
   alias Kosh.EAD
   alias Kosh.EAD.Collection
 
-  def get_and_export_ead_record(uri) do
-    case EAD.get_collection_from_uri(uri) do
+  def get_and_export_ead_record(oai_identifier) do
+    case EAD.get_collection_from_oai_identifier(oai_identifier) do
       nil ->
         {:error, :not_found}
 

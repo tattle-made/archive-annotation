@@ -67,6 +67,10 @@ defmodule Kosh.EAD.XML.Saxmap do
     with ead when not is_nil(ead) <-
            get_in(map, ["ead"]) ||
              get_in(map, ["OAI-PMH", "GetRecord", "record", "metadata", "ead"]),
+         oai_identifier when not is_nil(oai_identifier) <-
+           get_in(map, ["OAI-PMH", "GetRecord", "record", "header", "identifier"]),
+         archival_space when not is_nil(archival_space) <-
+           extract_archival_space(oai_identifier),
          archdesc when not is_nil(archdesc) <- get_in(ead, ["archdesc"]),
          collection_did when not is_nil(collection_did) <- get_in(archdesc, ["did"]),
          collection_title when not is_nil(collection_title) <-
@@ -84,7 +88,9 @@ defmodule Kosh.EAD.XML.Saxmap do
         scopecontent: collection_scopecontent,
         subjects: collection_subjects,
         unitdate: collection_unitdate,
-        unitid: collection_unitid
+        unitid: collection_unitid,
+        oai_identifier: oai_identifier,
+        archival_space: archival_space
       }
 
       children = archdesc |> get_in(["dsc", "c"]) |> List.wrap()
@@ -95,6 +101,15 @@ defmodule Kosh.EAD.XML.Saxmap do
       nil -> {:error, "Invalid EAD structure: missing required fields"}
     end
   end
+
+  defp extract_archival_space(oai_identifier) when is_binary(oai_identifier) do
+    case String.split(oai_identifier, ":", parts: 3) do
+      ["oai", archival_space, _local_identifier] when archival_space != "" -> archival_space
+      _ -> nil
+    end
+  end
+
+  defp extract_archival_space(_), do: nil
 
   defp get_collection_scopecontent(archdesc) do
     scopecontent = get_in(archdesc, ["scopecontent"]) || %{}
