@@ -65,7 +65,7 @@ defmodule Kosh.EAD.XML.Saxmap do
   def extract_contents_from_processed_map(map) when is_map(map) do
     # When get a direct map from uploading OR when get EAD content after fetching from OAI endpoint.
     with ead when not is_nil(ead) <-
-           get_in(map, ["ead"]) ||
+          #  get_in(map, ["ead"]) ||
              get_in(map, ["OAI-PMH", "GetRecord", "record", "metadata", "ead"]),
          oai_identifier when not is_nil(oai_identifier) <-
            get_in(map, ["OAI-PMH", "GetRecord", "record", "header", "identifier"]),
