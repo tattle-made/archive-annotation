@@ -402,8 +402,9 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
 
     attrs =
       for {value, attr} <- [
-            # {source, "source"},
-            {"annnomilli-id_#{anno_id}_user_id_#{user_id}_timestamp_#{inserted_at}", "source"},
+            {source, "source"},
+            # {"annomilli-id_#{anno_id}_user_id_#{user_id}_timestamp_#{inserted_at}", "source"},
+            {"annomilli-id_#{anno_id}_user_id_#{user_id}_timestamp_#{inserted_at}", "authfilenumber"},
             {unitid, "id"}
           ],
           value not in [nil, ""] do
