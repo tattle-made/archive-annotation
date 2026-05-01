@@ -105,7 +105,7 @@ defmodule KoshWeb.Components.SubjectAnnotationCard do
         <%= if !@is_featured? do %>
           <div class="text-caption-14 text-primary-grey hover:text-secondary-grey">
             <%= if @annotation.file && @annotation.file.title do %>
-              <.link navigate={"/annotation/display?uri=#{@annotation.file.uri}"}>
+              <.link navigate={"/annotation/display?archival_space=#{@annotation.file.archival_space}&uri=#{@annotation.file.uri}"}>
                 <%= @annotation.file.title %>
               </.link>
               <%= if @annotation.file.unitid && @annotation.file.unitid.id do %>
