@@ -20,7 +20,7 @@ defmodule KoshWeb.NavComponent do
     ~H"""
     <div>
       <% nav_items = [
-        # {"About", ~p"/about"},
+        {"About", ~p"/about"},
         # {"Ethics-Law", ~p"/ethics-law"},
         # {"Milli Sessions", ~p"/milli-sessions"},
         {"Annotation Tool", ~p"/"},
