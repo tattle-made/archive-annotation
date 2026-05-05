@@ -1,33 +1,60 @@
-<div class="flex space-x-3 justify-center">
-  <%= if Enum.empty?(@featured_description_annotations) and Enum.empty?(@featured_subjects_annotations) do %>
+<div class="flex flex-col 2xl:flex-row space-x-3 justify-center">
+  <%= if Enum.empty?(@featured_description_annotations) and Enum.empty?(@featured_subjects_annotations) and Enum.empty?(@featured_agent_annotations) do %>
     <div>
       <p class="text-secondary-purple font-bold text-body-md-18">Featured Annotations</p>
       <p class="text-secondary-grey my-3 mx-1 text-sm">No featured annotations to display.</p>
     </div>
   <% else %>
-    <div class="flex flex-col gap-3 flex-1">
+    <div class="flex flex-col  gap-3 flex-1 lg:mt-6 2xl:mt-0">
       <p class="text-secondary-purple font-bold 2xl:text-body-md-18">Descriptions</p>
       <%= if Enum.empty?(@featured_description_annotations) do %>
         <p class="text-secondary-grey text-sm">No featured annotations to display.</p>
       <% else %>
+          <div class="flex flex-wrap 2xl:flex-col gap-3">
         <%= for annotation <- @featured_description_annotations do %>
-          <.description_annotation_card
-            annotation={annotation}
-            type="approved"
-            display_only?={true}
-            is_featured?={true}
-          />
+            <.description_annotation_card
+              annotation={annotation}
+              type="approved"
+              display_only?={true}
+              is_featured?={true}
+            />
         <% end %>
+          </div>
       <% end %>
     </div>
-    <div class="flex flex-col gap-3 flex-1">
+   <div class="flex flex-col gap-3 flex-1 mt-4 lg:mt-6 2xl:mt-0">
       <p class="text-secondary-purple font-bold 2xl:text-body-md-18">Subjects</p>
       <%= if Enum.empty?(@featured_subjects_annotations) do %>
         <p class="text-secondary-grey text-sm">No featured annotations to display.</p>
       <% else %>
+          <div class="flex flex-wrap 2xl:flex-col gap-3">
         <%= for annotation <- @featured_subjects_annotations do %>
-          <.subject_annotation_card annotation={annotation} type="approved" display_only?={true} is_featured?={true} />
+            <.subject_annotation_card
+              annotation={annotation}
+              type="approved"
+              display_only?={true}
+              is_featured?={true}
+            />
         <% end %>
+          </div>
+      <% end %>
+    </div>
+
+    <div class="flex flex-col  gap-3 flex-1 lg:mt-6 2xl:mt-0">
+      <p class="text-secondary-purple font-bold 2xl:text-body-md-18">Agents</p>
+      <%= if Enum.empty?(@featured_agent_annotations) do %>
+        <p class="text-secondary-grey text-sm">No featured annotations to display.</p>
+      <% else %>
+          <div class="flex flex-wrap 2xl:flex-col gap-3">
+        <%= for annotation <- @featured_agent_annotations do %>
+            <.agent_annotation_card
+              annotation={annotation}
+              type="approved"
+              display_only?={true}
+              is_featured?={true}
+            />
+        <% end %>
+          </div>
       <% end %>
     </div>
   <% end %>
