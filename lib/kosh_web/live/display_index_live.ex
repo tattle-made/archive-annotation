@@ -11,7 +11,7 @@ defmodule KoshWeb.DisplayIndexLive do
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
-    <div class="section-gutter max-h-screen">
+    <div class="section-gutter w-full">
       <div class="w-full max-w-6xl mx-auto p-6">
         <div class="bg-white rounded-lg shadow-md ">
           <div class="bg-primary-purple p-6 flex justify-between items-center">
@@ -38,11 +38,11 @@ defmodule KoshWeb.DisplayIndexLive do
                 </.link> --%>
               </div>
             <% else %>
-              <div class="max-h-[70vh] 2xl:max-h-[50%] overflow-y-auto overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
+              <div class="max-h-[70vh] 2xl:max-h-[60vh] overflow-y-auto overflow-x-auto">
+                <table class="w-full  divide-y divide-gray-200">
                   <thead>
                     <tr>
-                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th class="w-[30%] 2xl:w-[40%] px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Title
                       </th>
                       <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -60,7 +60,7 @@ defmodule KoshWeb.DisplayIndexLive do
                   <tbody class="bg-white divide-y divide-gray-200">
                     <%= for file <- @files do %>
                       <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-normal break-words">
                           <%= file.title %>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
