@@ -49,6 +49,13 @@ defmodule KoshWeb.AdminRoutesDisplayLive do
           <span>Export EAD XML Collections with updated annotations</span>
           <img src="/images/redirect-color-primary.svg" alt="logo">
         </.link>
+        <.link
+          navigate={~p"/admin/export-subjects"}
+          class="flex items-center text-secondary-purple font-semibold hover:underline"
+        >
+          <span>Export Milli Local Knowledge Subjects</span>
+          <img src="/images/redirect-color-primary.svg" alt="logo">
+        </.link>
       </div>
 
       <div class="mt-8">

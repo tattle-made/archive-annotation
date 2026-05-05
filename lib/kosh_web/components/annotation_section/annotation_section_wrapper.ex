@@ -43,10 +43,16 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationSectionWrapper do
       |> Enum.sort_by(& &1.inserted_at, :desc)
       |> Enum.take(3)
 
+    latest_accepted_agent_annotations =
+      file.accepted_agent_annotations
+      |> Enum.sort_by(& &1.inserted_at, :desc)
+      |> Enum.take(3)
+
     socket =
       assign(socket,
         latest_accepted_description_annotations: latest_accepted_description_annotations,
-        latest_accepted_subjects_annotations: latest_accepted_subjects_annotations
+        latest_accepted_subjects_annotations: latest_accepted_subjects_annotations,
+        latest_accepted_agent_annotations: latest_accepted_agent_annotations
       )
 
     # IO.inspect(socket, label: "Socket inside wrapper in update: ")

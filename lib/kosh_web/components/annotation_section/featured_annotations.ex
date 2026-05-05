@@ -1,11 +1,8 @@
 defmodule KoshWeb.Components.AnnotationSection.FeaturedAnnotations do
   use Phoenix.LiveComponent
-  import KoshWeb.CoreComponents
-  alias Kosh.EAD
-  alias Kosh.Annotations
-  import Phoenix.LiveView
   import KoshWeb.Components.DescriptionAnnotationCard
   import KoshWeb.Components.SubjectAnnotationCard
+  import KoshWeb.Components.AgentAnnotationCard
 
   def mount(socket) do
     {:ok, socket}

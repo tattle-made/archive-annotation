@@ -5,8 +5,8 @@
   <p class="text-[#E9FFB1] text-body-lg-24 sm:text-heading-28 xl:text-display-40 font-bold mb-9">
     Discover what others have to say about these collections.
   </p>
-  <div class="py-10 sm:py-14 xl:py-20 bg-white flex flex-col lg:flex-row w-[90%] sm:w-[85%] xl:w-[80%] mx-auto rounded-lg space-y-10 lg:space-y-0 lg:space-x-10">
-    <div class="w-full lg:w-1/4 px-4 2xl:px-8">
+  <div class=" px-2 md:px-4 lg:px-6 2xl:px-8 py-10 sm:py-14 xl:py-20 bg-white flex flex-col lg:flex-row justify-center w-[90%] sm:w-[85%] xl:w-[80%] mx-auto rounded-lg space-y-10 lg:space-y-0 lg:space-x-10">
+    <div class="w-full lg:w-1/4 2xl:w-[15%] flex flex-col shrink-0">
       <button
         phx-click="show_featured"
         phx-target={@myself}
@@ -121,6 +121,7 @@
           current_user={@current_user}
           featured_description_annotations={@latest_accepted_description_annotations}
           featured_subjects_annotations={@latest_accepted_subjects_annotations}
+          featured_agent_annotations={@latest_accepted_agent_annotations}
         />
       <% 1-> %>
         <.live_component
