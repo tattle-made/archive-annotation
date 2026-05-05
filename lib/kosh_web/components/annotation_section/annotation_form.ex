@@ -10,11 +10,20 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
   def mount(socket) do
     form = to_form(%{}, as: "annotation_form")
 
-    ignore_type = [
-      "http://www.loc.gov/standards/mads/rdf/v1#Geographic",
-      "http://xmlns.com/foaf/0.1/Group",
-      "http://xmlns.com/foaf/0.1/Organization",
-      "http://xmlns.com/foaf/0.1/Person"
+    # ignore_type = [
+    #   "http://www.loc.gov/standards/mads/rdf/v1#Geographic",
+    #   "http://xmlns.com/foaf/0.1/Group",
+    #   "http://xmlns.com/foaf/0.1/Organization",
+    #   "http://xmlns.com/foaf/0.1/Person"
+    # ]
+
+    keep_types = [
+      "madsrdf:Title",
+      "madsrdf:PersonalName",
+      "madsrdf:Geographic",
+      "madsrdf:CorporateName",
+      "madsrdf:FamilyName",
+      "madsrdf:Occupation"
     ]
 
     # agents_types_raw = EAD.get_all_lcnaf_types()
@@ -26,7 +35,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
 
     agent_types_options =
       agents_types_raw
-      |> Enum.filter(fn t -> not Enum.member?(ignore_type, t.type) end)
+      |> Enum.filter(fn t ->  Enum.member?(keep_types, t.type) end)
       |> Enum.map(fn t -> {t.type, to_string(t.id)} end)
 
     socket =
@@ -296,7 +305,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
 
     # Check for existing subjects
     {existing_subjects_ids, new_subjects} = split_number_words(subjects)
-# The new: is added to all the new subjects in the annotation form in case there is an pure integer entry, it won't be treated as a Subject ID.
+    # The new: is added to all the new subjects in the annotation form in case there is an pure integer entry, it won't be treated as a Subject ID.
     new_subjects =
       Enum.map(new_subjects, fn sub ->
         case sub do

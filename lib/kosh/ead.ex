@@ -180,7 +180,11 @@ defmodule Kosh.EAD do
             if not Elixir.File.exists?(file_path) do
               {:error, "Collection file not found at path: #{file_path}"}
             else
-              SaxyUpdateEadHandler.run_stream_read(file_path, files_with_annotations)
+              SaxyUpdateEadHandler.run_stream_read(
+                file_path,
+                collection.archival_space,
+                files_with_annotations
+              )
             end
 
           {:error, reason} ->
@@ -235,7 +239,10 @@ defmodule Kosh.EAD do
             if not Elixir.File.exists?(file_path) do
               {:error, "Collection file not found at path: #{file_path}"}
             else
-              SaxyUpdateEadHandler.run_stream_read(file_path, files_with_annotations,
+              SaxyUpdateEadHandler.run_stream_read(
+                file_path,
+                collection.archival_space,
+                files_with_annotations,
                 include_xml_declaration: false
               )
             end
@@ -474,7 +481,7 @@ defmodule Kosh.EAD do
   end
 
   @doc """
-  Lists all files with approved annotations for a given collection.
+  Lists all files with approved annotations for a given collection. The return value is a list of formatted files.
 
   ## Parameters
     - collection_id: The ID of the collection to fetch files from
@@ -506,9 +513,13 @@ defmodule Kosh.EAD do
         |> where([f], f.collection_id == ^collection_id)
         |> preload([
           :accepted_description_annotations,
-          accepted_subjects_annotations: [:subjects]
+          accepted_subjects_annotations: [:subjects],
+          accepted_agent_annotations: [:agents],
+          emotion_annotations: [:defined_emotion]
         ])
         |> Repo.all()
+
+      agent_types_map = :persistent_term.get(:lcnaf_types_map)
 
       result =
         files
@@ -518,6 +529,7 @@ defmodule Kosh.EAD do
         # |> IO.inspect(label: "FILTERED FILES WITH ANNOTATIONS: ")
         |> Enum.map(fn f ->
           %{
+            archival_space: f.archival_space,
             unitid: %{
               id: f.unitid && f.unitid.id,
               uri: f.unitid && f.unitid.uri,
@@ -552,6 +564,44 @@ defmodule Kosh.EAD do
                   anno_id: s.anno_id,
                   user_id: s.user_id,
                   inserted_at: to_sql_ms(s.anno_inserted_at)
+                }
+              end),
+            agents_annotations:
+              f.accepted_agent_annotations
+              |> Enum.flat_map(fn aa ->
+                (aa.agents || [])
+                |> Enum.map(fn a ->
+                  Map.merge(a, %{
+                    anno_id: aa.id,
+                    user_id: aa.user_id,
+                    anno_inserted_at: aa.inserted_at
+                  })
+                end)
+              end)
+              |> Enum.map(fn a ->
+                %{
+                  content: a.name,
+                  source: a.source,
+                  unitid: a.unitid,
+                  anno_id: a.anno_id,
+                  user_id: a.user_id,
+                  types: a.type_ids |> Enum.map(fn t -> agent_types_map[t] end),
+                  inserted_at: to_sql_ms(a.anno_inserted_at)
+                }
+              end),
+            emotions_annotations:
+              f.emotion_annotations
+              |> Enum.map(fn a ->
+                %{
+                  content:
+                    if(a.defined_emotion.name == "no_response",
+                      do: "no-emotional-response",
+                      else: "#{a.defined_emotion.name}-#{a.weight}"
+                    ),
+                  source: "mlk-emotion",
+                  anno_id: a.id,
+                  user_id: a.user_id,
+                  inserted_at: to_sql_ms(a.inserted_at)
                 }
               end)
           }
