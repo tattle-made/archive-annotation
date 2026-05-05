@@ -3,25 +3,52 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
 
   @moduledoc """
   Saxy Handler for parsing the EAD XML and add annotations to it.
-  Format of files data from the database:
+  Format of the formatted files data from the database:
   [
     %{
+      archival_space: "ncbs",
       unitid: %{
         id: "MS-012-1-1-1-1",
         uri: "/repositories/2/archival_objects/9728",
         type: "aspace_uri"
       },
       description_annotations: [
-        %{id: 1, description: "Annotation 1"},
-        %{id: 2, description: "Annotation 2"}
+        %{
+          id: 1,
+          description: "Annotation 1",
+          user_id: 42,
+          inserted_at: "2026-05-05 10:30:00.123"
+        }
       ],
       subjects_annotations: [
-            %{
-              content: "Trail Creek Watershed (Jackson County, Or.)",
-              source: "loc",
-              unitid: "http://id.loc.gov/authorities/subjects/sh00000015"
-            }
-
+        %{
+          content: "Trail Creek Watershed (Jackson County, Or.)",
+          source: "loc",
+          unitid: "http://id.loc.gov/authorities/subjects/sh00000015",
+          anno_id: 11,
+          user_id: 42,
+          inserted_at: "2026-05-05 10:35:00.456"
+        }
+      ],
+      agents_annotations: [
+        %{
+          content: "Coleman, Leslie",
+          source: "lcnaf",
+          unitid: "http://id.loc.gov/authorities/names/n12345678",
+          anno_id: 12,
+          user_id: 42,
+          types: ["madsrdf:PersonalName"],
+          inserted_at: "2026-05-05 10:40:00.789"
+        }
+      ],
+      emotions_annotations: [
+        %{
+          content: "happy-high",
+          source: "mlk-emotion",
+          anno_id: 13,
+          user_id: 42,
+          inserted_at: "2026-05-05 10:45:00.111"
+        }
       ]
     }
   ]
@@ -39,7 +66,8 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
             in_controlaccess: false,
             in_subject_tag: false,
             include_xml_declaration: true,
-            in_ead?: false
+            in_ead?: false,
+            archival_space: nil
 
   @impl true
   def handle_event(:start_document, prolog, state) do
@@ -171,7 +199,10 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     # IO.inspect(chars, label: "CHARS")
 
     current_file =
-      Enum.find(state.files, fn file -> get_in(file, [:unitid, :uri]) == String.trim(chars) end)
+      Enum.find(state.files, fn file ->
+        get_in(file, [:unitid, :uri]) == String.trim(chars) and
+          get_in(file, [:archival_space]) == state.archival_space
+      end)
 
     # if current_file != nil do IO.inspect(current_file, label: "CURRENT_FILE: ") end
 
@@ -270,12 +301,22 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     # add new subjects after creating controlaccess
     if !state.in_controlaccess and not is_nil(current_file) do
       new_subs = state.current_file.subjects_annotations || []
+      new_agents = state.current_file.agents_annotations || []
+      emotions = state.current_file.emotions_annotations || []
 
       if(new_subs != []) do
         write(state, "<controlaccess>")
 
         Enum.each(new_subs, fn sub ->
           write_new_subject(state, sub)
+        end)
+
+        Enum.each(new_agents, fn sub ->
+          write_new_agent(state, sub)
+        end)
+
+        Enum.each(emotions, fn sub ->
+          write_new_emotion(state, sub)
         end)
 
         write(state, "</controlaccess>")
@@ -324,9 +365,19 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     new_subs = current_file.subjects_annotations || []
 
     new_subs = remove_existing_subjects(state.subjects_stack, new_subs)
+    new_agents = state.current_file.agents_annotations || []
+    emotions = state.current_file.emotions_annotations || []
 
     Enum.each(new_subs, fn sub ->
       write_new_subject(state, sub)
+    end)
+
+    Enum.each(new_agents, fn sub ->
+      write_new_agent(state, sub)
+    end)
+
+    Enum.each(emotions, fn sub ->
+      write_new_emotion(state, sub)
     end)
 
     write(state, "</#{name}>")
@@ -404,7 +455,8 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
       for {value, attr} <- [
             {source, "source"},
             # {"annomilli-id_#{anno_id}_user_id_#{user_id}_timestamp_#{inserted_at}", "source"},
-            {"annomilli-id_#{anno_id}_user_id_#{user_id}_timestamp_#{inserted_at}", "authfilenumber"},
+            {"annomilli-id_#{anno_id}_user_id_#{user_id}_timestamp_#{inserted_at}",
+             "authfilenumber"},
             {unitid, "id"}
           ],
           value not in [nil, ""] do
@@ -417,6 +469,95 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     str =
       case attrs do
         "" -> "<subject>#{escaped_content}</subject>"
+        _ -> "<subject #{attrs}>#{escaped_content}</subject>"
+      end
+
+    write(
+      state,
+      str
+    )
+  end
+
+  # Takes agent object and writes corresponding agent Tag
+  defp write_new_agent(state, agent) do
+    # IO.inspect(agent, label: "write_new_agent received agent")
+    source = Map.get(agent, :source)
+    unitid = Map.get(agent, :unitid)
+    content = Map.get(agent, :content)
+    anno_id = Map.get(agent, :anno_id)
+    user_id = Map.get(agent, :user_id)
+    types = Map.get(agent, :types)
+    inserted_at = Map.get(agent, :inserted_at)
+
+    attrs =
+      for {value, attr} <- [
+            {source, "source"},
+            {"annomilli-id_#{anno_id}_user_id_#{user_id}_timestamp_#{inserted_at}",
+             "authfilenumber"},
+            {unitid, "id"}
+          ],
+          value not in [nil, ""] do
+        "#{attr}=\"#{xml_escape(value)}\""
+      end
+      |> Enum.join(" ")
+
+    escaped_content = xml_escape(content)
+
+    labels = [
+      {"madsrdf:Title", "title"},
+      {"madsrdf:PersonalName", "persname"},
+      {"madsrdf:Geographic", "geogname"},
+      {"madsrdf:CorporateName", "corpname"},
+      {"madsrdf:FamilyName", "famname"},
+      {"madsrdf:Occupation", "occupation"}
+    ]
+
+    matched_label_tuple = Enum.find(labels, fn l -> Enum.member?(types, elem(l, 0)) end)
+
+    label =
+      case matched_label_tuple do
+        nil -> "name"
+        tuple when is_tuple(tuple) -> elem(tuple, 1)
+        _ -> "name"
+      end
+
+    str =
+      case attrs do
+        "" -> "<#{label}>#{escaped_content}</#{label}>"
+        _ -> "<#{label} #{attrs}>#{escaped_content}</#{label}>"
+      end
+
+    write(
+      state,
+      str
+    )
+  end
+
+  # Takes emotion object and writes the annotation in subject tag
+  defp write_new_emotion(state, emotion) do
+    # IO.inspect(emotion, label: "write_new_emotion received emotion")
+    source = Map.get(emotion, :source)
+    content = Map.get(emotion, :content)
+    anno_id = Map.get(emotion, :anno_id)
+    user_id = Map.get(emotion, :user_id)
+    inserted_at = Map.get(emotion, :inserted_at)
+
+    attrs =
+      for {value, attr} <- [
+            {source, "source"},
+            {"annomilli-id_#{anno_id}_user_id_#{user_id}_timestamp_#{inserted_at}",
+             "authfilenumber"}
+          ],
+          value not in [nil, ""] do
+        "#{attr}=\"#{xml_escape(value)}\""
+      end
+      |> Enum.join(" ")
+
+    escaped_content = xml_escape(content)
+
+    str =
+      case attrs do
+        "" -> "<subject source=\"mlk-emotion\">#{escaped_content}</subject>"
         _ -> "<subject #{attrs}>#{escaped_content}</subject>"
       end
 
@@ -454,6 +595,7 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
 
   ## Parameters
     - xml_path: Path to the XML file to process
+    - archival_space: Archival Space which the collection belongs to
     - input: List of files with their annotations
 
   ## Returns
@@ -461,24 +603,31 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     - `{:error, reason}` - If an error occurs during processing
 
   ## Examples
-      iex> run_stream_read("/path/to/file.xml", [%{unitid: %{id: "123"}}])
+      iex> run_stream_read("/path/to/file.xml", "ncbs", [%{unitid: %{id: "123"}}])
       {:ok, "<xml>processed content</xml>"}
 
-      iex> run_stream_read("/nonexistent.xml", [])
+      iex> run_stream_read("/nonexistent.xml", "ncbs", [])
       {:error, "File not found: /nonexistent.xml"}
   """
-  @spec run_stream_read(Path.t(), list(map()), keyword()) ::
+  @spec run_stream_read(Path.t(), String.t(), list(map()), keyword()) ::
           {:ok, String.t()} | {:error, String.t()}
-  def run_stream_read(path, input, opts \\ [])
+  def run_stream_read(path, archival_space, input, opts \\ [])
 
-  def run_stream_read(xml_path, input, opts) when is_binary(xml_path) do
+  def run_stream_read(xml_path, archival_space, input, opts)
+      when is_binary(xml_path) and not is_nil(archival_space) do
     include = Keyword.get(opts, :include_xml_declaration, true)
 
     try do
       # Open a StringIO to capture output
       input_stream = File.stream!(xml_path, 2048)
       {:ok, out_device} = StringIO.open("")
-      initial_state = %__MODULE__{io: out_device, files: input, include_xml_declaration: include}
+
+      initial_state = %__MODULE__{
+        io: out_device,
+        files: input,
+        archival_space: archival_space,
+        include_xml_declaration: include
+      }
 
       # Parse the string in SAX mode, streaming events to this module
       {:ok, final_state} =
@@ -499,7 +648,7 @@ defmodule Kosh.EAD.XML.SaxyUpdateEadHandler do
     end
   end
 
-  def run_stream_read(_invalid_path, _input, _opts) do
+  def run_stream_read(_invalid_path, _archival_space, _input, _opts) do
     {:error, "Invalid file path"}
   end
 end

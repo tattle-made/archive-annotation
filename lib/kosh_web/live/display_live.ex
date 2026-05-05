@@ -42,6 +42,8 @@ defmodule KoshWeb.DisplayLive do
         # IO.inspect(file, label: "Display File")
         file_emotions = Annotations.list_emotion_counts_by_file(file.id)
         # IO.inspect(file_emotions)
+        # IO.inspect(file.accepted_agent_annotations, label: "AGENTS: ")
+        # IO.inspect(file.emotion_annotations, label: "emotions: ")
         {:ok,
          assign(socket, file: file, file_emotions: file_emotions, manifest_url: manifest_url)}
     end
