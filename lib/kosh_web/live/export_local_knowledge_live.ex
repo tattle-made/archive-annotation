@@ -1,6 +1,6 @@
-defmodule KoshWeb.ExportSubjectsLive do
+defmodule KoshWeb.ExportLocalKnowledgeLive do
   use KoshWeb, :live_view
-  alias Kosh.ExportSubjects
+  alias Kosh.ExportLocalKnowledge
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -8,7 +8,7 @@ defmodule KoshWeb.ExportSubjectsLive do
   end
 
   def handle_event("export", _params, socket) do
-    case ExportSubjects.export_mlk_subjects() do
+    case ExportLocalKnowledge.export_mlk_subjects() do
       {:ok, output_str} ->
         {:noreply,
          push_event(socket, "download", %{
@@ -34,15 +34,16 @@ defmodule KoshWeb.ExportSubjectsLive do
     ~H"""
     <div id="export-handler" phx-hook="Download" class="p-6">
       <div class="mb-6">
-        <h2 class="text-2xl font-semibold text-primary-black mb-2">Export Subjects</h2>
-        <p class="text-primary-grey">Download the complete list of Milli-Local-Knowledge subjects in JSON-LD format.</p>
+        <h2 class="text-2xl font-semibold text-primary-black mb-2">Export Milli Local Knowledge</h2>
+        <p class="text-primary-grey">Download the complete list of Milli-Local-Knowledge entries in JSON-LD format.</p>
       </div>
 
       <button
         phx-click="export"
         class="px-4 py-2 bg-primary-purple text-white rounded hover:bg-secondary-purple transition-colors"
+        phx-disable-with="Exporting Milli Local Knowledge..."
       >
-        Export Subjects
+        Export Milli Local Knowledge
       </button>
     </div>
     """

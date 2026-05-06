@@ -35,7 +35,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
 
     agent_types_options =
       agents_types_raw
-      |> Enum.filter(fn t ->  Enum.member?(keep_types, t.type) end)
+      |> Enum.filter(fn t -> Enum.member?(keep_types, t.type) end)
       |> Enum.map(fn t -> {t.type, to_string(t.id)} end)
 
     socket =
@@ -305,6 +305,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
 
     # Check for existing subjects
     {existing_subjects_ids, new_subjects} = split_number_words(subjects)
+
     # The new: is added to all the new subjects in the annotation form in case there is an pure integer entry, it won't be treated as a Subject ID.
     new_subjects =
       Enum.map(new_subjects, fn sub ->
@@ -676,7 +677,14 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
             />
           </div>
           <div class="w-full lg:w-1/2 subjects text-gray-500 h-fit">
-            <p class="text-secondary-purple font-bold text-body-md-18 mb-2">Subjects</p>
+            <p class="text-secondary-purple font-bold text-body-md-18 ">Subjects</p>
+            <p class="font-normal text-xs mb-3 text-primary-purple">
+              Search Subjects from
+              <span class="underline font-medium" title="Library of Congress Subject Headings">
+                LCSH
+              </span>
+              or add new subjects
+            </p>
             <.live_select
               id="annotation_subjects"
               field={@form[:subjects]}
@@ -718,7 +726,13 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
         </div>
 
         <div class="flex flex-col mt-4">
-          <p class="text-secondary-purple font-bold text-body-md-18 mb-2">Agents</p>
+          <p class="text-secondary-purple font-bold text-body-md-18">People, Places, Organisations</p>
+          <p class="font-normal text-xs mb-3 text-primary-purple">
+            Search People, Places, Organizations from <span
+              class="underline font-medium"
+              title="Library of Congress Name Authority File"
+            >LCNAF</span> or add new
+          </p>
 
           <.live_select
             id="annotation_agents"
@@ -728,7 +742,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
             options={[]}
             debounce={1000}
             mode={:quick_tags}
-            placeholder="Search Agents..."
+            placeholder="Search People, Places, Organisations..."
             text_input_class="w-full p-3 text-secondary-purple border-2 border-primary-purple border-dotted rounded-[4px] focus:border-secondary-purple active:border-primary-purple focus:ring-0 focus:outline-none focus:border-solid focus:rounded-none active:outline-none outline-none ring-0"
             container_extra_class="gap-5 flex flex-col"
             tags_container_class="w-full flex flex-col gap-5 [&:not(:has(*))]:hidden"

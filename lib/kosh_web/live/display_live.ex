@@ -311,7 +311,7 @@ defmodule KoshWeb.DisplayLive do
           </div>
           <!-- Agent(s) Section -->
           <div>
-            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">Agents Annotations</h2>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">People, Places, Organisations Annotations</h2>
             <div class="space-y-2 max-h-60 overflow-y-auto">
               <%= if length(@file.accepted_agent_annotations) > 0 do %>
                 <%= for annotation <- @file.accepted_agent_annotations do %>
@@ -323,7 +323,7 @@ defmodule KoshWeb.DisplayLive do
                 <% end %>
               <% else %>
                 <div class="bg-gray-100 rounded p-4">
-                  <p class="text-gray-500">No Agents</p>
+                  <p class="text-gray-500">No Entries to display</p>
                 </div>
               <% end %>
             </div>
