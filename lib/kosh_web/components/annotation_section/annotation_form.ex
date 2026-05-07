@@ -124,19 +124,19 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
       cond do
         # If no options found, show "Add new Subject" option
         options == [] ->
-          [{"Add new Subject \"#{text}\"", "new:#{text}"}]
+          [{"Add new Subject \"#{text}\" to Milli Local Knowledge", "new:#{text}"}]
 
         # If no exact match and options >= 100, show both "Add new" and "Show more"
         not has_exact_match and length(options) >= 100 ->
           options ++
             [
-              {"No exact match found, Add new Subject \"#{text}\"", "new:#{text}"},
+              {"No exact match found, Add new Subject \"#{text}\" to Milli Local Knowledge", "new:#{text}"},
               {"Show more for #{text}", "__SHOW_MORE__"}
             ]
 
         # If no exact match, show "Add new" option
         not has_exact_match ->
-          options ++ [{"No exact match found, Add new Subject \"#{text}\"", "new:#{text}"}]
+          options ++ [{"No exact match found, Add new Subject \"#{text}\" to Milli Local Knowledge", "new:#{text}"}]
 
         # If options >= 100, show "Show more" option
         length(options) >= 100 ->
@@ -808,7 +808,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
             phx-target={@myself}
             class="text-sm text-secondary-purple mr-auto mt-1"
           >
-            No Results Found. Add Custom Agent: <b>"<%= @agents_curr_text %>"</b>
+            No Results Found. Add Custom Entry to Milli Local Knowledge: <b>"<%= @agents_curr_text %>"</b>
           </button>
           <div
             :if={@agents_loading}
