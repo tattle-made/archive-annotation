@@ -115,6 +115,7 @@ defmodule KoshWeb.Router do
       live "/support", InfoRoutes.SupportLive, :index
       live "/contact", InfoRoutes.ContactLive, :index
       live "/join-us", InfoRoutes.JoinUsLive, :index
+      live "/docs", InfoRoutes.DocsLive, :index
 
       live "/annotation/display", DisplayLive, :show
       # live "/annotation/display/:uri", DisplayLive, :show
