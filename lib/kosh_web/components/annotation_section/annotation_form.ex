@@ -5,6 +5,7 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
   alias Kosh.EAD
   alias Kosh.Annotations
   import Phoenix.LiveView
+  require Logger
 
   @impl true
   def mount(socket) do
@@ -47,7 +48,9 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
         agents_custom_form_options: [],
         agents_submitted_customs: nil,
         agent_types: agent_types_options,
-        agent_types_map: agent_types_map
+        agent_types_map: agent_types_map,
+        subjects_loading: false,
+        agents_loading: false
       )
 
     {:ok, socket}
@@ -62,8 +65,8 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
   end
 
   @impl true
-  def handle_event("live_select_change", %{"text" => text, "id" => "annotation_agents"}, socket) do
-    results = EAD.search_agents(text)
+  def handle_async(:search_agents, {:ok, results}, socket) do
+    # results = EAD.search_agents(text)
 
     display_option =
       results
@@ -89,13 +92,25 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
         true
       end
 
-    socket = assign(socket, agents_curr_text: text, agents_no_suggestions: no_suggestions)
+    socket =
+      assign(socket,
+        # agents_curr_text: text,
+        agents_no_suggestions: no_suggestions,
+        agents_loading: false
+      )
+
     {:noreply, socket}
   end
 
-  def handle_event("live_select_change", %{"text" => text, "id" => "annotation_subjects"}, socket) do
+  def handle_async(:search_agents, {:exit, reason}, socket) do
+    Logger.warning("Agent search async task failed: #{inspect(reason)}")
+    {:noreply, assign(socket, agents_loading: false)}
+  end
+
+  @impl true
+  def handle_async(:search_subjects, {:ok, {text, subjects}}, socket) do
+    # subjects = EAD.search_subjects(text)
     normalized_text = String.downcase(String.trim(text))
-    subjects = EAD.search_subjects(text)
     options = Enum.map(subjects, fn subject -> {subject.content, subject.id} end)
 
     socket = assign(socket, subjects_options: options)
@@ -133,7 +148,26 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
       end
 
     send_update(LiveSelect.Component, id: "annotation_subjects", options: display_options)
-    {:noreply, socket}
+    {:noreply, assign(socket, subjects_loading: false)}
+  end
+
+  def handle_async(:search_subjects, {:exit, reason}, socket) do
+    Logger.warning("Subject search async task failed: #{inspect(reason)}")
+    {:noreply, assign(socket, subjects_loading: false)}
+  end
+
+  def handle_event("live_select_change", %{"text" => text, "id" => "annotation_subjects"}, socket) do
+    # normalized_text = String.downcase(String.trim(text))
+    socket = assign(socket, subjects_loading: true)
+    send_update(LiveSelect.Component, id: "annotation_subjects", options: [])
+    {:noreply, start_async(socket, :search_subjects, fn -> {text, EAD.search_subjects(text)} end)}
+  end
+
+  @impl true
+  def handle_event("live_select_change", %{"text" => text, "id" => "annotation_agents"}, socket) do
+    socket = assign(socket, agents_curr_text: text, agents_loading: true)
+    send_update(LiveSelect.Component, id: "annotation_agents", options: [])
+    {:noreply, start_async(socket, :search_agents, fn -> EAD.search_agents(text) end)}
   end
 
   def handle_event("live_select_change", %{"text" => text, "id" => live_select_id}, socket)
@@ -680,9 +714,11 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
             <p class="text-secondary-purple font-bold text-body-md-18 ">Subjects</p>
             <p class="font-normal text-xs mb-3 text-primary-purple">
               Search Subjects from
-              <span class="underline font-medium" title="Library of Congress Subject Headings">
-                LCSH
-              </span>
+              <span
+                class="underline font-medium cursor-pointer"
+                title="Library of Congress Subject Headings"
+              >
+                LCSH</span>
               or add new subjects
             </p>
             <.live_select
@@ -722,16 +758,27 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
                 <% end %>
               </:option>
             </.live_select>
+            <div
+              :if={@subjects_loading}
+              class="mt-1 inline-flex items-center gap-2 text-xs text-secondary-purple"
+            >
+              <span class="h-3 w-3 animate-spin rounded-full border-2 border-primary-purple border-t-transparent">
+              </span>
+              Searching...
+            </div>
           </div>
         </div>
 
         <div class="flex flex-col mt-4">
           <p class="text-secondary-purple font-bold text-body-md-18">People, Places, Organisations</p>
           <p class="font-normal text-xs mb-3 text-primary-purple">
-            Search People, Places, Organizations from <span
-              class="underline font-medium"
+            Search People, Places, Organizations from
+            <span
+              class="underline font-medium cursor-pointer"
               title="Library of Congress Name Authority File"
-            >LCNAF</span> or add new
+            >
+              LCNAF</span>
+            or add new
           </p>
 
           <.live_select
@@ -763,7 +810,14 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
           >
             No Results Found. Add Custom Agent: <b>"<%= @agents_curr_text %>"</b>
           </button>
-
+          <div
+            :if={@agents_loading}
+            class="mt-1 inline-flex items-center gap-2 text-xs text-secondary-purple"
+          >
+            <span class="h-3 w-3 animate-spin rounded-full border-2 border-primary-purple border-t-transparent">
+            </span>
+            Searching...
+          </div>
           <div class="mt-4 space-y-3">
             <%= for {agent, idx} <- Enum.with_index(@agents_custom_form_options || []) do %>
               <div id={"custom-agent-#{idx}"} class="flex items-end gap-2">
