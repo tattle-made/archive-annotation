@@ -1,4 +1,4 @@
-<div class="flex flex-col 2xl:flex-row space-x-3 justify-center">
+<div class="flex flex-col 2xl:flex-row space-x-3 ">
   <%= if Enum.empty?(@featured_description_annotations) and Enum.empty?(@featured_subjects_annotations) and Enum.empty?(@featured_agent_annotations) do %>
     <div>
       <p class="text-secondary-purple font-bold text-body-md-18">Featured Annotations</p>
@@ -41,7 +41,7 @@
     </div>
 
     <div class="flex flex-col  gap-3 flex-1 lg:mt-6 2xl:mt-0">
-      <p class="text-secondary-purple font-bold 2xl:text-body-md-18">Agents</p>
+      <p class="text-secondary-purple font-bold 2xl:text-body-md-18">People, Places, Organisations...</p>
       <%= if Enum.empty?(@featured_agent_annotations) do %>
         <p class="text-secondary-grey text-sm">No featured annotations to display.</p>
       <% else %>

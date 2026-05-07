@@ -258,7 +258,7 @@ defmodule KoshWeb.SearchLive do
                     <%= if result.matched_agent_annotations && length(result.matched_agent_annotations) > 0 do %>
                       <div>
                         <span class="font-bold text-primary-purple">
-                          Matched Agents Annotations:
+                          Matched People, Places, Organisations Annotations:
                         </span>
                         <ul class="list-disc ml-6">
                           <%= for ann <- result.matched_agent_annotations do %>

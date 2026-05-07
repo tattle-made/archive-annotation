@@ -50,10 +50,10 @@ defmodule KoshWeb.AdminRoutesDisplayLive do
           <img src="/images/redirect-color-primary.svg" alt="logo">
         </.link>
         <.link
-          navigate={~p"/admin/export-subjects"}
+          navigate={~p"/admin/export-mlk"}
           class="flex items-center text-secondary-purple font-semibold hover:underline"
         >
-          <span>Export Milli Local Knowledge Subjects</span>
+          <span>Export Milli Local Knowledge</span>
           <img src="/images/redirect-color-primary.svg" alt="logo">
         </.link>
       </div>

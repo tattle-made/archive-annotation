@@ -18,7 +18,7 @@ defmodule KoshWeb.Components.AgentAnnotationCard do
           <div class="flex items-center bg-bg-grey gap-1 p-2">
             <img src="/images/subject-annotation-icon.svg" alt="Annotation Icon" class="w-4 h-4" />
             <span class="text-meta-12 font-bold text-primary-grey ">
-              Agent
+              People, Places, Organisations
             </span>
           </div>
 
@@ -68,8 +68,7 @@ defmodule KoshWeb.Components.AgentAnnotationCard do
                       (types: <%= format_type_labels(agent.type_ids) %>)
                     <% end %>
                     <%= if agent.source do %>
-                      <%= if agent.type_ids && length(agent.type_ids) > 0, do: " " %>
-                      - <%= agent.source %>
+                      <%= if agent.type_ids && length(agent.type_ids) > 0, do: " " %> - <%= agent.source %>
                     <% end %>
                   </span>
                 </li>
@@ -81,7 +80,8 @@ defmodule KoshWeb.Components.AgentAnnotationCard do
                 <li class="py-3 border-b border-white last:border-b-0">
                   <span><%= agent["name"] || agent[:name] %></span>
                   <span class="text-primary-grey text-sm">
-                    (new<%= if agent["types"] || agent[:types] do %>,
+                    (new<%= if agent["types"] || agent[:types] do %>
+                      ,
                       types: <%= format_type_labels(agent["types"] || agent[:types] || []) %>
                     <% end %>)
                     <%= if agent["source"] || agent[:source] do %>

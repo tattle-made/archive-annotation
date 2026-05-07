@@ -124,12 +124,12 @@ defmodule Kosh.EmailNotifications do
       if agents do
         existing =
           agents.existing
-          |> Enum.map(&(&1.name || "Unknown agent"))
+          |> Enum.map(&(&1.name || "Unknown name-authority"))
 
         custom =
           agents.custom
           |> Enum.map(fn
-            %{} = m -> m[:name] || m["name"] || "Unknown agent"
+            %{} = m -> m[:name] || m["name"] || "Unknown name-authority"
             other -> to_string(other)
           end)
 
@@ -137,7 +137,7 @@ defmodule Kosh.EmailNotifications do
 
         if combined != [] do
           """
-          Agents:
+          Name-Authorities:
           #{Enum.map(combined, fn a -> "• #{a}" end) |> Enum.join("\n        ")}
 
           """
@@ -351,7 +351,7 @@ defmodule Kosh.EmailNotifications do
     deliver(recipient.email, "Annotation Discarded - Anno-Milli", """
     Hello #{recipient.email},
 
-    We're writing to inform you that your agents-annotation has been reviewed and discarded by our moderation team. Here are the details of the affected annotation:
+    We're writing to inform you that your name-authority-annotation has been reviewed and discarded by our moderation team. Here are the details of the affected annotation:
 
     Collection: #{annotation.file.collection.title}
     File: #{annotation.file.title}
@@ -433,7 +433,7 @@ defmodule Kosh.EmailNotifications do
     deliver(recipient.email, "Annotation Approved - Anno-Milli", """
     Hello #{recipient.email},
 
-    Your agents-annotation has been approved by the moderation team. Approved annotation details:
+    Your name-authority-annotation has been approved by the moderation team. Approved annotation details:
 
     Collection: #{annotation.file.collection.title}
     File: #{annotation.file.title}
