@@ -130,13 +130,18 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
         not has_exact_match and length(options) >= 100 ->
           options ++
             [
-              {"No exact match found, Add new Subject \"#{text}\" to Milli Local Knowledge", "new:#{text}"},
+              {"No exact match found, Add new Subject \"#{text}\" to Milli Local Knowledge",
+               "new:#{text}"},
               {"Show more for #{text}", "__SHOW_MORE__"}
             ]
 
         # If no exact match, show "Add new" option
         not has_exact_match ->
-          options ++ [{"No exact match found, Add new Subject \"#{text}\" to Milli Local Knowledge", "new:#{text}"}]
+          options ++
+            [
+              {"No exact match found, Add new Subject \"#{text}\" to Milli Local Knowledge",
+               "new:#{text}"}
+            ]
 
         # If options >= 100, show "Show more" option
         length(options) >= 100 ->
@@ -714,11 +719,14 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
             <p class="text-secondary-purple font-bold text-body-md-18 ">Subjects</p>
             <p class="font-normal text-xs mb-3 text-primary-purple">
               Search Subjects from
-              <span
+              <a
+                href="https://id.loc.gov/authorities/subjects.html"
+                target="_blank"
+                rel="noopener noreferrer"
                 class="underline font-medium cursor-pointer"
                 title="Library of Congress Subject Headings"
               >
-                LCSH</span>
+                LCSH</a>
               or add new subjects
             </p>
             <.live_select
@@ -773,11 +781,14 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
           <p class="text-secondary-purple font-bold text-body-md-18">People, Places, Organisations</p>
           <p class="font-normal text-xs mb-3 text-primary-purple">
             Search People, Places, Organizations from
-            <span
+            <a
+              href="https://id.loc.gov/authorities/names.html"
+              target="_blank"
+              rel="noopener noreferrer"
               class="underline font-medium cursor-pointer"
               title="Library of Congress Name Authority File"
             >
-              LCNAF</span>
+              LCNAF</a>
             or add new
           </p>
 
@@ -808,7 +819,8 @@ defmodule KoshWeb.Components.AnnotationSection.AnnotationForm do
             phx-target={@myself}
             class="text-sm text-secondary-purple mr-auto mt-1"
           >
-            No Results Found. Add Custom Entry to Milli Local Knowledge: <b>"<%= @agents_curr_text %>"</b>
+            No Results Found. Add Custom Entry to Milli Local Knowledge:
+            <b>"<%= @agents_curr_text %>"</b>
           </button>
           <div
             :if={@agents_loading}

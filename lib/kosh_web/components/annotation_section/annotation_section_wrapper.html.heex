@@ -73,9 +73,9 @@
         <span>Emotion Annotations</span>
       </button>
       <%= if @current_user do %>
-        <div class="space-y-2 pt-8 2xl:text-body-md-18">
+        <div class="space-y-2 pt-8 px-2 2xl:text-body-md-18">
           <%= if @total_user_annotations == 0 do %>
-            <p class="text-secondary-purple ">
+            <p class="text-secondary-purple rounded-md bg-secondary-lilac/30 px-3 py-2">
               You have not submitted any annotation entries yet.
             </p>
           <% else %>
