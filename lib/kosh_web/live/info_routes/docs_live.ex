@@ -24,7 +24,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
           class="underline"
           href="https://cat.milli.link"
         >catmilli</a>, an <a class="underline" href="https://archivesspace.org">ArchivesSpace</a>
-        instance, functions as the catalog aggregator and OAI-PMH compliant EAD 2002 disseminator. On catmilli, folder level archival_objects have a corresponding "anno.milli" action button that takes the user to annotate the corresponding archival_object on annomilli.
+        instance, functions both as the catalog aggregator and an OAI-PMH compliant EAD 2002 disseminator. On catmilli, folder level archival_objects have a corresponding "anno.milli" action button that takes the user to annotate the corresponding archival_object on annomilli.
         <a
           class="underline"
           href="https://cat.milli.link/repositories/2/archival_objects/20535#:~:text=anno%2Emilli"
@@ -77,6 +77,54 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
       </p>
       <p class="text-secondary-purple mt-2">
         The inability to ingest certain EADs is essentially a consequence of widely different implementations and adoptions of the EAD standard and also to ease the complexity of sourcing and parsing of EAD XML in the development of the annomilli prototype. To take the prototype concept forward, we would like to explore working with a wider set of EADs and other metadata representations like Dublin Core.
+      </p>
+
+      <p class="text-primary-purple mt-2 font-bold">
+        How to annotate archival records on annomilli?
+      </p>
+
+      <p class="text-secondary-purple mt-2">
+        While a visitor on annomilli can discover the ingested archival material through the search box on the home page, to create and submit annotation, a visitor needs to
+        <a href="text-secondary-purple mt-2">register as a user</a>
+      </p>
+      <p class="text-secondary-purple mt-2">
+        If you are interested in learning more the administrator workflow on annomilli, write to us at
+        <code>archives dash dev at ncbs dot res dot in</code>
+      </p>
+
+      <p class="text-secondary-purple mt-2">
+        There are two ways to access the ingested archival records on annomilli:
+      </p>
+      <p class="text-secondary-purple mt-2">
+        1. anno.milli button on catmilli: Every file level archival object on catmilli will have an anno.milli button that takes you to the corresponding records. This button is implemented as a
+        <a
+          href="https://docs.archivesspace.org/customization/configuration/#appconfigpui_page_custom_actions"
+          class="underline"
+        >
+          custom action button on ArchivesSpace
+        </a>
+      </p>
+      <p class="text-secondary-purple mt-2">
+        2. Search on annomilli: You can use the search box on the home/landing page to discover the ingested records on annomilli.
+        <a href="https://anno.milli.link/search?q=science" class="underline">
+          Here's a search for "science"
+        </a>
+      </p>
+      <p class="text-secondary-purple mt-2">
+        As a registered user, you can find the annotation options under the section titled "Discover what others have to say about these collections.
+      </p>
+      <p class="text-secondary-purple mt-2">
+        annomilli offers four types of annotations -- <br /> 1.
+        <emph class="font-bold">Description</emph>: Free text, descriptive <br /> 2.
+        <emph class="font-bold">Subject</emph>: Select a subject from the a dropdown list of LCSH subject list or add a new subject<br />
+        3.
+        <emph class="font-bold">Peoples, Places, Organizations..</emph>: Select a subject from the a dropdown list of LCNAF named authority list or add new
+        <br /> 4.
+        <emph class="font-bold">Emotion</emph>: Select from a toggle list of eight emotion responses
+      </p>
+
+      <p class="text-secondary-purple mt-2">
+        All submitted annotations except Emotion annotations, are sent to the admin for approval. Once approved they are displayed in the section titled "Annotations for this File" on the record page.
       </p>
     </div>
     """
