@@ -13,9 +13,12 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
         Docs
       </div>
 
-      <p class="text-primary-purple mt-2 font-bold">What is annomilli</p>
+      <p class="text-primary-purple mt-2 font-bold">What is annomilli?</p>
       <p class="text-secondary-purple mt-2">
-        annomilli (rhymes with <i>anomaly</i>) is a prototype annotation platform for archival catalogues. At its core annomilli demonstrates a functional annotation workflow for EAD 2002 XML catalogues disemminated through OAI-PMH endpoints
+        annomilli (uncomfortably pronounced <i>anomaly</i>) is a prototype annotation platform for archival catalogues. At its core annomilli demonstrates a functional annotation workflow for EAD 2002 XML catalogues disemminated through OAI-PMH endpoints.
+        <br /> annomilli is built using
+        <a class="underline" href="https://www.phoenixframework.org/">Phoenix Framework</a>
+        and uses Postgres for database.
       </p>
 
       <p class="text-primary-purple mt-2 font-bold">How does annomilli work?</p>
@@ -42,8 +45,9 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
         <a class="underline" href="http://loc.gov/ead/tglib/elements/c.html">
           non-numbered component elements
         </a>
-        that are declared with the attribute <code>level="file"</code>
-        The decision was taken to ease the development of the prototype by testing a consistent, constrained subset of EAD 2002 XML.
+        that are declared with the attribute
+        <emph class="font-bold"><code>level="file"</code></emph>
+        This decision was taken to ease the development of the prototype by testing a consistent, constrained subset of EAD 2002 XML.
       </p>
 
       <p class="text-primary-purple mt-2 font-bold">
@@ -88,8 +92,9 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
         <a href="text-secondary-purple mt-2">register as a user</a>
       </p>
       <p class="text-secondary-purple mt-2">
-        If you are interested in learning more the administrator workflow on annomilli, write to us at
-        <code>archives dash dev at ncbs dot res dot in</code>
+        If you are interested in learning more the administrator workflow on annomilli, write to us at:
+        <br />
+        <emph class="font-bold"><code>archives dash dev at ncbs dot res dot in</code></emph>
       </p>
 
       <p class="text-secondary-purple mt-2">
@@ -101,8 +106,21 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
           href="https://docs.archivesspace.org/customization/configuration/#appconfigpui_page_custom_actions"
           class="underline"
         >
-          custom action button on ArchivesSpace
+          custom action button on ArchivesSpace:
         </a>
+        <pre>
+          AppConfig[:pui_page_custom_actions] &lt;&lt; {
+            'record_type' =&gt; ['archival_object'], # the jsonmodel type to show for
+            'label' =&gt; 'anno.milli', # the I18n path for the action button
+            'icon' =&gt; 'fa-hand-o-up', # the font-awesome icon CSS class
+            'url_proc' =&gt;
+                      proc {
+                            |record|
+                            'https://anno.milli.link/annotation/display?archival_space=archives.ncbs.res.in&amp;uri='
+                            +record.uri
+                           }
+            }
+      </pre>
       </p>
       <p class="text-secondary-purple mt-2">
         2. Search on annomilli: You can use the search box on the home/landing page to discover the ingested records on annomilli.
@@ -118,14 +136,92 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
         <emph class="font-bold">Description</emph>: Free text, descriptive <br /> 2.
         <emph class="font-bold">Subject</emph>: Select a subject from the a dropdown list of LCSH subject list or add a new subject<br />
         3.
-        <emph class="font-bold">Peoples, Places, Organizations..</emph>: Select a subject from the a dropdown list of LCNAF named authority list or add new
+        <emph class="font-bold">Peoples, Places, Organizations</emph>: Select a name/titles from the a dropdown list of LCNAF name authority list or add new
         <br /> 4.
         <emph class="font-bold">Emotion</emph>: Select from a toggle list of eight emotion responses
       </p>
 
       <p class="text-secondary-purple mt-2">
-        All submitted annotations except Emotion annotations, are sent to the admin for approval. Once approved they are displayed in the section titled "Annotations for this File" on the record page.
+        All submitted annotations except Emotion annotations, are sent to the admin for approval. Once approved they are displayed in the section titled "Annotations for this File" on the record page. New subjects and names (that are not part of the LCSH or LCNAF drop-down) are automatically classified as Milli Local Knowledge (MLK)
       </p>
+
+      <p class="text-secondary-purple mt-2">
+        Annotations approved by the admin also become exportable as EADs through
+        <a class="underline" href="https://anno.milli.link/admin/export-ead">this admin route</a>
+      </p>
+      <p class="text-secondary-purple mt-2">
+        Each type of annotation is encoded during export as follows:
+      </p>
+      <p class="text-secondary-purple mt-2">
+        <br /> 1.
+        <emph class="font-bold">Description</emph>
+        <pre>
+            &lt;scopecontent id=&quot;annnomilli-id_6_user_id_1_timestamp_2026-05-01 11:15:22.000&quot;&gt;
+              &lt;head&gt;annomilli-annotation&lt;/head&gt;
+              &lt;p&gt;foxy and feathery&lt;/p&gt;
+            &lt;/scopecontent&gt;
+        </pre>
+      </p>
+      <p class="text-secondary-purple mt-2">
+        <br /> 2.
+        <emph class="font-bold">Subject</emph>
+        <pre>
+          &lt;subject
+            source=&quot;lcsh&quot;
+            authfilenumber=&quot;annomilli-id_45_user_id_1_timestamp_2026-05-01 06:15:42.000&quot;
+            id=&quot;http://id.loc.gov/authorities/subjects/sh94000402&quot;
+          &gt;
+            Fox art
+          &lt;/subject&gt;
+          </pre>
+
+        <pre>
+          &lt;subject
+            source=&quot;mlk&quot;
+            authfilenumber=&quot;annomilli-id_48_user_id_2_timestamp_2026-05-01 08:55:14.000&quot;
+          &gt;
+            reynard
+          &lt;/subject&gt;
+          </pre>
+      </p>
+      <p class="text-secondary-purple mt-2">
+        <br /> 3.
+        <emph class="font-bold">Peoples, Places, Organizations</emph>
+        <pre>
+          &lt;persname
+            source=&quot;lcnaf&quot;
+            authfilenumber=&quot;annomilli-id_6_user_id_1_timestamp_2026-05-05 10:07:18.000&quot;
+            id=&quot;http://id.loc.gov/authorities/names/no2002012363&quot;
+          &gt;
+            D'Silva, Carl
+          &lt;/persname&gt;
+        </pre>
+        <pre>
+          &lt;geogname
+          source=&quot;mlk&quot; authfilenumber=&quot;annomilli-id_4_user_id_1_timestamp_2026-05-01 06:37:52.000&quot;
+          &gt;
+            Panjim
+          &lt;/geogname&gt;
+        </pre>
+      </p>
+      <p class="text-secondary-purple mt-2">
+        <br /> 4.
+        <emph class="font-bold">Emotion</emph>
+        <pre>
+          &lt;subject
+            source=&quot;mlk-emotion&quot;
+            authfilenumber=&quot;annomilli-id_14_user_id_1_timestamp_2026-05-01 11:15:55.000&quot;
+          &gt;
+            surprise-high
+          &lt;/subject&gt;
+        </pre>
+      </p>
+      <p class="text-secondary-purple mt-2">
+        This encoding allows us to keep encoding compatible with the EAD 2002. The decision to use certain attributes like
+        <emph class="font-bold"><code>authfilenumber</code></emph>, which are deprecated in EAD 3 onwards, is intentional in this prototype to demonstrate a valid EAD export from annomilli and valid import back into an ArchivesSpace.
+      </p>
+      <br />
+      <br />
     </div>
     """
   end
