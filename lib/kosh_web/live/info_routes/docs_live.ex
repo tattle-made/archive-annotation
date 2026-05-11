@@ -13,7 +13,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
         Docs
       </div>
 
-      <p class="text-primary-purple mt-2 font-bold">What is annomilli?</p>
+      <p class="text-2xl text-primary-purple mt-2 font-bold">What is annomilli?</p>
       <p class="text-secondary-purple mt-2">
         annomilli (uncomfortably pronounced <i>anomaly</i>) is a prototype annotation platform for archival catalogues. At its core annomilli demonstrates a functional annotation workflow for EAD 2002 XML catalogues disemminated through OAI-PMH endpoints.
         <br /> annomilli is built using
@@ -21,7 +21,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
         and uses Postgres for database.
       </p>
 
-      <p class="text-primary-purple mt-2 font-bold">How does annomilli work?</p>
+      <p class="text-2xl text-primary-purple mt-2 font-bold">How does annomilli work?</p>
       <p class="text-secondary-purple mt-2">
         annomilli has been developed to work with an archival catalogue aggregator that can disseminate EAD 2002 XML files through an OAI endpoint. For this prototype, <a
           class="underline"
@@ -36,7 +36,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
         </a>
       </p>
 
-      <p class="text-primary-purple mt-2 font-bold">
+      <p class="text-2xl text-primary-purple mt-2 font-bold">
         What catalogs are available to annotate on annomilli?
       </p>
 
@@ -83,7 +83,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
         The inability to ingest certain EADs is essentially a consequence of widely different implementations and adoptions of the EAD standard and also to ease the complexity of sourcing and parsing of EAD XML in the development of the annomilli prototype. To take the prototype concept forward, we would like to explore working with a wider set of EADs and other metadata representations like Dublin Core.
       </p>
 
-      <p class="text-primary-purple mt-2 font-bold">
+      <p class="text-2xl text-primary-purple mt-2 font-bold">
         How to annotate archival records on annomilli?
       </p>
 
