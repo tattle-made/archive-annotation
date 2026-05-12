@@ -200,7 +200,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
             D'Silva, Carl
           &lt;/persname&gt;
         </pre>
-        <pre>
+        <pre class="whitespace-pre-wrap">
           &lt;geogname
           source=&quot;mlk&quot; authfilenumber=&quot;annomilli-id_4_user_id_1_timestamp_2026-05-01 06:37:52.000&quot;
           &gt;
