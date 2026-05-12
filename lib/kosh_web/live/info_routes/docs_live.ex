@@ -88,8 +88,12 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
       </p>
 
       <p class="text-secondary-purple mt-2">
-        While a visitor on annomilli can discover the ingested archival material through the search box on the home page, to create and submit annotation, a visitor needs to
-        <a href="text-secondary-purple mt-2">register as a user</a>
+        While a visitor on annomilli can discover the ingested archival material through the search box on the home page, to create and submit annotation, a visitor needs to <a
+          class="underline text-secondary-purple mt-2"
+          href="https://anno.milli.link/users/register"
+        >
+          register as a user
+        </a>.
       </p>
       <p class="text-secondary-purple mt-2">
         If you are interested in learning more the administrator workflow on annomilli, write to us at:
@@ -108,7 +112,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
         >
           custom action button on ArchivesSpace:
         </a>
-        <pre>
+        <pre class="whitespace-pre-wrap">
           AppConfig[:pui_page_custom_actions] &lt;&lt; {
             'record_type' =&gt; ['archival_object'], # the jsonmodel type to show for
             'label' =&gt; 'anno.milli', # the I18n path for the action button
@@ -142,7 +146,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
       </p>
 
       <p class="text-secondary-purple mt-2">
-        All submitted annotations except Emotion annotations, are sent to the admin for approval. Once approved they are displayed in the section titled "Annotations for this File" on the record page. New subjects and names (that are not part of the LCSH or LCNAF drop-down) are automatically classified as Milli Local Knowledge (MLK)
+        All submitted annotations except Emotion annotations, are sent to the admin for approval. Once approved they are displayed in the section titled "Annotations for this File" on the record page. New approved subjects and names (that are not part of the LCSH or LCNAF drop-down) are automatically classified as Milli Local Knowledge (MLK)
       </p>
 
       <p class="text-secondary-purple mt-2">
@@ -155,7 +159,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
       <p class="text-secondary-purple mt-2">
         <br /> 1.
         <emph class="font-bold">Description</emph>
-        <pre>
+        <pre class="whitespace-pre-wrap">
             &lt;scopecontent id=&quot;annnomilli-id_6_user_id_1_timestamp_2026-05-01 11:15:22.000&quot;&gt;
               &lt;head&gt;annomilli-annotation&lt;/head&gt;
               &lt;p&gt;foxy and feathery&lt;/p&gt;
@@ -165,7 +169,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
       <p class="text-secondary-purple mt-2">
         <br /> 2.
         <emph class="font-bold">Subject</emph>
-        <pre>
+        <pre class="whitespace-pre-wrap">
           &lt;subject
             source=&quot;lcsh&quot;
             authfilenumber=&quot;annomilli-id_45_user_id_1_timestamp_2026-05-01 06:15:42.000&quot;
@@ -175,7 +179,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
           &lt;/subject&gt;
           </pre>
 
-        <pre>
+        <pre class="whitespace-pre-wrap">
           &lt;subject
             source=&quot;mlk&quot;
             authfilenumber=&quot;annomilli-id_48_user_id_2_timestamp_2026-05-01 08:55:14.000&quot;
@@ -187,7 +191,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
       <p class="text-secondary-purple mt-2">
         <br /> 3.
         <emph class="font-bold">Peoples, Places, Organizations</emph>
-        <pre>
+        <pre class="whitespace-pre-wrap">
           &lt;persname
             source=&quot;lcnaf&quot;
             authfilenumber=&quot;annomilli-id_6_user_id_1_timestamp_2026-05-05 10:07:18.000&quot;
@@ -196,7 +200,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
             D'Silva, Carl
           &lt;/persname&gt;
         </pre>
-        <pre>
+        <pre class="whitespace-pre-wrap">
           &lt;geogname
           source=&quot;mlk&quot; authfilenumber=&quot;annomilli-id_4_user_id_1_timestamp_2026-05-01 06:37:52.000&quot;
           &gt;
@@ -207,7 +211,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
       <p class="text-secondary-purple mt-2">
         <br /> 4.
         <emph class="font-bold">Emotion</emph>
-        <pre>
+        <pre class="whitespace-pre-wrap">
           &lt;subject
             source=&quot;mlk-emotion&quot;
             authfilenumber=&quot;annomilli-id_14_user_id_1_timestamp_2026-05-01 11:15:55.000&quot;
@@ -218,7 +222,7 @@ defmodule KoshWeb.InfoRoutes.DocsLive do
       </p>
       <p class="text-secondary-purple mt-2">
         This encoding allows us to keep encoding compatible with the EAD 2002. The decision to use certain attributes like
-        <emph class="font-bold"><code>authfilenumber</code></emph>, which are deprecated in EAD 3 onwards, is intentional in this prototype to demonstrate a valid EAD export from annomilli and valid import back into an ArchivesSpace.
+        <emph class="font-bold"><code>authfilenumber</code></emph>, which are deprecated in EAD 3 onwards, is intentional in this prototype to demonstrate a valid EAD export from annomilli and valid import back into an ArchivesSpace.The decision to work with EAD 2002 is due to its wide use and presence in archive catalogs worldwide. In our next iteration, we intend to figure interoperability for other standards and revisions like EAD 3, EAD 4.
       </p>
       <br />
       <br />
