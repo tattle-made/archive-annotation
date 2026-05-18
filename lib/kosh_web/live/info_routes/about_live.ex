@@ -70,6 +70,10 @@ defmodule KoshWeb.InfoRoutes.AboutLive do
         , <a class="underline" href="https://github.com/NCSU-Libraries/annona">NCSU Annona</a>
         : W3C Web Annotations-compliant and built with IIIF Presentation API
       </p>
+      <p class="text-primary-purple mt-2 font-bold">Queries? Contact</p>
+      <p class="text-secondary-purple mt-2">
+        archives dash dev at ncbs dot res dot in
+      </p>
     </div>
     """
   end
