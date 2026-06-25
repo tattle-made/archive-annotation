@@ -133,8 +133,10 @@ defmodule KoshWeb.SearchLive do
                 <div class="bg-white rounded-lg shadow-milli-1 border border-secondary-pale-grey p-6">
                   <div class="flex flex-col gap-2">
                     <%= if result.file_name do %>
-                      <.link navigate={~p"/annotation/display?archival_space=#{result.archival_space}&uri=#{result.uri}"}>
-                        <span class="text-primary-purple font-bold text-xl hover:underline">
+                      <.link navigate={
+                        ~p"/annotation/display?archival_space=#{result.archival_space}&uri=#{result.uri}"
+                      }>
+                        <span class="text-primary-purple font-bold text-xl underline">
                           <%= Phoenix.HTML.raw(highlight(result.file_name, @query)) %>
                         </span>
                       </.link>
@@ -195,7 +197,7 @@ defmodule KoshWeb.SearchLive do
                         </span>
                       </div>
                     <% end %>
-                    <%= if result.dao_links && length(result.dao_links) > 0 do %>
+                    <%!-- <%= if result.dao_links && length(result.dao_links) > 0 do %>
                       <div>
                         <span class="font-bold text-primary-purple">Digital Object Links:</span>
                         <ul class="list-disc ml-6 mt-1">
@@ -212,7 +214,7 @@ defmodule KoshWeb.SearchLive do
                           <% end %>
                         </ul>
                       </div>
-                    <% end %>
+                    <% end %> --%>
                     <%= if result.subjects && length(result.subjects) > 0 do %>
                       <div>
                         <span class="font-bold text-primary-purple">Subjects:</span>
