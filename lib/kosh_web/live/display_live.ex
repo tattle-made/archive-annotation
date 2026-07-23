@@ -28,7 +28,8 @@ defmodule KoshWeb.DisplayLive do
             nil
           end
 
-        item_uuid = if handle_url, do: fetch_item_uuid(handle_url), else: nil
+        # item_uuid = if handle_url, do: fetch_item_uuid(handle_url), else: nil
+        item_uuid = if handle_url, do: fetch_item_uuid_api(handle_url), else: nil
 
         manifest_url =
           if item_uuid do
@@ -54,6 +55,31 @@ defmodule KoshWeb.DisplayLive do
      socket
      |> put_flash(:error, "Invalid file URL. Missing archival_space or uri.")
      |> redirect(to: ~p"/")}
+  end
+
+  defp fetch_item_uuid_api(handle_url) do
+    require Logger
+    Logger.debug("fetch_item_uuid called with handle_url: #{inspect(handle_url)}")
+
+    domain = Regex.run(~r{(?<=\/\/)([^\/\?:]+)}, handle_url, capture: :all_but_first)
+    # Logger.debug("domain: #{domain}")
+
+    # extract handle from handle_url eg: https://collections.archives.ncbs.res.in/handle/42412/3561 -> 42412/3561
+    handle =
+      Regex.run(~r{/handle/([0-9a-fA-F\-]+/[0-9a-fA-F\-]+)$}, handle_url, capture: :all_but_first)
+
+    # retrieve uuid from handle using dspace rest api
+    # see https://github.com/DSpace/RestContract/issues/185 and https://github.com/DSpace/RestContract/blob/main/identifiers.md
+    api_handle2uuid =
+      "https://#{domain}/server/api/pid/find?id=hdl:#{handle}"
+
+    case HTTPoison.get(api_handle2uuid, [], follow_redirect: true) do
+      {:ok, %HTTPoison.Response{status_code: code, body: body}}
+      when code in [200] ->
+        {:ok, response_map} = Jason.decode(body)
+        # Logger.debug("response_map: #{inspect(response_map)}")
+        Map.get(response_map, "uuid")
+    end
   end
 
   defp fetch_item_uuid(handle_url) do
@@ -311,7 +337,9 @@ defmodule KoshWeb.DisplayLive do
           </div>
           <!-- Agent(s) Section -->
           <div>
-            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">People, Places, Organisations Annotations</h2>
+            <h2 class="text-primary-purple font-bold mb-2 text-body-md-18">
+              People, Places, Organisations Annotations
+            </h2>
             <div class="space-y-2 max-h-60 overflow-y-auto">
               <%= if length(@file.accepted_agent_annotations) > 0 do %>
                 <%= for annotation <- @file.accepted_agent_annotations do %>
@@ -335,7 +363,10 @@ defmodule KoshWeb.DisplayLive do
               <%= if length(@file_emotions) > 0 do %>
                 <%= for annotation <- @file_emotions do %>
                   <p class="text-secondary-purple bg-gray-100 rounded p-4 mb-1">
-                    <%= if(annotation.name == "no_response", do: "No Response", else: String.capitalize(annotation.name)) %> - <span class="font-bold"><%= annotation.count%></span>
+                    <%= if(annotation.name == "no_response",
+                      do: "No Response",
+                      else: String.capitalize(annotation.name)
+                    ) %> - <span class="font-bold"><%= annotation.count %></span>
                   </p>
                 <% end %>
               <% else %>
